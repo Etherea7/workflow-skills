@@ -42,19 +42,26 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
 - [x] docs/IMPLEMENTATION-PLAN.md written
 - [x] docs/FUTURE-WORK.md written (D6/D7 deferrals)
 - [x] Initial commit of Phase 1 docs
-- [ ] **GATE: human approval of the plan** ← YOU ARE HERE
+- [x] **GATE: human approval of the plan** (2026-07-11: "Proceed, looks good")
 
 ## Phase 2 — M0 Scaffold (after gate)
 
-- [ ] README stub, LICENSE (MIT unless overridden at gate)
-- [ ] rules/AGENTS.md full lean-core draft (skill map, Delegation Protocol, per-host sections)
-- [ ] rules/CLAUDE.md (@AGENTS.md + overrides)
-- [ ] templates/: spec, plan, tasks, checklist, constitution, INDEX, project AGENTS.md + CLAUDE.md
-- [ ] scripts/: secrets-check, validate (skills-ref), next-spec-number
-- [ ] install.sh (idempotent, --uninstall) — tested on this machine
-- [ ] docs/ARCHITECTURE.md from plan §4
-- [ ] CI stub (.github/workflows/ci.yml: validate gate)
-- [ ] GATE: human approves rules + templates
+- [x] README stub, LICENSE (MIT), .gitignore
+- [x] rules/AGENTS.md full lean-core draft (skill map, Delegation Protocol, per-host sections)
+- [x] rules/CLAUDE.md (@AGENTS.md + overrides)
+- [x] templates/: spec, plan, tasks, checklist, constitution, INDEX, project-AGENTS, project-CLAUDE
+      (project rules templates renamed `project-*.md` so a literal templates/CLAUDE.md
+      isn't picked up as a nested memory file in this repo)
+- [x] scripts/: secrets-check, validate (own format gate, no skills-ref dependency), next-spec-number
+      (evidence: planted AKIA+api_key caught exit 1, clean diff exit 0 — after fixing a real bug:
+      leading-dash pattern parsed as grep option, fixed with `grep -e`; cert pattern dropped as
+      false-positive source. next-spec-number: missing→001, empty→001, 000+003→004)
+- [x] install.sh (idempotent, --uninstall) — tested via round-trip against isolated targets:
+      skills copied to both hosts, codex managed block exactly once after double install,
+      user content preserved through install+uninstall, rules file written/removed, import line stripped
+- [x] docs/ARCHITECTURE.md from plan §4 (adds vendoring rule: runtime scripts vendored per skill)
+- [x] CI stub (.github/workflows/ci.yml: format gate + shell syntax + installer round-trip)
+- [ ] GATE: human approves rules + templates ← YOU ARE HERE
 
 ## Phase 2 — M1 `plan`
 
@@ -106,5 +113,6 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
 
 ## Handback
 
-- 2026-07-11 Phase 1 complete; awaiting plan approval before M0. Suggested
-  review order: PROJECT-CONSTITUTION.md → IMPLEMENTATION-PLAN.md §3–§6 → FUTURE-WORK.md.
+- 2026-07-11 M0 complete; awaiting rules + templates approval before M1 (`plan` skill).
+  Review order: rules/AGENTS.md (the Delegation Protocol binds every skill) →
+  templates/checklist.md + spec.md (the memory + spec formats) → install.sh behavior notes.

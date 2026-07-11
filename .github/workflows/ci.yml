@@ -1,0 +1,40 @@
+name: ci
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Format gate (Agent Skills spec + suite conventions)
+        run: node scripts/validate.mjs
+      - name: Shell syntax
+        run: |
+          for f in install.sh scripts/*.sh; do
+            bash -n "$f"
+          done
+      - name: Installer round-trip (isolated targets)
+        run: |
+          t=$(mktemp -d)
+          export CLAUDE_SKILLS_DIR="$t/claude-skills" AGENTS_SKILLS_DIR="$t/agents-skills"
+          export CLAUDE_RULES_DIR="$t/claude-rules" CODEX_AGENTS_FILE="$t/codex/AGENTS.md"
+          printf '# my own codex rules\n' > /dev/null   # user-content preservation is asserted below
+          mkdir -p "$t/codex" && printf '# user content\n' > "$CODEX_AGENTS_FILE"
+          ./install.sh
+          ./install.sh   # idempotent re-run
+          grep -q 'dev-workflows:begin' "$CODEX_AGENTS_FILE"
+          grep -q '# user content' "$CODEX_AGENTS_FILE"
+          test -f "$CLAUDE_RULES_DIR/dev-workflows.md"
+          ./install.sh --uninstall
+          ! grep -q 'dev-workflows:begin' "$CODEX_AGENTS_FILE"
+          grep -q '# user content' "$CODEX_AGENTS_FILE"
+          test ! -f "$CLAUDE_RULES_DIR/dev-workflows.md"
+          echo "round-trip OK"
+
+  # Behavior evals per skill are run locally during milestone gates (they need
+  # a live agent); CI covers format + installer integrity.
