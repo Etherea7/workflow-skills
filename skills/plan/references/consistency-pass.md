@@ -20,12 +20,25 @@ Work through all of them; they catch different failure modes.
    every requirement is verified by at least one AC or has an explicit note
    why not (e.g. structural constraints verified by review).
 
-4. **Contradiction sweep** — check each Decision against every requirement and
-   against the other decisions. The dangerous contradictions are indirect:
-   a decision "no user accounts" and a requirement "users SHALL see their
-   export history" contradict through an unstated assumption (history implies
-   identity). Trace nouns like *user, history, sync, share* to what they
-   assume.
+4. **Contradiction sweep** — three comparisons, all required:
+   - *Decisions vs requirements* and *decisions vs decisions*. The dangerous
+     contradictions are indirect: a decision "no user accounts" and a
+     requirement "users SHALL see their export history" contradict through an
+     unstated assumption (history implies identity). Trace nouns like *user,
+     history, sync, share* to what they assume.
+   - *Requirements vs requirements, pairwise.* Pay special attention to
+     universal claims — "every", "all", "exactly", "one per", "always" —
+     colliding with exception or error-path requirements — "excluded",
+     "skipped", "unless", "on failure". A universal and an exception about
+     the same nouns cannot both hold. Worked example: R1 "the archive SHALL
+     contain one file per note in the notes directory" + R4 "a note that
+     fails parsing SHALL be excluded from the archive" contradict for any
+     directory containing a malformed note. Fix by scoping the universal
+     ("one file per successfully parsed note") or folding the exception into
+     it — and make every requirement touching the same failure path agree.
+   - *Failure-path coherence.* For each error/edge requirement, re-read every
+     universal requirement it carves an exception out of, and confirm the
+     spec tells one story about that path end to end.
 
 5. **Vagueness sweep** — scan for the banned-word list in
    `spec-quality.md` (fast, simple, robust, secure, …). Each hit is either

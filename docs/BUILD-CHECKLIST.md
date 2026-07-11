@@ -79,8 +79,17 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       Findings for iteration: (1) provisional defaults present but checklist still ends
       'done' — consider forcing awaiting-human; (2) docs-only commit skipped in 1/3 runs —
       firm up Step 5 wording
-- [ ] Live validation run with human ← YOU ARE HERE
-- [ ] GATE: human validates (decide findings 1+2, review viewer)
+- [x] Iteration 2 per Codex review (2026-07-11, via user): decision-rubric reference added
+      (security/privacy always consequential); contradiction sweep extended with
+      universal-vs-exception pairwise rule (R1/R4 export case as worked example);
+      Step 5 persist-honesty (tick only after verified commit, hash as evidence);
+      assertions extended (coherence, security-defaults, git-state persistence truth);
+      eval-2 relabeled contract/regression test; benchmark tokens + methodology labels fixed;
+      scripts/check-encoding.sh added (UTF-8 round-trip + mojibake scan)
+- [ ] Iteration-2 reruns green (eval-0/1/2 with-skill vs new assertions; baselines regraded) ← YOU ARE HERE
+- [ ] Trigger eval recorded (Windows-safe harness; skill-creator run_eval.py is POSIX-only)
+- [ ] Codex follow-up review approves M1
+- [ ] GATE: M1 closed
 
 ## Phase 2 — M2 `new-feature`
 
@@ -118,7 +127,11 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
 
 ## Loop log
 
-- (none yet)
+- 2026-07-11 M1 iteration-2: session limit hit mid-rerun (eval-0/1 subagents terminated
+  early; fixtures reset and respawned after limit reset). Trigger harness v1
+  (skill-creator run_eval.py) produced silent zeros — select() on pipes is POSIX-only.
+  v2 (custom) hit RecursionError: tempfile.TemporaryDirectory cleanup recursing on
+  Windows file locks. v3 uses manual scratch dirs, best-effort cleanup at end.
 
 ## Handback
 

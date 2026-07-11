@@ -73,12 +73,16 @@ Work through Open questions in rounds. Per round:
 
 **If no human is available to answer** (you are running non-interactively or as
 a subroutine of another workflow): do not block and do not silently guess.
-Adopt the recommended default for low-stakes questions and record the decision
-as `(provisional — default adopted, revisit on review)`. For consequential
-questions — anything expensive to reverse, security-relevant, or
-scope-defining — leave the question open, set the checklist `status:
-awaiting-human`, and finish the spec around the gap so the human reviews a
-concrete document rather than a blank page.
+Classify each question with `references/decision-rubric.md` — the short
+version: security/privacy behavior, potential data loss, external contracts,
+migration-requiring choices, and cost-changing scope are **consequential**;
+naming, presentation, and trivially-reversible local defaults are
+**low-stakes**; when uncertain, treat it as consequential. Adopt the
+recommended default for low-stakes questions and record each decision as
+`(provisional — default adopted, revisit on review)`. Leave consequential
+questions open, set the checklist `status: awaiting-human`, and finish the
+spec around the gap so the human reviews a concrete document rather than a
+blank page.
 
 **Convergence bailout**: if after 3 rounds the requirements still will not
 converge — answers contradict earlier answers, or the scope keeps growing —
@@ -118,16 +122,26 @@ done. A spec marked ready with holes in it poisons every downstream workflow.
 
 1. Update the spec's frontmatter (`status`, `updated`, and `parent`/`related`
    links if this work was decomposed from or relates to other specs).
-2. Complete the checklist; set its `status` (`done` if ready; otherwise
-   `awaiting-human` with the Handback section filled).
-3. Commit only the `specs/NNN-slug/` files (docs-only commit, conventional
+2. Commit only the `specs/NNN-slug/` files (docs-only commit, conventional
    message like `docs(spec): 001-notes-export — spec ready`). Run the secrets
-   check from your rules on the staged diff first. If project rules restrict
-   committing to the current branch, ask instead of committing.
-4. Report back: where the artifacts live, the spec status, the open questions
-   that remain (if any), and the natural next step — usually `new-feature` for
-   a ready spec. If a caller workflow invoked you, return the spec path and
-   status; that is your contract.
+   check from your rules on the staged diff first. This commit is part of the
+   workflow's contract, not an optional courtesy — skip it only if project
+   rules restrict committing here (then ask, or hand back).
+3. Tick the persist step **only after the commit succeeded**: verify it
+   (`git log -1 --stat`) and record the commit hash as the tick's evidence.
+   If the commit is prohibited, fails, or you must stop first: leave the
+   persist step unchecked, set an honest status with the exact reason in
+   Handback, and say so in your report. "Will commit in this turn" is never
+   evidence — the checklist must be true at the moment it is read, because a
+   dropped session reads it cold.
+4. Set the checklist `status`: `done` only when every step (persist included)
+   is genuinely ticked and no consequential question is parked; otherwise
+   `awaiting-human` with the Handback filled.
+5. Report back: where the artifacts live, the spec status, every provisional
+   default adopted (so the human can skim-audit them), remaining open
+   questions, and the natural next step — usually `new-feature` for a ready
+   spec. If a caller workflow invoked you, return the spec path and status;
+   that is your contract.
 
 ## Bailout summary
 

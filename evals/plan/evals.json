@@ -12,7 +12,10 @@
         "Spec status is honest: not marked 'ready' while consequential questions remain unresolved",
         "Requirements are numbered and testable — trigger + observable outcome; no unquantified vague adjectives survive",
         "Unresolved questions carry concrete options with a recommended default; defaults adopted without the user are marked provisional",
-        "Checklist records steps with evidence on completed items and a status consistent with the spec's state"
+        "Checklist records steps with evidence on completed items and a status consistent with the spec's state",
+        "Universal-vs-exception coherence: no requirement making a universal claim (every/all/exactly/one per) contradicts an error-path requirement; malformed-note handling tells one story across all requirements touching it",
+        "Security-relevant defaults are not classed low-stakes: encryption/privacy decisions are parked awaiting-human per the rubric, or their classification is explicitly justified against it",
+        "Persistence truth: a docs-only commit containing only the specs/NNN-slug files exists and the persist tick cites its hash — or the persist step is unchecked with the exact reason in Handback; checklist state matches actual git state"
       ]
     },
     {
@@ -25,12 +28,14 @@
         "Creates a specs/NNN-slug/ work item containing both spec.md and checklist.md",
         "The accounts-vs-no-personal-data tension is explicitly surfaced as a contradiction/open question with realistic resolution options",
         "No requirement silently assumes one side of the contradiction",
-        "The consequential fork is left to the human: status awaiting-human/clarifying with a handback or open question recording the decision needed"
+        "The consequential fork is left to the human: status awaiting-human/clarifying with a handback or open question recording the decision needed",
+        "Persistence truth: a docs-only commit containing only the specs/NNN-slug files exists and the persist tick cites its hash — or the persist step is unchecked with the exact reason in Handback; checklist state matches actual git state"
       ]
     },
     {
       "id": 2,
       "name": "resume-from-checklist",
+      "purpose": "contract/regression test of the artifact format, not a skill-uplift discriminator: the seeded spec/checklist encodes most of the workflow, so a skill-less agent is expected to score well on the shared assertions. Skill value is measured by the discriminator assertions (status vocabulary, provisional marking, persistence truth). Report this case separately from uplift aggregates.",
       "prompt": "continue planning the tag search feature — pick up where we left off. same deal as before, I'm not around today, use sensible defaults where you can and I'll review tomorrow.",
       "expected_output": "Resumes specs/002-tag-search/ (no new NNN dir created); previously ticked checklist steps and recorded decisions preserved verbatim; work continues from first unchecked step; remaining open questions get provisional defaults or are parked awaiting-human.",
       "files": ["fixture: notes-app project pre-seeded with specs/002-tag-search/{spec.md,checklist.md} (2 decisions recorded, 3 steps ticked, 2 open questions)"],
@@ -38,7 +43,9 @@
         "No new spec directory is created — specs/ still contains only 002-tag-search",
         "Prior state preserved: previously ticked steps remain ticked and Q1/Q2 decision lines remain verbatim",
         "Work continues from the first unchecked step: Q3/Q4 resolved provisionally or parked; requirements extended beyond R1",
-        "A consistency pass is performed and recorded (or explicitly parked); status reflects the true end state"
+        "A consistency pass is performed and recorded (or explicitly parked); status reflects the true end state",
+        "Status vocabulary stays within the template enum (draft|clarifying|ready|in-progress|done|blocked|awaiting-human) in both spec and checklist",
+        "Persistence truth: a docs-only commit containing only the specs/NNN-slug files exists and the persist tick cites its hash — or the persist step is unchecked with the exact reason in Handback; checklist state matches actual git state"
       ]
     }
   ]
