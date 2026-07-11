@@ -61,17 +61,26 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       user content preserved through install+uninstall, rules file written/removed, import line stripped
 - [x] docs/ARCHITECTURE.md from plan §4 (adds vendoring rule: runtime scripts vendored per skill)
 - [x] CI stub (.github/workflows/ci.yml: format gate + shell syntax + installer round-trip)
-- [ ] GATE: human approves rules + templates ← YOU ARE HERE
+- [x] GATE: human approves rules + templates (2026-07-11: "Go ahead, start M1")
 
 ## Phase 2 — M1 `plan`
 
-- [ ] Skeleton (SKILL.md frontmatter passes skills-ref validate)
-- [ ] Body: clarify loop, spec emission, consistency pass, checklist, bailout
-- [ ] references/ split (progressive disclosure)
-- [ ] Trigger evals (positive + negative) per skill-creator conventions
-- [ ] Behavior eval: ambiguous brief → spec + checklist artifacts
-- [ ] Live validation run with human
-- [ ] GATE: human validates
+- [x] Skeleton (SKILL.md 144 lines, format gate passes; standard frontmatter only)
+- [x] Body: clarify loop, spec emission, consistency pass, checklist, bailout
+      (non-interactive rule: provisional defaults for low-stakes, awaiting-human for consequential)
+- [x] references/ split: question-patterns, spec-quality, consistency-pass;
+      vendored assets (spec/checklist templates) + scripts (next-spec-number)
+- [x] Trigger evals: 19 queries (8 positive, 11 near-miss negatives) in evals/plan/trigger-evals.json
+      (optimization loop deferred until skill body is validated)
+- [x] Behavior evals: 3 cases × with/without skill on sonnet subagents.
+      Result: with_skill 13/13 assertions (100%), baseline 5/13 (41.7%), delta +0.58.
+      Evidence: benchmark + graded runs in Temp/dwv/i1, static viewer plan-eval-review.html.
+      Cost: ~+30% tokens, ~2.1x wall time vs baseline.
+      Findings for iteration: (1) provisional defaults present but checklist still ends
+      'done' — consider forcing awaiting-human; (2) docs-only commit skipped in 1/3 runs —
+      firm up Step 5 wording
+- [ ] Live validation run with human ← YOU ARE HERE
+- [ ] GATE: human validates (decide findings 1+2, review viewer)
 
 ## Phase 2 — M2 `new-feature`
 

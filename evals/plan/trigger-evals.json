@@ -1,0 +1,20 @@
+[
+  {"query": "I want to add some kind of sharing thing to my recipe app, like users can send recipes to each other somehow? not sure exactly how it should work tbh. can we figure this out properly first", "should_trigger": true},
+  {"query": "build me an app for tracking my climbing gym sessions. i have opinions but honestly not sure what all it needs yet", "should_trigger": true},
+  {"query": "my boss wants 'reporting' added to our dashboard (internal sales tool, react + fastapi). that's literally all the ticket says. help me pin down what we're actually building", "should_trigger": true},
+  {"query": "we need to spec out the notifications feature before the sprint starts thursday — email? push? in-app? none of it is decided", "should_trigger": true},
+  {"query": "ok before you write any code: I want offline support in the mobile app but I haven't thought through sync conflicts or storage or any of it", "should_trigger": true},
+  {"query": "can you clarify the requirements for this? the client email just says 'make the checkout flow smarter' and links a figma with 2 frames", "should_trigger": true},
+  {"query": "i keep going back and forth on how auth should work in this project. sit down with me and nail down the requirements", "should_trigger": true},
+  {"query": "add csv import to the contacts page. no idea what columns people will throw at us or how dedup should work — needs a proper spec first", "should_trigger": true},
+  {"query": "rename the `getUser` function to `fetchUser` across the repo and update the imports", "should_trigger": false},
+  {"query": "make an implementation plan for adding a /healthz endpoint that returns 200 and the git sha — requirements are in specs/014-healthz/spec.md, it's fully specced", "should_trigger": false},
+  {"query": "plan my trip to japan in november, 10 days, tokyo and kyoto, mid budget", "should_trigger": false},
+  {"query": "help me plan out my study schedule for the aws cert exam in 6 weeks", "should_trigger": false},
+  {"query": "the login page throws a 500 when the password has a unicode char in it. fix it", "should_trigger": false},
+  {"query": "write a project plan document for stakeholders: timeline, milestones, resourcing for the Q3 migration", "should_trigger": false},
+  {"query": "add a --verbose flag to the CLI that prints the resolved config before running. exactly like the --debug flag but without stack traces", "should_trigger": false},
+  {"query": "review this PR and tell me if the error handling in src/upload.ts is sane", "should_trigger": false},
+  {"query": "what's the best way to plan database indexes for this query pattern? we do lots of range scans on created_at", "should_trigger": false},
+  {"query": "sketch out a rough architecture diagram for a url shortener, just for a blog post im writing", "should_trigger": false}
+]
