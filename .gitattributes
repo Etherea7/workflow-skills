@@ -1,0 +1,6 @@
+# Shell and Node scripts must stay LF — CRLF breaks bash execution on Windows (Git Bash).
+* text=auto
+*.sh text eol=lf
+*.mjs text eol=lf
+*.md text
+*.yml text
