@@ -65,8 +65,12 @@ Work through Open questions in rounds. Per round:
 2. For each, offer 2–4 concrete options with a recommended default and a
    one-line rationale. Never ask open-ended "what do you want?" questions when
    you can propose. See `references/question-patterns.md` for patterns and
-   worked examples per category (scope, users, data, edge cases, integration,
-   quality bar).
+   worked examples per category. Sweep **every** category when populating
+   Open questions — scope, users & permissions, data, edge cases & failure,
+   integration, quality bar, **security & privacy**, contradictions. The
+   security sweep is mandatory even when the request never mentions security:
+   any feature that moves user content (an export, a sync, a share) acquires
+   encryption/retention/exposure questions whether or not anyone asked.
 3. Record every answer in the spec's Decisions section (date, answer, who
    decided, rationale) and tick the corresponding checklist step. Answers are
    append-only.
@@ -79,7 +83,11 @@ migration-requiring choices, and cost-changing scope are **consequential**;
 naming, presentation, and trivially-reversible local defaults are
 **low-stakes**; when uncertain, treat it as consequential. Adopt the
 recommended default for low-stakes questions and record each decision as
-`(provisional — default adopted, revisit on review)`. Leave consequential
+`(provisional — default adopted, revisit on review)`, **naming the rubric
+class that makes it low-stakes** — a default whose classification you cannot
+justify in a clause is not low-stakes. Watch external contracts especially:
+an output format other tools will parse (an export archive, an API shape) is
+consequential even when one option looks obvious. Leave consequential
 questions open, set the checklist `status: awaiting-human`, and finish the
 spec around the gap so the human reviews a concrete document rather than a
 blank page.
