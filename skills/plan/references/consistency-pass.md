@@ -44,10 +44,17 @@ Work through all of them; they catch different failure modes.
    `spec-quality.md` (fast, simple, robust, secure, …). Each hit is either
    quantified, named to a standard, or explicitly parked as an open question.
 
-6. **Silent-assumption sweep** — for every remaining Open question, verify no
-   requirement already assumes an answer to it. A requirement that says
-   "the archive SHALL be a zip" while "archive format?" sits in Open questions
-   means the spec is lying to one audience or the other.
+6. **Silent-assumption sweep** — for every remaining Open question, verify
+   that nothing else in the document already assumes an answer to it: not a
+   requirement, not an acceptance criterion, not an implementation note, not
+   an example. A requirement that says "the archive SHALL be a zip" — or an
+   AC that tests a `.zip` filename, or a note prescribing one — while
+   "archive format?" sits in Open questions means the spec is lying to one
+   audience or the other. Parked means parked everywhere: express the
+   dependent text in terms of the open question (`the chosen archive format`,
+   `{{TIME_LIMIT}}`) or mark it `(assumes Qn)` explicitly. A leaked default in
+   an AC is the worst case, because ACs become tests and tests turn a parked
+   decision into a shipped one.
 
 7. **Non-goal integrity** — nothing in Goals/Requirements re-includes
    something Non-goals excludes.

@@ -70,7 +70,7 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       (non-interactive rule: provisional defaults for low-stakes, awaiting-human for consequential)
 - [x] references/ split: question-patterns, spec-quality, consistency-pass;
       vendored assets (spec/checklist templates) + scripts (next-spec-number)
-- [x] Trigger evals: 19 queries (8 positive, 11 near-miss negatives) in evals/plan/trigger-evals.json
+- [x] Trigger evals: 18 queries (8 positive, 10 near-miss negatives) in evals/plan/trigger-evals.json
       (optimization loop deferred until skill body is validated)
 - [x] Behavior evals: 3 cases × with/without skill on sonnet subagents.
       Result: with_skill 13/13 assertions (100%), baseline 5/13 (41.7%), delta +0.58.
@@ -86,7 +86,8 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       assertions extended (coherence, security-defaults, git-state persistence truth);
       eval-2 relabeled contract/regression test; benchmark tokens + methodology labels fixed;
       scripts/check-encoding.sh added (UTF-8 round-trip + mojibake scan)
-- [x] Iteration-2 reruns green: with_skill 19/19 (100%) vs baseline 5/19 (28.9%), delta +0.71.
+- [x] Iteration-2 reruns: with_skill 19/19 assertions vs baseline 5/19 (26.3% overall;
+      28.9% was the unweighted mean of case rates — superseded by iteration-3 reporting).
       eval-0 haiku run's consistency pass CAUGHT the R1-vs-R5 contradiction live and recorded
       the fix; rubric parked archive format + perf target (eval-0) and all 5 forks (eval-1);
       every persist tick cites a verified commit hash. with_skill on haiku (70.7k tok mean)
@@ -97,7 +98,25 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       skill-creator run_eval.py is POSIX-only). No description changes needed
 - [x] Gap closes from pass-with-notes: security/privacy category added to question-patterns;
       spec template enum harmonized (awaiting-human)
-- [ ] Codex follow-up review approves M1 ← YOU ARE HERE
+- [x] Codex follow-up review round 2 (2026-07-12): CHANGES REQUIRED — 4 findings:
+      (1) eval-0 leaked parked decisions into ACs + vacuous security pass;
+      (2) eval-1 persistence assertion mis-scored (reason inline, not Handback);
+      (3) benchmark math/labels (26.3% not 28.9%; contract test inside uplift; placeholder
+      model fields; 18 not 19 queries); (4) trigger harness could destroy a real installed
+      skill. Full text: Temp/dwv/codex-m1-followup.txt
+- [x] Iteration 3 (2026-07-12): consistency-pass check 6 extended to ACs/impl-notes/examples
+      ("parked means parked everywhere"); Step 5 requires persist reason in Handback + a
+      follow-up commit of the evidence tick; trigger harness backup/restore semantics
+      (refuses on leftover backup); eval-0 + eval-1 rerun on haiku against final skill:
+      13/13 uplift assertions vs baseline 1/13 (7.7% overall, 10.0% mean-of-case-rates);
+      eval-0 raised AND parked encryption (real pass); eval-1 double-commit persist
+      (617571b + 44f84cf). Benchmark rebuilt: real model fields, uplift excludes eval-2
+      contract test (reported separately: 6/6 vs 4/6). Haiku with-skill cheaper+faster than
+      sonnet baselines (53.7k/143s vs 69.9k/159.5s). Viewer: plan-eval-review-i3.html,
+      encoding gate clean. Honest residuals in grading evidence: Q3 working text without
+      per-line assumes-tags; eval-1 LWW classed low-stakes (contestable); eval-0 evidence
+      tick uncommitted (Step 5 now mandates follow-up commit)
+- [ ] Codex round-3 review approves M1 ← YOU ARE HERE
 - [ ] GATE: M1 closed
 
 ## Phase 2 — M2 `new-feature`

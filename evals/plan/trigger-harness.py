@@ -33,7 +33,19 @@ def real_description() -> str:
             desc = desc.split(stop, 1)[0]
     return " ".join(desc.split())
 
+BACKUP_DIR = STUB_DIR.with_name("plan.trigger-eval-backup")
+
 def install_stub():
+    # Never destroy a real installed skill: if ~/.claude/skills/plan exists,
+    # move it aside for the duration of the eval and restore it afterwards.
+    if BACKUP_DIR.exists():
+        raise SystemExit(
+            f"refusing to run: leftover backup at {BACKUP_DIR} — a previous run "
+            "did not restore cleanly; reconcile it manually first"
+        )
+    if STUB_DIR.exists():
+        STUB_DIR.rename(BACKUP_DIR)
+        print(f"existing skill moved aside -> {BACKUP_DIR}", file=sys.stderr)
     STUB_DIR.mkdir(parents=True, exist_ok=True)
     (STUB_DIR / "SKILL.md").write_text(
         "---\n"
@@ -101,6 +113,9 @@ def main():
                       file=sys.stderr, flush=True)
     finally:
         shutil.rmtree(STUB_DIR, ignore_errors=True)
+        if BACKUP_DIR.exists():
+            BACKUP_DIR.rename(STUB_DIR)
+            print(f"restored original skill from {BACKUP_DIR}", file=sys.stderr)
         shutil.rmtree(SCRATCH, ignore_errors=True)
 
     rows = []

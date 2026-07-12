@@ -129,9 +129,14 @@ done. A spec marked ready with holes in it poisons every downstream workflow.
    rules restrict committing here (then ask, or hand back).
 3. Tick the persist step **only after the commit succeeded**: verify it
    (`git log -1 --stat`) and record the commit hash as the tick's evidence.
+   Then commit that checklist update too (a small follow-up docs commit), so
+   the working tree ends clean and the *committed* checklist is the truthful
+   one — a dropped session may read git, not your working tree.
    If the commit is prohibited, fails, or you must stop first: leave the
-   persist step unchecked, set an honest status with the exact reason in
-   Handback, and say so in your report. "Will commit in this turn" is never
+   persist step unchecked, set an honest status, and write the exact reason
+   into the checklist's **Handback section** — not only inline at the step.
+   Handback is the one place a cold reader checks; a reason that lives
+   anywhere else may never be found. Say so in your report as well. "Will commit in this turn" is never
    evidence — the checklist must be true at the moment it is read, because a
    dropped session reads it cold.
 4. Set the checklist `status`: `done` only when every step (persist included)
