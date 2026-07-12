@@ -131,10 +131,17 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       Uplift 13/13 vs baseline 1/13 (7.7%); benchmark from final artifacts with per-run
       model labels; viewer plan-eval-review-i4.html, gates clean.
       Model-sensitivity finding recorded in Loop log → feeds rules-file model routing.
-- [ ] Codex round-4 review approves M1 ← YOU ARE HERE
-- [ ] GATE: M1 closed
+- [x] Codex round-4 review (2026-07-12): items 1-3 + model-sensitivity finding accepted;
+      two gate-blockers — false 'cheaper AND faster' cost note (final haiku run is cheaper
+      but slower) and a harness edge (rename failure could still let cleanup delete the
+      un-backed-up live skill). Fixed: cost note corrected against raw data; harness tracks
+      had_original/moved_original — deletes STUB_DIR only when provably not the original,
+      warns on restore failure (4-state decision table tested). Commit 8689338
+- [x] Codex round-5 review (2026-07-12): both items verified resolved — **APPROVE M1**
+      (full text: Temp/dwv/codex-m1-round5.txt)
+- [x] GATE: M1 CLOSED (5 review rounds, 4 eval iterations, final uplift 13/13 vs 1/13)
 
-## Phase 2 — M2 `new-feature`
+## Phase 2 — M2 `new-feature` ← YOU ARE HERE (next)
 
 - [ ] Skeleton → body (context gathering via explorer contract, worktree, TDD loop,
       implementer delegation, N=3 bailout, secrets check, gated merge)
