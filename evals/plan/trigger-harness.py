@@ -36,12 +36,9 @@ def real_description() -> str:
 BACKUP_DIR = STUB_DIR.with_name("plan.trigger-eval-backup")
 
 def install_stub():
-    # Never destroy a real installed skill: if ~/.claude/skills/plan exists,
-    # move it aside for the duration of the eval; main() restores it in a
-    # finally block that also covers failures inside this function.
-    if STUB_DIR.exists():
-        STUB_DIR.rename(BACKUP_DIR)
-        print(f"existing skill moved aside -> {BACKUP_DIR}", file=sys.stderr)
+    # Writes the stub only. Moving any real installed skill aside (and
+    # restoring it) is handled by main(), which tracks whether the move
+    # actually happened so cleanup can never delete an un-backed-up original.
     STUB_DIR.mkdir(parents=True, exist_ok=True)
     (STUB_DIR / "SKILL.md").write_text(
         "---\n"
@@ -91,8 +88,14 @@ def main():
             f"refusing to run: leftover backup at {BACKUP_DIR} — a previous run "
             "did not restore cleanly; reconcile it manually first"
         )
+    had_original = STUB_DIR.exists()
+    moved_original = False
     try:
         # inside the try so a failure mid-install still restores the original
+        if had_original:
+            STUB_DIR.rename(BACKUP_DIR)
+            moved_original = True
+            print(f"existing skill moved aside -> {BACKUP_DIR}", file=sys.stderr)
         install_stub()
         jobs = [(e["query"], e["should_trigger"], jid)
                 for jid, (e, _) in enumerate((e, i) for e in evals for i in range(RUNS))]
@@ -116,10 +119,19 @@ def main():
                 print(f"[{done}/{len(jobs)}] {'HIT ' if hit else 'miss'} exp={exp} {q[:60]}",
                       file=sys.stderr, flush=True)
     finally:
-        shutil.rmtree(STUB_DIR, ignore_errors=True)
-        if BACKUP_DIR.exists():
-            BACKUP_DIR.rename(STUB_DIR)
-            print(f"restored original skill from {BACKUP_DIR}", file=sys.stderr)
+        # Delete STUB_DIR only when its contents provably are NOT the
+        # untouched original: either no original existed, or it was moved to
+        # the backup. If the rename failed, STUB_DIR still holds the live
+        # skill and must not be touched.
+        if (not had_original) or moved_original:
+            shutil.rmtree(STUB_DIR, ignore_errors=True)
+        if moved_original and BACKUP_DIR.exists():
+            try:
+                BACKUP_DIR.rename(STUB_DIR)
+                print(f"restored original skill from {BACKUP_DIR}", file=sys.stderr)
+            except OSError as err:
+                print(f"WARNING: could not restore original skill from "
+                      f"{BACKUP_DIR}: {err} — restore it manually", file=sys.stderr)
         shutil.rmtree(SCRATCH, ignore_errors=True)
 
     rows = []
