@@ -1,7 +1,7 @@
 ---
 id: {{NNN-slug}}
 title: {{short title}}
-status: draft         # draft | clarifying | ready | in-progress | done | superseded
+status: draft         # draft | clarifying | awaiting-human | ready | in-progress | done | superseded
 created: {{YYYY-MM-DD}}
 updated: {{YYYY-MM-DD}}
 parent: {{null | NNN-slug}}

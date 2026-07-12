@@ -86,9 +86,18 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       assertions extended (coherence, security-defaults, git-state persistence truth);
       eval-2 relabeled contract/regression test; benchmark tokens + methodology labels fixed;
       scripts/check-encoding.sh added (UTF-8 round-trip + mojibake scan)
-- [ ] Iteration-2 reruns green (eval-0/1/2 with-skill vs new assertions; baselines regraded) ← YOU ARE HERE
-- [ ] Trigger eval recorded (Windows-safe harness; skill-creator run_eval.py is POSIX-only)
-- [ ] Codex follow-up review approves M1
+- [x] Iteration-2 reruns green: with_skill 19/19 (100%) vs baseline 5/19 (28.9%), delta +0.71.
+      eval-0 haiku run's consistency pass CAUGHT the R1-vs-R5 contradiction live and recorded
+      the fix; rubric parked archive format + perf target (eval-0) and all 5 forks (eval-1);
+      every persist tick cites a verified commit hash. with_skill on haiku (70.7k tok mean)
+      now cheaper than sonnet baselines (72.2k). Methodology + tokens fixed in benchmark.json.
+      Viewer: Temp/dwv/plan-eval-review-i2.html (UTF-8 clean per scripts/check-encoding.sh)
+- [x] Trigger eval recorded: 7/8 recall, 0/10 false positives, 94.4% accuracy
+      (evals/plan/trigger-results.{json,md}; Windows-safe evals/plan/trigger-harness.py —
+      skill-creator run_eval.py is POSIX-only). No description changes needed
+- [x] Gap closes from pass-with-notes: security/privacy category added to question-patterns;
+      spec template enum harmonized (awaiting-human)
+- [ ] Codex follow-up review approves M1 ← YOU ARE HERE
 - [ ] GATE: M1 closed
 
 ## Phase 2 — M2 `new-feature`

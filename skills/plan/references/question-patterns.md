@@ -47,6 +47,13 @@ unknowns in 3+ of them:
   not change (API contracts, schemas)?
 - **Quality bar** — performance numbers, accessibility, browser/platform
   support; force vague adjectives into numbers here.
+- **Security & privacy** — encryption at rest/in transit, credential handling,
+  what gets logged or retained, exposure of user content to new surfaces
+  (an export file, a sync server, a share link). Sweep this category even when
+  the request never mentions security: features that move user data around
+  acquire security questions whether or not anyone asked them. Per the
+  decision rubric these are consequential — raise them so they get parked
+  deliberately, not skipped silently.
 - **Contradictions** — when two stated wants can't both hold ("user accounts"
   + "store no user data"), surface the tension as its own question with the
   realistic resolution options. Never quietly pick a side; a papered-over
