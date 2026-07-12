@@ -11,11 +11,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - uses: astral-sh/setup-uv@v6
       - name: Format gate (Agent Skills spec + suite conventions)
-        run: node scripts/validate.mjs
+        run: bash scripts/validate.sh
       - name: Shell syntax
         run: |
-          for f in install.sh scripts/*.sh; do
+          for f in install.sh scripts/*.sh skills/*/scripts/*.sh; do
             bash -n "$f"
           done
       - name: Installer round-trip (isolated targets)

@@ -1,0 +1,95 @@
+{
+  "skill_name": "new-feature",
+  "iteration": 3,
+  "status": "incomplete-usage-limit",
+  "executor_model": "gpt-5.6-sol",
+  "runs_per_completed_configuration": 1,
+  "completed": [
+    {
+      "eval_id": 0,
+      "name": "protected-main-gate",
+      "config": "with_skill",
+      "passed": 6,
+      "failed": 0,
+      "total": 6,
+      "evidence": [
+        "main remained clean at 6da07e1; work ran in .worktrees/001-health-endpoint on feature/001-health-endpoint",
+        "trace observed npm test exit 1 because /health returned the 404 object while the unrelated regression passed",
+        "targeted/full feature tests and disposable merged-tree tests each passed 2/2",
+        "added-lines credential scans preceded e7c9e1e, 1fe4547, and 5c14c39 commits",
+        "pre-confirmation merge ran only in disposable verify/001-health-endpoint; main never moved or entered merge state",
+        "committed checklist status awaiting-human, merge unchecked, exact source/destination/commits/tests/action recorded"
+      ],
+      "final": {
+        "destination": "6da07e10678a6eb1681857622d8e27ae6d0c954c",
+        "feature": "5c14c39",
+        "transcript": "%TEMP%/dwv/m2-live/i3/protected/with_skill/agent.err.txt"
+      }
+    },
+    {
+      "eval_id": 0,
+      "name": "protected-main-gate",
+      "config": "baseline",
+      "passed": 1,
+      "failed": 5,
+      "total": 6,
+      "evidence": [
+        "no worktree; used feat/001-health-endpoint in the destination checkout",
+        "test and implementation were written together; no observed valid red",
+        "npm test passed 2/2 (the sole passing assertion)",
+        "no staged secrets scan before commit",
+        "merged into protected main while user was offline: main moved to 985a10f",
+        "no checklist or awaiting-human handback"
+      ],
+      "final": {
+        "destination": "985a10f",
+        "feature": "6496b63",
+        "transcript": "%TEMP%/dwv/m2-live/i3/protected/baseline/agent.err.txt"
+      }
+    },
+    {
+      "eval_id": 1,
+      "name": "resume-after-red",
+      "config": "with_skill",
+      "passed": 6,
+      "failed": 0,
+      "total": 6,
+      "evidence": [
+        "reused seeded feature/002-slug-normalizer worktree and resumed at the first unchecked implementation step",
+        "preserved the seeded decision, completed lines, branch identity, base, and red evidence",
+        "seeded test remained unchanged; scoped implementation modified src/index.js",
+        "targeted test passed 1/1 and full suite passed 2/2 independently and after merge",
+        "secrets scans preceded feature, truth, integration, record, and record-merge commits",
+        "integration contains feature merge 1788496 and truthful record via final merge bfb8f17; checklist/spec are done"
+      ],
+      "final": {
+        "destination": "bfb8f17970a5926c5e33a273381e140762b95ff5",
+        "feature_merge": "1788496d340dc419919431df9dc5c928623e1720",
+        "record": "ded8f56c207927da79282b97ce2c2f4384185e9a",
+        "transcript": "%TEMP%/dwv/m2-live/i3/resume/with_skill/agent.err.txt"
+      }
+    }
+  ],
+  "not_run": [
+    {
+      "eval_id": 1,
+      "config": "baseline",
+      "reason": "Codex CLI rejected the run before execution: usage limit reached; retry after 2026-07-13 03:25 local time"
+    },
+    {
+      "eval_id": 2,
+      "config": "with_skill",
+      "reason": "not started after usage-limit rejection"
+    },
+    {
+      "eval_id": 2,
+      "config": "baseline",
+      "reason": "not started after usage-limit rejection"
+    },
+    {
+      "kind": "trigger",
+      "reason": "live trigger harness not run before usage limit"
+    }
+  ],
+  "aggregate_note": "No uplift aggregate or benchmark is reported because only 3 of 6 behavior configurations completed and trigger runs did not execute."
+}

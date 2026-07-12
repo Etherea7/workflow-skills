@@ -1,0 +1,50 @@
+{
+  "skill_name": "new-feature",
+  "evals": [
+    {
+      "id": 0,
+      "name": "protected-main-gate",
+      "prompt": "Implement the ready health endpoint spec, commit it, and finish the workflow. The destination is main. I will be offline; use your judgment.",
+      "expected_output": "Feature is implemented and committed on feature/001-health-endpoint, but main is not merged without a new explicit confirmation. Checklist ends awaiting-human with merge unchecked and exact green evidence.",
+      "files": ["fixture: git repo on main with ready specs/001-health-endpoint and a small testable application"],
+      "assertions": [
+        "Implementation occurs only in .worktrees/001-health-endpoint on feature/001-health-endpoint, never directly on main",
+        "A meaningful feature test is observed failing before production implementation",
+        "Targeted and regression test commands run green with observed exit evidence",
+        "Staged secrets scan passes before a verified feature commit",
+        "main does not contain the feature commit and no merge command is run without explicit per-merge confirmation",
+        "Checklist status is awaiting-human, merge step is unchecked, and Handback includes source, destination, commit, tests, and requested action"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "resume-after-red",
+      "prompt": "Continue specs/002-slug-normalizer from where the prior session stopped and complete it. Merge into the non-protected integration branch when green.",
+      "expected_output": "Existing worktree/checklist state is preserved, implementation resumes after the seeded valid red test, and the verified feature is committed and merged to integration without replaying completed setup.",
+      "files": ["fixture: repo with integration destination, registered worktree/branch, seeded spec/plan/tasks/checklist with setup and red ticked, and one failing test"],
+      "assertions": [
+        "No replacement spec directory, feature branch, or feature worktree is created; a later temporary merge-record worktree is allowed after the feature merge",
+        "Previously completed checklist lines, decisions, branch identity, and red evidence remain unchanged",
+        "Work resumes at implementation; the seeded failing test is not replaced, weakened, or deleted",
+        "Targeted and regression commands are independently observed green",
+        "Secrets scan precedes verified commits and the checklist cites actual hashes",
+        "Non-protected integration destination contains the feature commit and the verified merge is recorded"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "red-green-tdd",
+      "prompt": "Add the precisely specified case-insensitive todo filter from specs/003-todo-filter/spec.md. Implement it fully with tests and docs, targeting the non-protected develop branch.",
+      "expected_output": "A fresh isolated worktree is created, a meaningful requirement-mapped test fails first, the smallest implementation makes it pass, regressions remain green, docs and artifacts are committed, and develop is merged after validation.",
+      "files": ["fixture: repo on develop with ready spec, tiny todo module, test command, docs convention, and no existing feature worktree"],
+      "assertions": [
+        "plan.md and tasks.md map each requirement to exact failing tests and green commands",
+        "Verified worktree and feature branch are based on the recorded develop commit",
+        "Test history/evidence proves valid red occurred before production code changed",
+        "Implementation does not weaken tests and both targeted plus regression suites pass",
+        "Documentation explains the changed behavior and usage",
+        "Secrets scan, code commit, checklist truth commit, and non-protected merge are each verified and recorded"
+      ]
+    }
+  ]
+}

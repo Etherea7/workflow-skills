@@ -1,7 +1,7 @@
 ---
 work: suite-build
 workflow: meta (this repo builds itself spec-driven)
-status: awaiting-human
+status: in-progress
 updated: 2026-07-11
 links: { plan: IMPLEMENTATION-PLAN.md, constitution: PROJECT-CONSTITUTION.md }
 ---
@@ -141,11 +141,20 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       (full text: Temp/dwv/codex-m1-round5.txt)
 - [x] GATE: M1 CLOSED (5 review rounds, 4 eval iterations, final uplift 13/13 vs 1/13)
 
-## Phase 2 — M2 `new-feature` ← YOU ARE HERE (next)
+## Phase 2 — M2 `new-feature` ← YOU ARE HERE
 
-- [ ] Skeleton → body (context gathering via explorer contract, worktree, TDD loop,
+- [x] Skeleton → body (context gathering via explorer contract, worktree, TDD loop,
       implementer delegation, N=3 bailout, secrets check, gated merge)
+      (evidence: `skills/new-feature/`; `node scripts/validate.mjs` PASS;
+      official `uvx --from skills-ref agentskills validate skills/new-feature`
+      → Valid skill; `node evals/new-feature/contract-test.mjs` → 21/21;
+      model routing encoded in `rules/AGENTS.md`; vendored scripts byte-identical)
 - [ ] Evals: triggers; refuses protected-branch merge without confirmation; resumes from checklist
+      (partial evidence 2026-07-12: `evals/new-feature/live-results-i3.{json,md}`;
+      protected with-skill 6/6 vs baseline 1/6; resume with-skill 6/6. Resume
+      baseline was rejected before execution by Codex CLI usage limit; fresh
+      red→green and live triggers not run. Retry after 2026-07-13 03:25 local;
+      do not aggregate or close this item until all missing configurations run.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M3 `debug`

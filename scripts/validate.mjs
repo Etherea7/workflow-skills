@@ -4,7 +4,7 @@
 // Exit 0 = pass, 1 = violations found.
 
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -68,6 +68,19 @@ if (!existsSync(skillsDir)) {
     const lines = text.split(/\r?\n/).length;
     if (lines > 500)
       errors.push(`${where}: SKILL.md is ${lines} lines (limit 500 — move depth to references/)`);
+
+    // Installed skills are self-contained. Vendored helpers with canonical
+    // repo-level counterparts must remain byte-identical so fixes cannot drift.
+    const vendoredScripts = join(skillsDir, dir, "scripts");
+    if (existsSync(vendoredScripts)) {
+      for (const script of readdirSync(vendoredScripts)) {
+        const vendored = join(vendoredScripts, script);
+        if (!statSync(vendored).isFile()) continue;
+        const canonical = join(root, "scripts", basename(script));
+        if (existsSync(canonical) && readFileSync(vendored, "utf8") !== readFileSync(canonical, "utf8"))
+          errors.push(`${where}: scripts/${script} drifted from canonical scripts/${script}`);
+      }
+    }
   }
 }
 

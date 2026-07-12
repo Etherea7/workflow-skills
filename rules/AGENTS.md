@@ -68,8 +68,10 @@ re-derive what a subagent already established.
 
 - explorer → `Task`/`Agent` tool with the built-in `Explore` agent type.
 - implementer → `Task`/`Agent` tool with the `general-purpose` agent type.
-- Model routing follows your agent-type configuration; prefer a cheaper/faster
-  model class for both roles when configurable.
+- Run workflow orchestration on a Sonnet-class or stronger model. Route both
+  standard delegated roles to Haiku-class or another cheaper/faster model when
+  configurable. If an implementer repeatedly misses its explicit contract,
+  return judgment to the orchestrator rather than silently upgrading or looping.
 
 ### Host mechanics — Codex
 
@@ -79,6 +81,9 @@ re-derive what a subagent already established.
   as the return.
 - If neither is possible, perform the delegation yourself inline — but keep the
   brief/return discipline so the work stays scoped and auditable.
+- Run workflow orchestration on the strongest configured reasoning model. Route
+  explorer and implementer work to a cheaper/faster model when configurable;
+  model IDs belong in host configuration, never in skill prompts or artifacts.
 
 ## Artifact conventions
 

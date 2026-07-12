@@ -1,0 +1,14 @@
+[
+  {"query":"Implement specs/014-bulk-tagging/spec.md end to end. Use the existing test suite and get it ready to merge.","should_trigger":true},
+  {"query":"Add a --json flag to the CLI exactly as described in this ticket, including tests and docs.","should_trigger":true},
+  {"query":"Continue the calendar export feature from specs/008-calendar-export/checklist.md; the last session stopped after the failing test.","should_trigger":true},
+  {"query":"Build the ready user-profile feature on an isolated branch and don't merge main without asking me.","should_trigger":true},
+  {"query":"Please implement this accepted API pagination spec with tests first.","should_trigger":true},
+  {"query":"I want some kind of sharing feature but I have no idea who can see what or how links expire.","should_trigger":false},
+  {"query":"The upload endpoint returns 500 for empty files. Find the bug and fix it.","should_trigger":false},
+  {"query":"Review PR #42 and tell me whether the tests cover the edge cases.","should_trigger":false},
+  {"query":"Rename getUser to fetchUser and update imports; don't create branches or run the full workflow.","should_trigger":false},
+  {"query":"What should we build next in this repository? Give me a prioritized roadmap.","should_trigger":false},
+  {"query":"Set up a new React and FastAPI project from scratch.","should_trigger":false},
+  {"query":"Write a product requirements document for offline sync; conflict behavior is undecided.","should_trigger":false}
+]
