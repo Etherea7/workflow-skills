@@ -16,7 +16,10 @@ Park the question, set `awaiting-human`, finish the spec around the gap.
   does not make "should exports be encrypted?" low-stakes; it makes it a
   decision the owner must own.
 - **Destructive or data-loss behavior**: deletion semantics, overwrite rules,
-  failure handling that can drop user content.
+  failure handling that can drop user content. This includes **conflict
+  resolution in any sync/merge context** — last-write-wins silently discards
+  one side's edits, which makes it a data-loss decision no matter how common a
+  default it is elsewhere.
 - **Public or external contracts**: exported APIs, file formats other tools
   will parse, CLI flags, wire protocols — anything with outside consumers.
 - **Schema or storage choices** that require a migration to change.
@@ -41,6 +44,7 @@ Adopt the recommended option, record the decision as
 | Zip vs tar for the archive? | Consequential if others parse it, low-stakes if explicitly internal-only | external contract test |
 | Sort exported files by date or title? | Low-stakes | one-line change, no consumer |
 | Exclude or include malformed notes? | Consequential | silent data loss on one side of the choice |
+| Conflict resolution for sync (last-write-wins vs conflict copies)? | Consequential | LWW silently discards one side's edits — data loss |
 | Error message wording | Low-stakes | edit |
 
 ## Status implications

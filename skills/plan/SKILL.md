@@ -106,6 +106,13 @@ Non-goals — the cheapest way to prevent drift later. Then write Acceptance
 criteria as given/when/then, each mapped to the requirement(s) it verifies.
 `references/spec-quality.md` has good/bad requirement pairs to calibrate against.
 
+**When a parked question forces working text**: sometimes you cannot write a
+requirement around a parked consequential question (error handling needs *some*
+stated behavior). In that case every dependent line — requirement, acceptance
+criterion, decision, example — must carry an inline `(assumes Qn)` tag. No
+exceptions: the consistency pass fails any untagged dependency, and an AC that
+silently tests a parked choice turns that choice into a shipped one.
+
 ## Step 4 — Consistency pass (the gate)
 
 Before the spec may claim `status: ready`, run the analyze pass in

@@ -37,12 +37,8 @@ BACKUP_DIR = STUB_DIR.with_name("plan.trigger-eval-backup")
 
 def install_stub():
     # Never destroy a real installed skill: if ~/.claude/skills/plan exists,
-    # move it aside for the duration of the eval and restore it afterwards.
-    if BACKUP_DIR.exists():
-        raise SystemExit(
-            f"refusing to run: leftover backup at {BACKUP_DIR} — a previous run "
-            "did not restore cleanly; reconcile it manually first"
-        )
+    # move it aside for the duration of the eval; main() restores it in a
+    # finally block that also covers failures inside this function.
     if STUB_DIR.exists():
         STUB_DIR.rename(BACKUP_DIR)
         print(f"existing skill moved aside -> {BACKUP_DIR}", file=sys.stderr)
@@ -88,8 +84,16 @@ def one_run(query: str, job_id: int) -> bool:
 def main():
     evals = json.loads(EVAL_SET.read_text(encoding="utf-8"))
     SCRATCH.mkdir(parents=True, exist_ok=True)
-    install_stub()
+    # Refuse OUTSIDE the try: if a leftover backup exists, the finally below
+    # would otherwise delete the live skill and restore a stale copy over it.
+    if BACKUP_DIR.exists():
+        raise SystemExit(
+            f"refusing to run: leftover backup at {BACKUP_DIR} — a previous run "
+            "did not restore cleanly; reconcile it manually first"
+        )
     try:
+        # inside the try so a failure mid-install still restores the original
+        install_stub()
         jobs = [(e["query"], e["should_trigger"], jid)
                 for jid, (e, _) in enumerate((e, i) for e in evals for i in range(RUNS))]
         results = {}
