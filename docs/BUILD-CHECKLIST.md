@@ -116,7 +116,22 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       encoding gate clean. Honest residuals in grading evidence: Q3 working text without
       per-line assumes-tags; eval-1 LWW classed low-stakes (contestable); eval-0 evidence
       tick uncommitted (Step 5 now mandates follow-up commit)
-- [ ] Codex round-3 review approves M1 ← YOU ARE HERE
+- [x] Codex round-3 review (2026-07-12): CHANGES REQUIRED — untagged Q3 dependencies in
+      eval-0, LWW-as-low-stakes in eval-1 gate-blocking, eval-0 follow-up commit missing,
+      harness install outside try/finally. Full text: Temp/dwv/codex-m1-round3.txt
+- [x] Iteration 4 (2026-07-12): Step 3 mandates inline (assumes Qn) tags on all
+      parked-question working text; rubric names sync conflict resolution as data-loss
+      consequential (LWW worked example); Step 2 mandates full category sweep incl.
+      security/privacy in the body + rubric-class citations on every adopted default;
+      harness stub-install moved inside restore-protected try/finally.
+      Final runs, strictly graded: eval-0 on SONNET 8/8 (R2/R4/R9 express dependencies in
+      terms of parked Qs with tags; encryption+format+malformed all parked; double commit
+      d8be7f0+9eb6d14, clean tree); eval-1 on haiku 5/5 (LWW parked consequential with
+      explicit data-loss note; 14 assumes-tags; double commit 5574fe3+326f8b0).
+      Uplift 13/13 vs baseline 1/13 (7.7%); benchmark from final artifacts with per-run
+      model labels; viewer plan-eval-review-i4.html, gates clean.
+      Model-sensitivity finding recorded in Loop log → feeds rules-file model routing.
+- [ ] Codex round-4 review approves M1 ← YOU ARE HERE
 - [ ] GATE: M1 closed
 
 ## Phase 2 — M2 `new-feature`
@@ -160,6 +175,16 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
   (skill-creator run_eval.py) produced silent zeros — select() on pipes is POSIX-only.
   v2 (custom) hit RecursionError: tempfile.TemporaryDirectory cleanup recursing on
   Windows file locks. v3 uses manual scratch dirs, best-effort cleanup at end.
+- 2026-07-12 M1 iteration-4, MODEL-SENSITIVITY FINDING: three haiku eval-0 attempts each
+  failed a different fine-grained compliance point under strict grading — i3: security
+  sweep fired but Q3 working text untagged + evidence tick uncommitted; i4-attempt1: no
+  security sweep at all; i4-attempt2 (after sweep mandated in SKILL.md body): sweep fired,
+  double-commit correct, but R1 universal unscoped vs R4 error path, untagged Q3
+  dependency, misnumbered assumes-refs. eval-1 on haiku passed strictly both times.
+  Conclusion for rules-file model routing (§4.5): plan-workflow EXECUTION is
+  judgment-heavy — route to mid-tier+ (sonnet-class); haiku remains fine for explorer/
+  implementer delegations. eval-0 final run moved to sonnet, honestly labeled in the
+  benchmark. Attempts archived in dwv/i4/eval-0-export/attempt{1,2}-* for audit.
 
 ## Handback
 
