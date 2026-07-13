@@ -7,11 +7,14 @@ open review questions, and the next milestone's in-progress state.
 
 ## Current handoff
 
-- Branch: `codex/m3-debug` in `.worktrees/m3-debug` (provisional M3 isolation)
-- Last pre-session commit: `64985d2` (`new-feature` M2 implementation plus
-  partial evals)
-- Active gates: M2 `new-feature` trigger evaluation remains pending; M3 `debug`
-  is proceeding provisionally by explicit human authorization
+- Branch: `codex/m4-next-step-improve` in `.worktrees/m4-next-step-improve`
+  (provisional M4 isolation based on approved M3 checkpoint)
+- M4 base commit: `2502657` (approved M3 behavior/evidence checkpoint)
+- Active gates: M2 `new-feature` trigger plus scanner-sensitive behavior reruns
+  remain pending; M3 `debug` has historical behavior approval but its
+  scanner-sensitive reruns, triggers, and human gate remain open;
+  M4 skill/contract review is approved and live evidence is complete, but its
+  independent evidence review, triggers, and human gate remain open
 - Review discipline: findings change the skill and trigger clean reruns; an
   agent must not merely reinterpret or raise an existing grade.
 
@@ -41,6 +44,28 @@ were clean-rerun: with skill 6/6, baseline 5/6. The arithmetic did not change,
 but it now rests on an honest historical chain.
 
 ### Trigger measurement
+
+After the documented 15:00 reset, the user requested Claude Code with Fable to
+review/edit and complete this gate before handing back to Codex. The first
+Fable session used `acceptEdits` and correctly reported that every execution
+route was permission-denied; it changed nothing. A permission-enabled retry
+began deterministic work but terminated without a valid handback after five
+scratch jobs, leaving the reversible trigger stub, scratch directory, and an
+uncommitted CRLF-normalization edit. Codex treated that attempt as invalid,
+verified no original installed skill/backup existed, removed only the unique
+harness stub and bounded scratch, and rejected the edit because the unchanged
+contract test already passed 23/23 on `main`.
+
+Codex then ran the unchanged fixed harness directly. It completed 14/36
+attempts before a zero-token session-limit exception. The harness wrote no
+`trigger-results.json`; partial hits/misses were not graded. The installed stub,
+backup, scratch, and Python cache were verified absent after cleanup. M2 remains
+open for one complete unchanged calibration+holdout run.
+
+The later M4 review reproduced a fail-open path in the shared scanner. Canonical
+and M2/M3/M4 copies are repaired and the M2 deterministic contract reran 23/23,
+but M2's scan-sensitive live behavior configurations require clean reruns. The
+old 18/18 versus 8/18 results remain historical evidence and are not regraded.
 
 The first provisional harness invocation targeted Codex discovery. It was
 stopped before completion because M1's established gate measures native Claude
@@ -170,6 +195,8 @@ Completed:
 Still pending:
 
 - trigger calibration/holdout through the shared harness after M2 approves it
+- clean safety-sensitive live behavior reruns after the shared scanner's
+  fail-closed repair; retain the old evidence, but do not regrade it
 - human gate
 
 ### M3 review requested
@@ -188,3 +215,120 @@ Still pending:
    though earlier suite skills predate that recommended metadata?
 6. With the seeded conclusion removed, does the bailout fixture now provide
    evidence without forcing the expected conclusion?
+
+## M4 `next-step-improve` progress
+
+Status: provisional implementation is in progress on
+`codex/m4-next-step-improve`; it is isolated from M2 and M3, not merged, and
+not gate-approved.
+
+Completed:
+
+- Initialized `skills/next-step-improve` with the official skill-creator and
+  generated `agents/openai.yaml` with a literal `$next-step-improve` prompt.
+- Defined a resume-first, read-only survey workflow with neutral exploration,
+  at most five ranked proposals, exactly one recommendation, a human choice
+  gate, and sequential routing into `plan`, `new-feature`, or `debug`. M4 never
+  implements a proposal itself.
+- Added a directory-truth `specs/INDEX.md` generator. It sorts numbered work
+  units deterministically, derives status and metadata from spec/checklist
+  artifacts, flags recoverable attention items, and refuses malformed metadata,
+  duplicate numeric IDs, self-links, or parent cycles before overwriting the
+  existing index.
+- A delegated read-only explorer changed the draft design materially: surveys
+  are numbered `specs/NNN-improvement-survey/` work units with their own
+  checklist, rather than one global standing checklist. This preserves the
+  repository's flat numbering and one-checklist-per-work-unit conventions.
+- Added survey/checklist/index templates, four focused references, and
+  byte-identical vendored numbering and secret-scan scripts.
+- Deterministic checks currently pass: 51/51 skill contract assertions, 30/30
+  index-generator assertions, 5/5 credential-scanner fail-closed/detection
+  assertions, 8/8 advanced-destination branch-topology assertions, fixture
+  smoke test, repository validation, and the official skill quick validator.
+  Trigger suites contain 15 calibration and 6 frozen holdout queries; behavior
+  suites contain two cases.
+- Exact-commit review of `91e2dbf` returned `CHANGES REQUIRED`: the canonical
+  credential scanner failed open, list/self-link validation and checklist-first
+  updated precedence diverged from the index contract, the first human pause
+  had no reachable persistence sequence, reranking hardcoded three instead of
+  `BAILOUT_N`, and post-child refresh omitted destination reconciliation. The
+  scanner and every vendored copy now fail closed, index semantics have focused
+  no-overwrite regressions, ranking/choice both persist artifact and truth
+  commits before pausing/dispatch, reranking uses the recorded threshold, and
+  an executable Git topology proves generated-INDEX reconciliation plus an
+  unchanged destination during integrated verification. The reviewer also
+  suggested a fixture containment guard; direct fixture execution now refuses
+  any non-empty destination.
+- The shared scanner repair was followed by clean M2 23/23 and M3 49/49
+  deterministic contract reruns plus M3 fixture/infrastructure checks. Because
+  earlier safety-sensitive live runs executed the former scanner, their results
+  remain historical evidence but require clean reruns rather than regrading.
+- Focused exact-commit re-review of `54a09ff`: **APPROVE**. The reviewer
+  independently exercised Git/filter/pattern-engine failures against all four
+  byte-identical scanner copies, confirmed the index/self-link/precedence fixes,
+  verified the reachable human-pause commits and configured bailout threshold,
+  and accepted the advanced-destination reconciliation contract. Temp-backed
+  tests were blocked only inside its read-only sandbox; the primary agent's
+  writable runs passed 51/51, 30/30, 5/5, and 8/8.
+- The live fixture builder now creates paired `with-skill` and `baseline`
+  repositories. Only the former installs M4 and its permitted downstream
+  workflow dependencies; both start from identical stale index and green-test
+  truth and refuse non-empty destinations.
+- Live behavior i1: fresh survey is 6/6 with skill versus 0/6 baseline; saved
+  P2 resume is 6/6 versus 5/6, total 12/12 versus 5/12 (+58.33 percentage
+  points). The fresh baseline produced a useful cited shortlist but edited
+  protected `main` directly without a survey/checklist, delegation evidence,
+  generator check, scans, or commits. The resume baseline correctly preserved
+  and routed P2 through an isolated awaiting-human plan; it loses only the
+  strict final assertion because it substituted a bespoke PowerShell row check
+  for the committed generator's `--check`.
+- `evals/next-step-improve/evidence-test.mjs` passes 52/52. It verifies all
+  four portable bundles, every cited commit and checklist, sanitized executor
+  transcripts, the fresh-baseline working patch hash, and the 12/12 vs 5/12
+  totals without relying on retained Temp fixtures. This is one run per
+  configuration; timings/tokens are audit context only and support no speed,
+  cost, or statistical claim.
+- Independent live-evidence review is not complete. Codex CLI refused before
+  review work with a hard usage reset at 2026-07-20 09:38 local time. One Fable
+  command was rejected by CLI option parsing before model invocation; two
+  correctly formed Fable invocations then exited 1 with no output or handback.
+  All three left the worktree clean. Do not treat silence as approval. The
+  portable evidence remains ready for the next external reviewer.
+- After `evidence-test.mjs` passed, the bounded `%TEMP%/dwv/m4-live/i1`
+  fixtures were safely removed. The same 52/52 evidence test passed again after
+  deletion, proving the committed audit no longer relies on Temp state.
+
+Still pending:
+
+- independent review of the 12/12 versus 5/12 live evidence at exact commit
+  `28181d3`
+- shared trigger-harness execution after the M2 harness gate is available
+- human approval
+
+### M4 review requested
+
+1. Does representing each improvement survey as a numbered work unit fit the
+   existing spec/checklist architecture better than a global survey checklist?
+2. Are fatal index conditions (malformed metadata, duplicate numbers, cycles)
+   separated correctly from recoverable attention conditions?
+3. Is checklist-first status precedence predictable when spec and checklist
+   status disagree, with the disagreement visible in Attention?
+4. Does the human selection/defer/reject gate prevent an advisory survey from
+   silently turning into implementation?
+5. Does sequential downstream routing preserve focus and resumability while
+   still recording later proposals?
+6. Are trigger boundaries sharp enough between roadmap/prioritization work and
+   a single ready feature, a concrete bug, review-only work, or greenfield setup?
+
+### M4 live-evidence review requested
+
+1. Run `node evals/next-step-improve/evidence-test.mjs` and independently grade
+   all 12 fixed assertions from the portable bundles/transcripts.
+2. Confirm the fresh baseline's 0/6 applies the conjunctive assertions
+   consistently while still crediting its useful shortlist in the narrative.
+3. Confirm the resume baseline is 5/6: its bespoke PowerShell row validator
+   does not satisfy the explicit committed-generator `--check` requirement.
+4. Confirm no assertion depends on deleted Temp fixtures and that ordinary,
+   escaped, and mixed user-profile paths are absent from transcripts.
+5. Preserve the one-run limitation and make no speed, cost, or statistical
+   claim from recorded timings or token counts.

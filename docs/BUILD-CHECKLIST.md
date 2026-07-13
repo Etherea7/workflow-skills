@@ -23,6 +23,17 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
 - 2026-07-11 D8 all five workflows, gated, order: plan → new-feature → debug → next-step-improve → project-setup
 - 2026-07-11 installer copies (no symlinks — Windows); rules install = managed blocks in `~/.codex/AGENTS.md` + `~/.claude/rules/dev-workflows.md`
 
+- 2026-07-13 human explicitly authorized provisional M4 after a Fable review
+  attempt while M2/M3 trigger and human gates remain open; keep M4 isolated and
+  do not merge or claim its gate
+- 2026-07-13 M4 surveys are numbered work units at
+  `specs/NNN-improvement-survey/`, not one global mutable checklist; this keeps
+  the one-checklist-per-unit and flat artifact conventions intact
+- 2026-07-13 M4 review reproduced a fail-open bug in the canonical staged
+  credential scanner; canonical plus M2/M3/M4 vendored copies now fail closed
+  on Git, added-line filtering, or pattern-matching failure. Safety-sensitive
+  live gates using the former scanner require clean reruns, not regrading.
+
 ## Phase 0 — Verify + Interview
 
 - [x] Verified Claude Code skill format + user dir `~/.claude/skills/` (official docs)
@@ -156,8 +167,15 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       seeded red; clean i5 resume reruns are 6/6 vs 5/6. Codex gate round 1 found
       and regression-covered `--no-ff --no-commit`, fixture-history, trigger
       attribution/invalid-run, threshold, holdout, and durability issues.
-      Trigger calibration+frozen holdout rerun remains blocked until Claude
-      session reset at 2026-07-13 15:00 Asia/Singapore. Keep unchecked.)
+      After the reset, a user-requested Fable orchestration attempt was first
+      permission-blocked, then terminated mid-run without valid output. Codex
+      restored its measurement stub/scratch and rejected its unproved CRLF edit.
+      A direct unchanged harness retry then reached 14/36 attempts before a
+      zero-token session limit; no result JSON or grade was produced and all
+      partial hits/misses are invalid. The later shared-scanner fail-closed
+      repair passes the M2 23/23 deterministic contract but requires clean
+      scan-sensitive live behavior reruns; retain old evidence without
+      regrading. Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M3 `debug`
@@ -175,14 +193,38 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       sanitized evidence summaries, executor transcripts, and portable Git
       bundles; `node evals/debug/evidence-test.mjs` proves all cited commits
       readable (38/38). Review findings were repaired and rerun; final focused
-      Codex review of exact commit `32e8a0e` APPROVE. Shared-harness trigger
-      runs after M2 approval remain required. Keep unchecked.)
+      Codex review of exact commit `32e8a0e` APPROVE. A later shared-scanner
+      fail-closed repair passes the 49/49 contract and focused scanner
+      regression, but reopens safety-sensitive live behavior assertions for a
+      clean rerun. Shared-harness triggers also remain required. Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M4 `next-step-improve`
 
-- [ ] Skeleton → body (survey INDEX + checklists, prioritized proposals, decompose → new-feature, INDEX regeneration)
+- [x] Skeleton → body (survey INDEX + checklists, prioritized proposals, decompose → new-feature, INDEX regeneration)
+      (provisional isolated M4 authorized by human; evidence:
+      `skills/next-step-improve/`; official skill validation PASS;
+      `node evals/next-step-improve/contract-test.mjs` -> 51/51; deterministic
+      `index-test.mjs` -> 30/30; scanner fail-closed/detection -> 5/5;
+      destination-reconciliation topology -> 8/8; fixture smoke PASS;
+      generated `openai.yaml`;
+      vendored number/secrets scripts byte-identical)
 - [ ] Evals: triggers; INDEX regenerated from directory truth
+      (partial: 15 calibration + 6 frozen holdout queries, two strict behavior
+      cases, deterministic stale/cyclic/malformed/self-link INDEX coverage,
+      advanced-destination reconciliation, and genuine stale-index fixture are
+      committed. Review round 1 returned five blocking findings; all are fixed
+      with clean deterministic reruns; focused exact-commit review of `54a09ff`
+      APPROVE. Paired with-skill/baseline live fixtures are green and isolated.
+      Live fresh+resume behavior is 12/12 with skill versus 5/12 baseline
+      (+58.33 points), with four sanitized transcripts, four portable bundles,
+      the baseline dirty-working patch, and 52/52 durable evidence checks. One
+      run per configuration; no speed/cost/statistical claim. Shared trigger
+      harness and human gate remain required. Independent live-evidence review
+      also remains open: Codex hit its usage limit before review and two valid
+      Fable attempts exited without a handback; silence is not approval. Temp
+      fixtures were removed only after 52/52 passed, and the same test passed
+      again afterward. Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M5 `project-setup`

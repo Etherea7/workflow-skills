@@ -1,0 +1,4 @@
+interface:
+  display_name: "Next Step Improve"
+  short_description: "Prioritize and decompose repository improvements"
+  default_prompt: "Use $next-step-improve to survey this repository, refresh its specs index, and recommend the highest-value next work."
