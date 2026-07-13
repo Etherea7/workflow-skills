@@ -1,9 +1,16 @@
 #!/usr/bin/env node
-import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
-const dest = resolve(process.argv[2] || join(process.env.TEMP || ".", "dwv", "m4-fixture"));
+const [destArg, config = "with-skill"] = process.argv.slice(2);
+if (!destArg || !["with-skill", "baseline"].includes(config)) {
+  console.error("usage: build-fixture.mjs <dest> <with-skill|baseline>");
+  process.exit(2);
+}
+const dest = resolve(destArg);
+const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 const put = (path, content) => {
   const target = join(dest, path);
   mkdirSync(dirname(target), { recursive: true });
@@ -114,10 +121,16 @@ put("specs/004-metrics/checklist.md", checklist(
   "- state: blocked because the external metric naming contract is unavailable\n"
 ));
 
+if (config === "with-skill") {
+  for (const skill of ["next-step-improve", "plan", "new-feature", "debug"]) {
+    cpSync(join(repoRoot, "skills", skill), join(dest, ".agents", "skills", skill), { recursive: true });
+  }
+}
+
 git(["init", "-q", "-b", "main"]);
 git(["config", "user.name", "Eval Fixture"]);
 git(["config", "user.email", "eval@example.invalid"]);
 git(["add", "."]);
 git(["commit", "-q", "-m", "chore: seed roadmap fixture"]);
 const head = git(["rev-parse", "HEAD"]);
-process.stdout.write(JSON.stringify({ project: dest, branch: "main", head }));
+process.stdout.write(JSON.stringify({ config, project: dest, branch: "main", head }));

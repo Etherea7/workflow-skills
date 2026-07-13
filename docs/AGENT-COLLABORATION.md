@@ -256,12 +256,23 @@ Completed:
   deterministic contract reruns plus M3 fixture/infrastructure checks. Because
   earlier safety-sensitive live runs executed the former scanner, their results
   remain historical evidence but require clean reruns rather than regrading.
+- Focused exact-commit re-review of `54a09ff`: **APPROVE**. The reviewer
+  independently exercised Git/filter/pattern-engine failures against all four
+  byte-identical scanner copies, confirmed the index/self-link/precedence fixes,
+  verified the reachable human-pause commits and configured bailout threshold,
+  and accepted the advanced-destination reconciliation contract. Temp-backed
+  tests were blocked only inside its read-only sandbox; the primary agent's
+  writable runs passed 51/51, 30/30, 5/5, and 8/8.
+- The live fixture builder now creates paired `with-skill` and `baseline`
+  repositories. Only the former installs M4 and its permitted downstream
+  workflow dependencies; both start from identical stale index and green-test
+  truth and refuse non-empty destinations.
 
 Still pending:
 
 - live behavior comparison and durable evidence bundles
 - shared trigger-harness execution after the M2 harness gate is available
-- focused exact-commit re-review and human approval
+- human approval
 
 ### M4 review requested
 

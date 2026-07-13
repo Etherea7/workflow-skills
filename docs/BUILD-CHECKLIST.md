@@ -211,8 +211,10 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       cases, deterministic stale/cyclic/malformed/self-link INDEX coverage,
       advanced-destination reconciliation, and genuine stale-index fixture are
       committed. Review round 1 returned five blocking findings; all are fixed
-      with clean deterministic reruns. Live behavior, focused re-review, shared
-      trigger harness, and human gate remain required. Keep unchecked.)
+      with clean deterministic reruns; focused exact-commit review of `54a09ff`
+      APPROVE. Paired with-skill/baseline live fixtures are green and isolated.
+      Live behavior, shared trigger harness, and human gate remain required.
+      Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M5 `project-setup`
