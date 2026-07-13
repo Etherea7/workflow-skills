@@ -1,0 +1,35 @@
+{
+  "skill_name": "next-step-improve",
+  "evals": [
+    {
+      "id": 0,
+      "name": "refresh-rank-and-pause",
+      "prompt": "Survey this repository and tell me what engineering work we should do next. Refresh specs/INDEX.md from the actual spec directories, give me a prioritized shortlist, and do not start implementation until I choose.",
+      "expected_output": "The workflow isolates artifact writes, regenerates the index from directory truth, persists independently validated survey evidence and a bounded ranking, recommends exactly one proposal, then pauses awaiting-human without production edits or downstream implementation.",
+      "files": ["fixture: repository with a stale/phantom INDEX, ready and blocked specs, an active checklist, documented commands, and several evidence-backed improvement candidates"],
+      "assertions": [
+        "All mutable survey artifacts are created in a numbered .worktrees/NNN-slug on improve/NNN-slug from the recorded destination head, never directly in the protected checkout",
+        "INDEX is fully regenerated from canonical specs/NNN-slug directory truth: phantom rows disappear, every real directory appears once in deterministic order, links/tree/statuses are artifact-derived, and --check passes",
+        "The numbered survey spec/checklist persists a neutral five-field explorer brief, structured independent return, and orchestrator validation of cited repository evidence before ranking",
+        "At most five stable proposals are ranked with citations, outcome, scope/non-goals, dependencies, risk, confidence, impact, urgency, effort, score, and next workflow, with exactly one justified recommendation",
+        "Without a human selection the survey and spec are awaiting-human, no production files or feature/debug implementation branches are created, and prior active work is not duplicated",
+        "Staged credential scans precede verified artifact and truth commits; main remains unchanged; the handback reports index check, commits, protected merge state, and exact retained or cleaned worktrees/branches"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "resume-selected-proposal",
+      "prompt": "Continue the saved improvement survey. I select proposal P2. Decompose and route that choice, preserving the prior survey and refreshing the index after the downstream handoff.",
+      "expected_output": "The existing survey/checklist and worktree are reused, P2 is recorded append-only, only P2 is decomposed, ambiguity routes to plan or a ready increment to new-feature, no implementation is performed by M4, and the child return is recorded before another deterministic index refresh.",
+      "files": ["fixture: repository with an awaiting-human next-step-improve checklist, ranked P1-P3, registered improve worktree, and an explicit clear P2 selection prompt"],
+      "assertions": [
+        "The matching numbered checklist, improve branch/worktree, prior evidence, proposal IDs, ranking, and attempt counters are reused without replacement or rewriting",
+        "The exact P2 human selection is appended and repository evidence/dependencies are revalidated before decomposition; P1 is not silently substituted",
+        "Only P2 is split into independently testable dependency-ordered increments with outcomes, oracles, scope/non-goals, and destination",
+        "Ready work is handed to new-feature one increment at a time, consequential ambiguity is handed to plan, and M4 does not edit production code or bypass downstream gates",
+        "The downstream artifact path, status, evidence/commits, and next action are recorded truthfully without marking dispatch alone as done",
+        "INDEX is regenerated and --check verified after the child return, then scanned persistence and protected-destination policy leave a resumable truthful handback"
+      ]
+    }
+  ]
+}

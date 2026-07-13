@@ -7,11 +7,12 @@ open review questions, and the next milestone's in-progress state.
 
 ## Current handoff
 
-- Branch: `codex/m3-debug` in `.worktrees/m3-debug` (provisional M3 isolation)
-- Last pre-session commit: `64985d2` (`new-feature` M2 implementation plus
-  partial evals)
+- Branch: `codex/m4-next-step-improve` in `.worktrees/m4-next-step-improve`
+  (provisional M4 isolation based on approved M3 checkpoint)
+- M4 base commit: `2502657` (approved M3 behavior/evidence checkpoint)
 - Active gates: M2 `new-feature` trigger evaluation remains pending; M3 `debug`
-  is proceeding provisionally by explicit human authorization
+  behavior is independently approved but its triggers/human gate remain open;
+  M4 is proceeding provisionally by explicit human authorization
 - Review discipline: findings change the skill and trigger clean reruns; an
   agent must not merely reinterpret or raise an existing grade.
 
@@ -41,6 +42,23 @@ were clean-rerun: with skill 6/6, baseline 5/6. The arithmetic did not change,
 but it now rests on an honest historical chain.
 
 ### Trigger measurement
+
+After the documented 15:00 reset, the user requested Claude Code with Fable to
+review/edit and complete this gate before handing back to Codex. The first
+Fable session used `acceptEdits` and correctly reported that every execution
+route was permission-denied; it changed nothing. A permission-enabled retry
+began deterministic work but terminated without a valid handback after five
+scratch jobs, leaving the reversible trigger stub, scratch directory, and an
+uncommitted CRLF-normalization edit. Codex treated that attempt as invalid,
+verified no original installed skill/backup existed, removed only the unique
+harness stub and bounded scratch, and rejected the edit because the unchanged
+contract test already passed 23/23 on `main`.
+
+Codex then ran the unchanged fixed harness directly. It completed 14/36
+attempts before a zero-token session-limit exception. The harness wrote no
+`trigger-results.json`; partial hits/misses were not graded. The installed stub,
+backup, scratch, and Python cache were verified absent after cleanup. M2 remains
+open for one complete unchanged calibration+holdout run.
 
 The first provisional harness invocation targeted Codex discovery. It was
 stopped before completion because M1's established gate measures native Claude
@@ -188,3 +206,54 @@ Still pending:
    though earlier suite skills predate that recommended metadata?
 6. With the seeded conclusion removed, does the bailout fixture now provide
    evidence without forcing the expected conclusion?
+
+## M4 `next-step-improve` progress
+
+Status: provisional implementation is in progress on
+`codex/m4-next-step-improve`; it is isolated from M2 and M3, not merged, and
+not gate-approved.
+
+Completed:
+
+- Initialized `skills/next-step-improve` with the official skill-creator and
+  generated `agents/openai.yaml` with a literal `$next-step-improve` prompt.
+- Defined a resume-first, read-only survey workflow with neutral exploration,
+  at most five ranked proposals, exactly one recommendation, a human choice
+  gate, and sequential routing into `plan`, `new-feature`, or `debug`. M4 never
+  implements a proposal itself.
+- Added a directory-truth `specs/INDEX.md` generator. It sorts numbered work
+  units deterministically, derives status and metadata from spec/checklist
+  artifacts, flags recoverable attention items, and refuses malformed metadata,
+  duplicate numeric IDs, self-links, or parent cycles before overwriting the
+  existing index.
+- A delegated read-only explorer changed the draft design materially: surveys
+  are numbered `specs/NNN-improvement-survey/` work units with their own
+  checklist, rather than one global standing checklist. This preserves the
+  repository's flat numbering and one-checklist-per-work-unit conventions.
+- Added survey/checklist/index templates, four focused references, and
+  byte-identical vendored numbering and secret-scan scripts.
+- Deterministic checks currently pass: 43/43 skill contract assertions, 24/24
+  index-generator assertions, fixture smoke test, repository validation, and
+  the official skill quick validator. Trigger suites contain 15 calibration
+  and 6 frozen holdout queries; behavior suites contain two cases.
+
+Still pending:
+
+- live behavior comparison and durable evidence bundles
+- shared trigger-harness execution after the M2 harness gate is available
+- independent exact-commit review and human approval
+
+### M4 review requested
+
+1. Does representing each improvement survey as a numbered work unit fit the
+   existing spec/checklist architecture better than a global survey checklist?
+2. Are fatal index conditions (malformed metadata, duplicate numbers, cycles)
+   separated correctly from recoverable attention conditions?
+3. Is checklist-first status precedence predictable when spec and checklist
+   status disagree, with the disagreement visible in Attention?
+4. Does the human selection/defer/reject gate prevent an advisory survey from
+   silently turning into implementation?
+5. Does sequential downstream routing preserve focus and resumability while
+   still recording later proposals?
+6. Are trigger boundaries sharp enough between roadmap/prioritization work and
+   a single ready feature, a concrete bug, review-only work, or greenfield setup?

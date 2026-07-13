@@ -23,6 +23,13 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
 - 2026-07-11 D8 all five workflows, gated, order: plan → new-feature → debug → next-step-improve → project-setup
 - 2026-07-11 installer copies (no symlinks — Windows); rules install = managed blocks in `~/.codex/AGENTS.md` + `~/.claude/rules/dev-workflows.md`
 
+- 2026-07-13 human explicitly authorized provisional M4 after a Fable review
+  attempt while M2/M3 trigger and human gates remain open; keep M4 isolated and
+  do not merge or claim its gate
+- 2026-07-13 M4 surveys are numbered work units at
+  `specs/NNN-improvement-survey/`, not one global mutable checklist; this keeps
+  the one-checklist-per-unit and flat artifact conventions intact
+
 ## Phase 0 — Verify + Interview
 
 - [x] Verified Claude Code skill format + user dir `~/.claude/skills/` (official docs)
@@ -156,8 +163,12 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       seeded red; clean i5 resume reruns are 6/6 vs 5/6. Codex gate round 1 found
       and regression-covered `--no-ff --no-commit`, fixture-history, trigger
       attribution/invalid-run, threshold, holdout, and durability issues.
-      Trigger calibration+frozen holdout rerun remains blocked until Claude
-      session reset at 2026-07-13 15:00 Asia/Singapore. Keep unchecked.)
+      After the reset, a user-requested Fable orchestration attempt was first
+      permission-blocked, then terminated mid-run without valid output. Codex
+      restored its measurement stub/scratch and rejected its unproved CRLF edit.
+      A direct unchanged harness retry then reached 14/36 attempts before a
+      zero-token session limit; no result JSON or grade was produced and all
+      partial hits/misses are invalid. Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M3 `debug`
@@ -181,8 +192,17 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
 
 ## Phase 2 — M4 `next-step-improve`
 
-- [ ] Skeleton → body (survey INDEX + checklists, prioritized proposals, decompose → new-feature, INDEX regeneration)
+- [x] Skeleton → body (survey INDEX + checklists, prioritized proposals, decompose → new-feature, INDEX regeneration)
+      (provisional isolated M4 authorized by human; evidence:
+      `skills/next-step-improve/`; official skill validation PASS;
+      `node evals/next-step-improve/contract-test.mjs` -> 43/43; deterministic
+      `index-test.mjs` -> 24/24; fixture smoke PASS; generated `openai.yaml`;
+      vendored number/secrets scripts byte-identical)
 - [ ] Evals: triggers; INDEX regenerated from directory truth
+      (partial: 15 calibration + 6 frozen holdout queries, two strict behavior
+      cases, deterministic stale/cyclic/malformed INDEX coverage, and genuine
+      stale-index fixture are committed. Live behavior, shared trigger harness,
+      independent review, and human gate remain required. Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M5 `project-setup`

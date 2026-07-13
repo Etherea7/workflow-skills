@@ -1,0 +1,8 @@
+[
+  {"query":"Look across the specs, CI state, and technical debt and tell me which three improvements deserve attention first.","should_trigger":true},
+  {"query":"Our specs manifest seems stale. Rebuild it from disk and use the result to recommend the next work item.","should_trigger":true},
+  {"query":"Resume the engineering improvement backlog at its saved checklist and process my selected item.","should_trigger":true},
+  {"query":"Add the approved cache-control response option and prove it with regression tests.","should_trigger":false},
+  {"query":"Users see duplicate webhook deliveries; diagnose the cause and patch it.","should_trigger":false},
+  {"query":"Assess this proposed implementation plan for missing edge cases, but do not rank repository priorities.","should_trigger":false}
+]
