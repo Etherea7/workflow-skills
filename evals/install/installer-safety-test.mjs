@@ -56,6 +56,11 @@ function ownedAt(path) {
   cpSync(join(root, "skills", "wf-debug"), path, { recursive: true });
 }
 
+function makeSkillCrLf(path) {
+  const skill = join(path, "SKILL.md");
+  writeFileSync(skill, readFileSync(skill, "utf8").replace(/\r?\n/g, "\r\n"), "utf8");
+}
+
 try {
   const normal = fixture("normal");
   let result = run(normal);
@@ -83,6 +88,19 @@ try {
   result = run(legacy);
   check(result.status === 0 && !existsSync(join(legacy.claude, "debug")), "owned legacy directory was not removed after upgrade");
   check(existsSync(join(legacy.agents, "debug")) && result.stderr.includes("preserving unowned legacy"), "unowned legacy directory was not preserved with warning");
+
+  const crlf = fixture("crlf-owned");
+  ownedAt(join(crlf.claude, "wf-debug"));
+  makeSkillCrLf(join(crlf.claude, "wf-debug"));
+  writeFileSync(join(crlf.claude, "wf-debug", "stale.txt"), "replace me", "utf8");
+  ownedAt(join(crlf.agents, "debug"));
+  makeSkillCrLf(join(crlf.agents, "debug"));
+  result = run(crlf);
+  check(result.status === 0 && !existsSync(join(crlf.claude, "wf-debug", "stale.txt")), "well-formed CRLF-owned current skill was not safely replaced");
+  check(!existsSync(join(crlf.agents, "debug")), "well-formed CRLF-owned legacy skill was not cleaned up after upgrade");
+  makeSkillCrLf(join(crlf.claude, "wf-debug"));
+  result = run(crlf, ["--uninstall"]);
+  check(result.status === 0 && !existsSync(join(crlf.claude, "wf-debug")), "well-formed CRLF-owned current skill was not removed on uninstall");
 
   const malformed = fixture("malformed");
   mkdirSync(join(malformed.claude, "wf-debug"), { recursive: true });

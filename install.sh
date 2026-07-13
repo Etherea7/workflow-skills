@@ -24,6 +24,7 @@ is_managed_skill() {
   local file="$1/SKILL.md"
   [ -f "$file" ] || return 1
   awk '
+    { sub(/\r$/, "", $0) }
     NR == 1 { if ($0 != "---") exit 1; fm=1; next }
     fm && $0 == "---" { closed=1; exit owned ? 0 : 1 }
     fm {

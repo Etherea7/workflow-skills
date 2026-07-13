@@ -50,4 +50,33 @@ const collision = evaluateCatalog({
 });
 check(collision.errors.some((error) => error.includes(">= 0.750")), "collision error threshold was not enforced");
 
+const thresholdDescriptions = {
+  a: { full: "alpha", positive: "alpha", negative: "" },
+  b: { full: "beta", positive: "beta", negative: "" }
+};
+const thresholdExamples = {
+  a: [{ query: "alpha", should_trigger: true }, { query: "beta", should_trigger: true }],
+  b: [{ query: "beta", should_trigger: true }, { query: "beta", should_trigger: true }]
+};
+const perSkillBoundary = evaluateCatalog({
+  descriptions: thresholdDescriptions, examples: thresholdExamples,
+  topK: 2, aggregateRankOne: 0, perSkillRankOne: 0.5
+});
+check(!perSkillBoundary.errors.some((error) => error.startsWith("a: rank-one")), "per-skill rank-one failed at the exact boundary");
+const perSkillBelow = evaluateCatalog({
+  descriptions: thresholdDescriptions, examples: thresholdExamples,
+  topK: 2, aggregateRankOne: 0, perSkillRankOne: 0.5001
+});
+check(perSkillBelow.errors.some((error) => error.startsWith("a: rank-one")), "per-skill rank-one did not fail immediately below its requirement");
+const aggregateBoundary = evaluateCatalog({
+  descriptions: thresholdDescriptions, examples: thresholdExamples,
+  topK: 2, aggregateRankOne: 0.75, perSkillRankOne: 0
+});
+check(!aggregateBoundary.errors.some((error) => error.startsWith("aggregate rank-one")), "aggregate rank-one failed at the exact boundary");
+const aggregateBelow = evaluateCatalog({
+  descriptions: thresholdDescriptions, examples: thresholdExamples,
+  topK: 2, aggregateRankOne: 0.7501, perSkillRankOne: 0
+});
+check(aggregateBelow.errors.some((error) => error.startsWith("aggregate rank-one")), "aggregate rank-one did not fail immediately below its requirement");
+
 console.log(`catalog routing: PASS (${checks} token/rank/threshold checks)`);

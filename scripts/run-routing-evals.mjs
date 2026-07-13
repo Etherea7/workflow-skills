@@ -18,7 +18,7 @@ const aliases = new Map(Object.entries({
   acceptance: "requirement", ambiguous: "requirement", choice: "requirement", clarify: "requirement", decide: "requirement", define: "requirement", expiry: "requirement", figure: "requirement", idea: "requirement", opinion: "requirement", role: "requirement", spec: "requirement", unsure: "requirement", unclear: "requirement", undecided: "requirement", unspecified: "requirement",
   bootstrap: "setup", bootstrapping: "setup", initialize: "setup", scaffold: "setup", scaffolding: "setup", greenfield: "setup",
   backlog: "improve", improvement: "improve", next: "improve", prioritize: "improve", priority: "improve", roadmap: "improve", survey: "improve",
-  assess: "review", summarize: "review", summary: "review", optimize: "performance", speed: "performance", specced: "ready", restaurant: "marketing"
+  assess: "review", summarize: "review", summary: "review", optimize: "performance", speed: "performance", specced: "ready"
 }));
 
 function stem(token) {
@@ -90,7 +90,7 @@ export function buildModel(descriptions) {
     route(query) {
       const ranked = this.rank(query);
       const top = ranked[0];
-      const abstain = top.score <= 0.02 || (top.negative >= 0.12 && top.score < 0.1);
+      const abstain = top.score <= 0.02 || (top.negative >= 0.12 && top.positive < 0.3);
       return abstain ? [{ name: "no-route", score: Math.max(0.02, top.score + 0.001) }, ...ranked] : ranked;
     },
     similarity(left, right) { return cosine(vector(descriptions[left].full), vector(descriptions[right].full)); }
