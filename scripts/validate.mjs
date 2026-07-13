@@ -98,6 +98,34 @@ if (!existsSync(skillsDir)) {
   }
 }
 
+// --- native plugin manifests ---
+function loadManifest(path, label) {
+  if (!existsSync(path)) { errors.push(`${label} missing`); return null; }
+  try {
+    const raw = readFileSync(path, "utf8");
+    if (/\[TODO:|<owner>|<this-repo>/i.test(raw)) errors.push(`${label}: contains a placeholder`);
+    return JSON.parse(raw);
+  } catch (error) {
+    errors.push(`${label}: invalid JSON (${error.message})`);
+    return null;
+  }
+}
+
+const claudeManifest = loadManifest(join(root, ".claude-plugin", "plugin.json"), ".claude-plugin/plugin.json");
+const codexManifest = loadManifest(join(root, ".codex-plugin", "plugin.json"), ".codex-plugin/plugin.json");
+if (claudeManifest && codexManifest) {
+  for (const [label, manifest] of [["Claude", claudeManifest], ["Codex", codexManifest]]) {
+    if (manifest.name !== "dev-workflows") errors.push(`${label} manifest: name must be dev-workflows`);
+    if (manifest.version !== "0.1.0") errors.push(`${label} manifest: version must be 0.1.0 before v1 sign-off`);
+    if (String(manifest.skills ?? "").replace(/\/$/, "") !== "./skills")
+      errors.push(`${label} manifest: skills must reference ./skills`);
+  }
+  if (claudeManifest.name !== codexManifest.name || claudeManifest.version !== codexManifest.version)
+    errors.push("plugin manifests disagree on name/version");
+  for (const unsupported of ["hooks", "apps", "mcpServers"])
+    if (unsupported in codexManifest) errors.push(`Codex manifest: unsupported/unbacked field '${unsupported}'`);
+}
+
 // --- rules/ ---
 const agents = join(root, "rules", "AGENTS.md");
 const claude = join(root, "rules", "CLAUDE.md");

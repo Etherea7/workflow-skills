@@ -1,59 +1,66 @@
 # Future Work
 
-Scope deliberately deferred out of v1. Each entry preserves enough design
-context to be picked up cold. Nothing here blocks the v1 architecture; all of
-it layers on top.
+Sequenced follow-on work for the workflow suite. None of the deferred items is
+required to complete the present release-hardening change.
 
-## 1. Productionization module (deferred per D7)
+## 1. Native package groundwork (delivered for v1)
 
-An optional planning module that activates when a project declares it is going
-beyond local/preview deployment to real production. When picked up, it becomes
-a `references/production-readiness.md` inside the `plan` skill plus a
-definition-of-done checklist template, covering:
+The repository now carries matching Claude and Codex plugin manifests for the
+five `wf-*` skills. They remain at version `0.1.0` while live behavior feedback
+and final v1 sign-off are open. At release, bump both manifests together to
+`1.0.0` and add only real publication coordinates.
 
-- Scale-oriented system architecture (load expectations, data growth, caching,
-  queueing, horizontal scaling story)
-- Security hardening: authn/authz, secrets management, input validation,
-  dependency audit / SAST, rate limiting
-- Observability: logging, metrics, tracing, alerting
-- Deploy/rollback story: environments, migrations, canary/rolling strategy,
-  rollback rehearsal
+The rules-aware `install.sh` remains supported because plugin/skills loading
+does not necessarily place the suite-level Delegation Protocol and guardrails
+in each host's global guidance.
 
-Design decision already made: this is reference material + a checklist that the
-existing `plan` workflow pulls in when the project's spec says "production" —
-not a sixth workflow skill.
+## 2. Next likely update: code graphs plus documentation context
 
-## 2. Graph-based code exploration skills (deferred per D6)
+Develop graph-based code exploration and deeper documentation/OpenWiki context
+as one coherent exploration layer. These are supplemental capabilities used by
+the five workflows' context-gathering steps, not replacement macro workflows.
 
-v1 skills gather context exclusively via delegated subagent exploration (the
-`explorer` role in the Delegation Protocol). Graph tools are a future family of
-*supplemental* skills so users can opt in per their use case:
+- **CodeGraph** (verified July 2026): `npm i -g @colbymchenry/codegraph`, then
+  `codegraph install` and `codegraph init`. Its symbol, call-path, and blast-
+  radius context can augment the read-only explorer role when available.
+- Evaluate Graphify and similar alternatives before choosing a stable adapter.
+- Let `wf-setup` optionally initialize OpenWiki and its refresh automation.
+- Let `wf-feature`, `wf-debug`, and `wf-improve` read or refresh the wiki as a
+  context source alongside code, specs, and `specs/INDEX.md`.
 
-- **CodeGraph** (verified July 2026): `npm i -g @colbymchenry/codegraph` →
-  `codegraph install` (wires MCP into Claude Code + Codex) → `codegraph init`
-  per project. Exposes `codegraph_context` / `codegraph_explore` (symbols, call
-  paths, blast radius). Local-first, SQLite, tree-sitter, auto-sync on change.
-- **Graphify** and similar alternatives: evaluate when picked up.
+Keep workflows tool-agnostic: detect optional tools, use them when useful, and
+fall back to repository-native exploration without failing the workflow.
 
-Integration shape when built: a supplemental skill (e.g. `code-graph-context`)
-that the workflow skills' context-gathering step can hand off to when present —
-the workflows themselves stay tool-agnostic. Detection and fallback per the
-graceful-degradation principle.
+## 3. Later specialist capabilities: review, security, and tests
 
-## 3. Deeper OpenWiki integration
+After the exploration layer is stable, consider a read-only review capability
+that can optionally fan out by risk area before merge and return cited findings
+to the owning workflow. Security and test specialists can follow as narrower
+evidence producers. They should not independently merge, rewrite workflow state,
+or become mandatory dependencies of the five macro workflows.
 
-v1 ships only a light touch: if a project uses OpenWiki, `new-feature` refreshes
-the wiki at completion. Future: `project-setup` optionally initializes OpenWiki
-(`openwiki` CLI, LangChain, MIT) and its scheduled GitHub Action; `next-step-improve`
-reads the wiki as a survey source alongside `specs/INDEX.md`.
+This work is intentionally after the graph/documentation update and outside the
+current release-hardening scope.
 
-## 4. Registry publication
+## 4. Production-readiness reference (conditional)
 
-Publish the suite to the skills.sh registry so `npx skills find` discovers it.
-Requires: stable v1, README install matrix, license finalized.
+When a project explicitly targets production, add conditional reference and
+definition-of-done material to `wf-plan` covering architecture and scale,
+authn/authz and secrets, dependency/security checks, observability,
+deployments, migrations, and rollback rehearsal.
 
-## 5. Additional host support
+This remains reference/checklist material selected by project context, not a
+sixth macro workflow.
 
-The portable core should work on Cursor, Gemini CLI, OpenCode, etc. today via
-`npx skills add -a <agent>`. Future: per-host rules-file sections beyond Claude
-Code and Codex (each host's delegation mechanics + model routing), added on demand.
+## 5. Registry and marketplace publication
+
+Publish only after stable v1, completed live/final gates, finalized licensing,
+and a real repository coordinate. At that point add the install matrix and
+marketplace/registry metadata as a separately reviewed release action.
+
+## 6. Additional host support
+
+The portable skills should remain usable by other Agent Skills hosts. Add
+host-specific rules and delegation mechanics for Cursor, Gemini CLI, OpenCode,
+and others only when demanded and testable; keep model IDs and host mechanics
+out of portable skill bodies.

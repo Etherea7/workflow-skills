@@ -1,0 +1,23 @@
+{
+  "name": "dev-workflows",
+  "version": "0.1.0",
+  "description": "Five resumable workflows for disciplined software engineering with AI agents.",
+  "author": {
+    "name": "Dev Workflows Contributors"
+  },
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Dev Workflows",
+    "shortDescription": "Resumable, verified software workflows",
+    "longDescription": "Plan, implement, debug, improve, and bootstrap software through resumable workflows with explicit validation and safety gates.",
+    "developerName": "Dev Workflows Contributors",
+    "category": "Productivity",
+    "capabilities": ["Write"],
+    "defaultPrompt": [
+      "Clarify an ambiguous software requirement.",
+      "Implement a ready feature with verification.",
+      "Diagnose a reproducible software defect."
+    ]
+  }
+}
