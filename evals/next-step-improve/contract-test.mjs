@@ -65,6 +65,7 @@ for (const file of [
   "evals/next-step-improve/secrets-test.mjs",
   "evals/next-step-improve/fixture-test.mjs",
   "evals/next-step-improve/fixtures/build-fixture.mjs",
+  "evals/next-step-improve/fixtures/build-resume-fixture.mjs",
   "evals/next-step-improve/evals.json",
   "evals/next-step-improve/trigger-evals.json",
   "evals/next-step-improve/trigger-holdout.json"

@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const scratch = mkdtempSync(join(tmpdir(), "dwv-m4-fixture-"));
 const builder = join(root, "evals", "next-step-improve", "fixtures", "build-fixture.mjs");
+const resumeBuilder = join(root, "evals", "next-step-improve", "fixtures", "build-resume-fixture.mjs");
 try {
   const heads = [];
   for (const config of ["with-skill", "baseline"]) {
@@ -25,7 +26,23 @@ try {
     const status = spawnSync("git", ["status", "--porcelain"], { cwd: project, encoding: "utf8" });
     if (status.stdout.trim()) throw new Error(`${config} fixture is not clean`);
   }
-  console.log(`next-step-improve fixture: PASS (paired stale/green fixtures @ ${heads.join("/")})`);
+  for (const config of ["with-skill", "baseline"]) {
+    const project = join(scratch, `resume-${config}`);
+    const built = spawnSync(process.execPath, [resumeBuilder, project, config], { encoding: "utf8" });
+    if (built.status !== 0) throw new Error(`${built.stdout}${built.stderr}`);
+    const data = JSON.parse(built.stdout);
+    const saved = readFileSync(join(data.worktree, "specs", "005-improvement-survey", "checklist.md"), "utf8");
+    if (!saved.includes("| P2 |") || !saved.includes("human decision: pending") || !saved.includes(data.artifact)) {
+      throw new Error(`${config} resume state is incomplete or untruthful`);
+    }
+    const registered = spawnSync("git", ["worktree", "list", "--porcelain"], { cwd: project, encoding: "utf8" }).stdout;
+    if (!registered.includes("improve/005-improvement-survey") || !registered.includes(data.worktree.replace(/\\/g, "/"))) {
+      throw new Error(`${config} resume worktree is not registered`);
+    }
+    const status = spawnSync("git", ["status", "--porcelain"], { cwd: data.worktree, encoding: "utf8" }).stdout;
+    if (status.trim()) throw new Error(`${config} resume worktree is dirty`);
+  }
+  console.log(`next-step-improve fixture: PASS (paired fresh + resumable fixtures @ ${heads.join("/")})`);
 } finally {
   rmSync(scratch, { recursive: true, force: true });
 }
