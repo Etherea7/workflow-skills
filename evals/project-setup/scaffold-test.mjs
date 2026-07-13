@@ -23,7 +23,7 @@ const rawNpm = (args, cwd) => process.platform === "win32"
   : raw("npm", args, cwd);
 try {
   run(process.execPath, ["evals/project-setup/build-fixture.mjs", target]);
-  run(process.execPath, ["skills/project-setup/scripts/check-bootstrap.mjs", target]);
+  run(process.execPath, ["skills/wf-setup/scripts/check-bootstrap.mjs", target]);
   runNpm(["install", "--ignore-scripts"], target);
   const red = rawNpm(["test"], target);
   checks += 1;

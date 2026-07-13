@@ -10,6 +10,8 @@ import { fileURLToPath } from "node:url";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const errors = [];
 const notes = [];
+const expectedSkills = ["wf-debug", "wf-feature", "wf-improve", "wf-plan", "wf-setup"];
+const legacySkills = ["debug", "new-feature", "next-step-improve", "plan", "project-setup"];
 
 function parseFrontmatter(text) {
   const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
@@ -35,7 +37,12 @@ if (!existsSync(skillsDir)) {
 } else {
   const dirs = readdirSync(skillsDir).filter((d) =>
     statSync(join(skillsDir, d)).isDirectory()
-  );
+  ).sort();
+  if (JSON.stringify(dirs) !== JSON.stringify(expectedSkills))
+    errors.push(`skills/: expected exactly ${expectedSkills.join(", ")}; found ${dirs.join(", ") || "none"}`);
+  for (const legacy of legacySkills) {
+    if (existsSync(join(skillsDir, legacy))) errors.push(`skills/: legacy public directory still exists: ${legacy}`);
+  }
   if (dirs.length === 0) notes.push("skills/ is empty — skipping skill checks");
   for (const dir of dirs) {
     const where = `skills/${dir}`;
@@ -68,6 +75,13 @@ if (!existsSync(skillsDir)) {
     const lines = text.split(/\r?\n/).length;
     if (lines > 500)
       errors.push(`${where}: SKILL.md is ${lines} lines (limit 500 — move depth to references/)`);
+
+    const agentConfig = join(skillsDir, dir, "agents", "openai.yaml");
+    if (!existsSync(agentConfig)) {
+      errors.push(`${where}: missing agents/openai.yaml`);
+    } else if (!readFileSync(agentConfig, "utf8").includes(`$${dir}`)) {
+      errors.push(`${where}: agents/openai.yaml default prompt must name $${dir}`);
+    }
 
     // Installed skills are self-contained. Vendored helpers with canonical
     // repo-level counterparts must remain byte-identical so fixes cannot drift.

@@ -1,6 +1,6 @@
 ---
-name: debug
-description: Reproduce and diagnose an observed software defect through evidence-led investigation and ranked bounded hypotheses, then apply a regression-tested fix only when the user asks for repair. Use when behavior is broken, incorrect, flaky, crashing, failing tests, or producing errors and the user wants the cause found or the defect repaired, including continuing an existing debug checklist. Diagnosis-only requests remain non-mutating. Do not use to implement new behavior (use new-feature), clarify an undecided expected behavior (use plan), review code without a reported defect, investigate active production systems without a safe local reproduction, or make trivial non-behavioral edits.
+name: wf-debug
+description: Reproduce and diagnose an observed software defect with evidence-led investigation and bounded ranked hypotheses, applying a regression-tested fix only when repair is requested. Use for broken, incorrect, flaky, crashing, or failing behavior and existing debug checklists. Do not use for new behavior (use wf-feature), undecided expected behavior (use wf-plan), review without a reported defect, unsafe live-system investigation, or trivial edits.
 license: MIT
 metadata:
   suite: dev-workflows
@@ -66,7 +66,7 @@ If authorization is ambiguous, default to diagnosis-only and ask before editing.
 An existing debug checklist may be read during diagnosis-only work but must not
 be modified without repair or explicit artifact-write authorization.
 
-If expected behavior is materially undecided, invoke `plan` and stop this
+If expected behavior is materially undecided, invoke `wf-plan` and stop this
 workflow until the requirement is testable. Do not convert a design choice into
 a guessed bug fix. Never run destructive or privacy-sensitive reproductions
 against production; preserve available evidence and request a safe fixture.

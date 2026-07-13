@@ -1,6 +1,10 @@
 ---
-name: next-step-improve
-description: Survey an existing software repository when the user asks what to build, fix, or improve next; wants a prioritized engineering roadmap or backlog; needs stalled work reassessed; or asks to regenerate specs/INDEX.md. Rebuilds the specs index from directory truth, combines artifact and repository evidence into ranked proposals, and routes a selected clear increment to new-feature or ambiguous work to plan. Do not use for implementing an already named ready change (use new-feature), diagnosing a reported defect (use debug), defining one desired but unclear feature (use plan), review-only requests without prioritization, or greenfield setup.
+name: wf-improve
+description: Survey an existing software repository to prioritize what to build, fix, or improve next, produce a prioritized engineering roadmap, reassess stalled work, or regenerate specs/INDEX.md. Rebuilds the index from directory truth and routes a selected increment to wf-feature, wf-plan, or wf-debug. Do not use for implementing an already ready change, diagnosing a named defect, defining one unclear feature, review-only work without prioritization, or greenfield setup.
+license: MIT
+metadata:
+  suite: dev-workflows
+  version: "0.1"
 ---
 
 # Next Step Improve
@@ -17,8 +21,8 @@ The output contract is:
   `checklist.md` containing evidence, ranking, choice, downstream handoff, and
   persistence state
 - at most five evidence-backed proposals, with exactly one recommended first
-- after human selection, either a `plan` clarification handoff or ordered
-  `new-feature` increments; this workflow never implements production code
+- after human selection, either a `wf-plan` clarification handoff or ordered
+  `wf-feature` increments; this workflow never implements production code
 
 Read [index-contract.md](references/index-contract.md) before generating the
 index, [survey-and-prioritization.md](references/survey-and-prioritization.md)
@@ -143,12 +147,12 @@ survey worktree clean and makes the child handoff cold-resumable.
 ## Step 6 - Decompose and route; do not implement
 
 Follow [decomposition.md](references/decomposition.md). If consequential
-behavior remains undecided, invoke `plan` and wait for a ready spec. Otherwise
+behavior remains undecided, invoke `wf-plan` and wait for a ready spec. Otherwise
 split the selected proposal into the smallest independently testable,
 merge-safe increments. Record dependency order and requirement/test outcome for
 each increment.
 
-Invoke `new-feature` for one ready increment at a time. Supply the selected
+Invoke `wf-feature` for one ready increment at a time. Supply the selected
 proposal ID, evidence, scope/non-goals, dependencies, destination, and links to
 the standing checklist. Never edit production code here, bypass the downstream
 red-green oracle, or run overlapping child increments concurrently. A child

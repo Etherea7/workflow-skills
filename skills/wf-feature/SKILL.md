@@ -1,6 +1,6 @@
 ---
-name: new-feature
-description: Mandatory workflow for every nontrivial request to implement or continue ready software functionality, even when the user does not ask for a workflow. Use for implementation from a spec path, accepted ticket or issue, ready requirements, or an existing feature checklist; adding CLI/API/application behavior; tests-first feature requests; and resuming prior feature work. Provides an isolated worktree, red-green tests, verified commits, docs, and a protected-branch merge gate. Never use for unclear requirements (use plan), bug diagnosis or repair (use debug), code/PR review without implementation, roadmaps, new-project setup, or trivial non-behavioral renames.
+name: wf-feature
+description: Implement or continue ready software functionality through an isolated worktree, red-green tests, verified commits, documentation, and a protected-branch merge gate. Use for a ready spec, accepted ticket, existing feature checklist, or nontrivial application, API, or CLI behavior. Never use for unclear requirements (use wf-plan), defect diagnosis or repair (use wf-debug), review-only work, roadmaps, greenfield setup, or trivial non-behavioral edits.
 license: MIT
 metadata:
   suite: dev-workflows
@@ -31,7 +31,7 @@ decision explaining the reconciliation. Never create a replacement work item
 or redo a completed test merely because this is a new session.
 
 For new work, inspect `specs/` for a matching ready spec. If none exists and the
-request is ambiguous, invoke `plan` and continue only when it returns a ready
+request is ambiguous, invoke `wf-plan` and continue only when it returns a ready
 spec. If the request is already precise, determine the next free number with
 `scripts/next-spec-number.sh` (or by inspection) and the minimal testable spec
 content, but do not write either on the destination checkout. `000` remains
@@ -46,7 +46,7 @@ verified commit hash.
 
 Read project rules, the spec, existing docs, build/test commands, and nearby
 code. Every requirement must be testable and consequential questions must be
-resolved. If not, call `plan`; do not implement around ambiguity.
+resolved. If not, call `wf-plan`; do not implement around ambiguity.
 
 Delegate substantial codebase exploration per the Delegation Protocol:
 

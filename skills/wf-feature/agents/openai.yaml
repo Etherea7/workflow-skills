@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feature"
+  short_description: "Implement ready features with verified tests"
+  default_prompt: "Use $wf-feature to implement this ready software change through a verified tests-first workflow."

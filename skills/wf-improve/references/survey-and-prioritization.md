@@ -26,8 +26,8 @@ Use stable IDs `P1` through `P5` within one cycle. Each proposal records:
 - confidence: 0 unsupported (exclude), 1 partial, 2 corroborated
 - impact: 0-3; urgency/risk: 0-3; effort: 1-3
 - score: `impact + urgency + confidence + (4 - effort)`
-- next workflow: `plan` when consequential behavior is undecided, otherwise
-  `new-feature`; `debug` only when selection is specifically an observed defect
+- next workflow: `wf-plan` when consequential behavior is undecided, otherwise
+  `wf-feature`; `wf-debug` only when selection is specifically an observed defect
 
 Security, privacy, data-loss, or externally exploited correctness evidence may
 override the arithmetic; record the reason. Break ties by dependency order,

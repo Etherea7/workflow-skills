@@ -13,7 +13,7 @@ Resolve these before scaffolding:
 
 For each consequential choice, record: chosen option, alternatives considered,
 constraint or tradeoff that selected it, and version/pinning policy. Call
-`plan` when the answer affects data loss, security/privacy, compatibility,
+`wf-plan` when the answer affects data loss, security/privacy, compatibility,
 deployment, public interfaces, or substantial rework and the human has not
 resolved it.
 

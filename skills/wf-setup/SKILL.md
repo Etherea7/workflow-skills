@@ -1,6 +1,6 @@
 ---
-name: project-setup
-description: Mandatory greenfield workflow for creating, initializing, bootstrapping, or scaffolding a brand-new software project or repository, including an empty or expressly designated uninitialized directory. Use when requirements and stack choices must become a constitution, project-scoped AGENTS.md and CLAUDE.md, bootstrap artifacts, a working scaffold, an observed development loop, and a safe initial commit. Never use for adding functionality to an existing product (use new-feature), diagnosing a defect (use debug), clarifying only one feature (use plan), surveying what to improve next (use next-step-improve), installing this workflow suite, or making a trivial configuration edit in an established repository.
+name: wf-setup
+description: Bootstrap a new software project or repository from requirements and stack choices into a constitution, project rules, bootstrap artifacts, working scaffold, observed development loop, and safe initial commit. Use for empty or explicitly uninitialized targets. Never use for functionality in an existing product (use wf-feature), defect diagnosis (use wf-debug), one unclear feature (use wf-plan), repository prioritization (use wf-improve), suite installation, or trivial established-project edits.
 license: MIT
 metadata:
   suite: dev-workflows
@@ -59,7 +59,7 @@ test runner, required quality commands, security/privacy constraints, and
 initial non-goals. Record exact versions or version policy and a short rationale
 for consequential stack choices.
 
-Invoke `plan` when a consequential requirement or stack constraint is
+Invoke `wf-plan` when a consequential requirement or stack constraint is
 ambiguous. Do not scaffold through ambiguity. Low-risk reversible defaults may
 be proposed, but label them and record why they are reversible. A generator's
 default is not a product decision.

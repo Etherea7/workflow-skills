@@ -1,6 +1,6 @@
 ---
-name: plan
-description: Turn vague or ambiguous software requirements into a testable spec through an interactive clarification loop, before any code is written. Use whenever the user wants to build or change something but the requirements are unclear, under-specified, or open-ended — phrases like "I want something that…", "build me an app for…", "add some kind of X", "not sure exactly how this should work" — and whenever another workflow (project-setup, new-feature, debug, next-step-improve) hits ambiguous requirements. Produces specs/NNN-slug/spec.md (requirements as numbered testable statements) plus a resumable checklist, ending with a consistency pass. Do not use for requirements that are already precise enough to implement, for pure implementation planning of a well-specified task, or for non-software planning (trips, schedules, business strategy).
+name: wf-plan
+description: Clarify vague or ambiguous software requirements into a testable spec before code is written. Use when desired behavior is unclear, under-specified, or open-ended, including ambiguity handed off by wf-setup, wf-feature, wf-debug, or wf-improve. Produces numbered requirements and a resumable checklist. Do not use for requirements already precise enough to implement, implementation planning of a ready task, or non-software planning.
 license: MIT
 metadata:
   suite: dev-workflows
@@ -159,7 +159,7 @@ done. A spec marked ready with holes in it poisons every downstream workflow.
    `awaiting-human` with the Handback filled.
 5. Report back: where the artifacts live, the spec status, every provisional
    default adopted (so the human can skim-audit them), remaining open
-   questions, and the natural next step — usually `new-feature` for a ready
+   questions, and the natural next step — usually `wf-feature` for a ready
    spec. If a caller workflow invoked you, return the spec path and status;
    that is your contract.
 

@@ -19,7 +19,7 @@ try {
     heads.push(data.head.slice(0, 7));
     const stale = readFileSync(join(project, "specs", "INDEX.md"), "utf8");
     if (!stale.includes("999-phantom")) throw new Error(`${config} INDEX is not observably stale`);
-    const hasSkill = existsSync(join(project, ".agents", "skills", "next-step-improve", "SKILL.md"));
+    const hasSkill = existsSync(join(project, ".agents", "skills", "wf-improve", "SKILL.md"));
     if (hasSkill !== (config === "with-skill")) throw new Error(`${config} skill installation mismatch`);
     const test = spawnSync(process.execPath, ["--test"], { cwd: project, encoding: "utf8" });
     if (test.status !== 0 || !test.stdout.includes("# pass 1")) throw new Error(`${config} baseline test is not green`);

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Debug"
+  short_description: "Reproduce, diagnose, and verify software fixes"
+  default_prompt: "Use $wf-debug to reproduce and diagnose this software defect, applying a verified fix only if I explicitly request repair."

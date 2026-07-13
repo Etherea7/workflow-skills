@@ -5,13 +5,13 @@ import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const read = (path) => readFileSync(join(root, path), "utf8").replace(/\r\n/g, "\n");
-const skill = read("skills/next-step-improve/SKILL.md");
-const indexRef = read("skills/next-step-improve/references/index-contract.md");
-const priority = read("skills/next-step-improve/references/survey-and-prioritization.md");
-const decomposition = read("skills/next-step-improve/references/decomposition.md");
-const persistence = read("skills/next-step-improve/references/persistence.md");
-const checklist = read("skills/next-step-improve/assets/checklist-template.md");
-const generator = read("skills/next-step-improve/scripts/regenerate-index.mjs");
+const skill = read("skills/wf-improve/SKILL.md");
+const indexRef = read("skills/wf-improve/references/index-contract.md");
+const priority = read("skills/wf-improve/references/survey-and-prioritization.md");
+const decomposition = read("skills/wf-improve/references/decomposition.md");
+const persistence = read("skills/wf-improve/references/persistence.md");
+const checklist = read("skills/wf-improve/assets/checklist-template.md");
+const generator = read("skills/wf-improve/scripts/regenerate-index.mjs");
 const secrets = read("scripts/secrets-check.sh");
 const description = skill.split("---", 3)[1];
 const errors = [];
@@ -33,8 +33,8 @@ check(skill.includes("improve/NNN-slug") && skill.includes(".worktrees/NNN-slug/
 check(skill.includes("specs/NNN-slug/spec.md") && skill.includes("checklist.md"), "numbered survey artifact contract missing");
 check(skill.includes("Never hand-edit or incrementally patch the index"), "generated index ownership missing");
 check(skill.includes("structured return") && skill.includes("orchestrator validation"), "durable delegation evidence missing");
-check(skill.includes("one ready increment at a time") && decomposition.includes("new-feature"), "sequential downstream routing missing");
-check(decomposition.includes("observed defect") && decomposition.includes("debug"), "defect routing boundary missing");
+check(skill.includes("one ready increment at a time") && decomposition.includes("wf-feature"), "sequential downstream routing missing");
+check(decomposition.includes("observed defect") && decomposition.includes("wf-debug"), "defect routing boundary missing");
 check(priority.includes("impact + urgency + confidence + (4 - effort)"), "priority scoring contract missing");
 check(indexRef.includes("checklist `status`") && indexRef.includes("spec frontmatter"), "status precedence missing");
 check(indexRef.includes("byte-identical") && indexRef.includes("--check"), "deterministic index contract missing");
@@ -53,13 +53,13 @@ check(description.includes("Do not use for implementing") && description.include
 check(!/\b(?:Claude|Codex|Sonnet|Haiku|Task tool|Agent tool)\b/.test([skill, indexRef, priority, decomposition, persistence].join("\n")), "host mechanics leaked into portable skill");
 
 for (const file of [
-  "skills/next-step-improve/agents/openai.yaml",
-  "skills/next-step-improve/assets/INDEX-template.md",
-  "skills/next-step-improve/assets/checklist-template.md",
-  "skills/next-step-improve/assets/survey-spec-template.md",
-  "skills/next-step-improve/scripts/regenerate-index.mjs",
-  "skills/next-step-improve/scripts/next-spec-number.sh",
-  "skills/next-step-improve/scripts/secrets-check.sh",
+  "skills/wf-improve/agents/openai.yaml",
+  "skills/wf-improve/assets/INDEX-template.md",
+  "skills/wf-improve/assets/checklist-template.md",
+  "skills/wf-improve/assets/survey-spec-template.md",
+  "skills/wf-improve/scripts/regenerate-index.mjs",
+  "skills/wf-improve/scripts/next-spec-number.sh",
+  "skills/wf-improve/scripts/secrets-check.sh",
   "evals/next-step-improve/index-test.mjs",
   "evals/next-step-improve/reconciliation-test.mjs",
   "evals/next-step-improve/secrets-test.mjs",
@@ -90,11 +90,11 @@ for (const file of [
 ]) check(existsSync(join(root, file)), `missing M4 runtime/eval file: ${file}`);
 
 for (const [canonical, vendored] of [
-  ["scripts/next-spec-number.sh", "skills/next-step-improve/scripts/next-spec-number.sh"],
-  ["scripts/secrets-check.sh", "skills/next-step-improve/scripts/secrets-check.sh"]
+  ["scripts/next-spec-number.sh", "skills/wf-improve/scripts/next-spec-number.sh"],
+  ["scripts/secrets-check.sh", "skills/wf-improve/scripts/secrets-check.sh"]
 ]) check(read(canonical) === read(vendored), `vendored script drift: ${vendored}`);
 
-check(read("skills/next-step-improve/agents/openai.yaml").includes("$next-step-improve"), "UI prompt lost explicit skill token");
+check(read("skills/wf-improve/agents/openai.yaml").includes("$wf-improve"), "UI prompt lost explicit skill token");
 
 if (errors.length) {
   errors.forEach((error) => console.error(`FAIL: ${error}`));

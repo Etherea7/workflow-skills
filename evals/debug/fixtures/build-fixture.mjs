@@ -58,7 +58,7 @@ import { first } from "../src/index.js";
 test("zero limit returns none", () => assert.deepEqual(first([1, 2], 0), []));
 `);
 if (config === "with-skill") {
-  cpSync(join(repoRoot, "skills", "debug"), join(dest, ".agents", "skills", "debug"), { recursive: true });
+  cpSync(join(repoRoot, "skills", "wf-debug"), join(dest, ".agents", "skills", "wf-debug"), { recursive: true });
 }
 run(["init", "-b", "main"]);
 run(["config", "user.name", "Eval Bot"]);

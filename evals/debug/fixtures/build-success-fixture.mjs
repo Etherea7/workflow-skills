@@ -59,7 +59,7 @@ test("out-of-range port throws", () => assert.throws(() => parsePort("70000"), R
 `);
 put("docs/ports.md", "# Port parsing\n\n`parsePort(value)` accepts integer ports from 0 through 65535 inclusive and throws `RangeError` outside that range.\n");
 if (config === "with-skill") {
-  cpSync(join(repoRoot, "skills", "debug"), join(dest, ".agents", "skills", "debug"), { recursive: true });
+  cpSync(join(repoRoot, "skills", "wf-debug"), join(dest, ".agents", "skills", "wf-debug"), { recursive: true });
 }
 run(["init", "-b", "main"]);
 run(["config", "user.name", "Eval Bot"]);

@@ -25,5 +25,5 @@ related: []
 - INDEX is regenerated and verified from directory truth.
 - At most five evidence-backed proposals are ranked and one is recommended.
 - Human selection/defer/reject is persisted before downstream work.
-- Selected work is routed to `plan`, `new-feature`, or `debug` without being
+- Selected work is routed to `wf-plan`, `wf-feature`, or `wf-debug` without being
   implemented by this workflow.

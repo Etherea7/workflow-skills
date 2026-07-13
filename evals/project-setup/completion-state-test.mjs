@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const target = mkdtempSync(join(tmpdir(), "project-setup-completion-"));
-const checker = join(root, "skills/project-setup/scripts/check-bootstrap.mjs");
+const checker = join(root, "skills/wf-setup/scripts/check-bootstrap.mjs");
 let checks = 0;
 const expect = (condition, message) => { checks += 1; if (!condition) throw new Error(message); };
 const run = () => spawnSync(process.execPath, [checker, target], { cwd: root, encoding: "utf8" });

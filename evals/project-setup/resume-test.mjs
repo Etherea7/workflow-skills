@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const target = mkdtempSync(join(tmpdir(), "project-setup-resume-"));
-const preflight = join(root, "skills/project-setup/scripts/check-commit-readiness.mjs");
+const preflight = join(root, "skills/wf-setup/scripts/check-commit-readiness.mjs");
 let checks = 0;
 const expect = (condition, message) => { checks += 1; if (!condition) throw new Error(message); };
 const run = (command, args, cwd = target) => spawnSync(command, args, { cwd, encoding: "utf8", shell: false });

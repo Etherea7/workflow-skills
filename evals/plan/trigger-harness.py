@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Windows-safe trigger eval for the plan skill (vendored).
+"""Windows-safe trigger eval for the wf-plan skill (vendored).
 
 v2 lesson: tempfile.TemporaryDirectory cleanup recursed to death on Windows
 file locks (finished claude process still holding the cwd). v3 uses manual
@@ -14,8 +14,8 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-REPO_SKILL = REPO_ROOT / "skills" / "plan" / "SKILL.md"
-STUB_DIR = Path.home() / ".claude" / "skills" / "plan"
+REPO_SKILL = REPO_ROOT / "skills" / "wf-plan" / "SKILL.md"
+STUB_DIR = Path.home() / ".claude" / "skills" / "wf-plan"
 EVAL_SET = REPO_ROOT / "evals" / "plan" / "trigger-evals.json"
 OUT = Path(os.environ.get("TRIGGER_OUT", str(Path(os.environ.get("TEMP", "/tmp")) / "trigger-results.json")))
 SCRATCH = Path(os.environ.get("TEMP", "/tmp")) / "dw-trigscratch"
@@ -33,7 +33,7 @@ def real_description() -> str:
             desc = desc.split(stop, 1)[0]
     return " ".join(desc.split())
 
-BACKUP_DIR = STUB_DIR.with_name("plan.trigger-eval-backup")
+BACKUP_DIR = STUB_DIR.with_name("wf-plan.trigger-eval-backup")
 
 def install_stub():
     # Writes the stub only. Moving any real installed skill aside (and
@@ -42,7 +42,7 @@ def install_stub():
     STUB_DIR.mkdir(parents=True, exist_ok=True)
     (STUB_DIR / "SKILL.md").write_text(
         "---\n"
-        "name: plan\n"
+        "name: wf-plan\n"
         f"description: {real_description()}\n"
         "---\n\n"
         "# Trigger-measurement stub\n\n"
@@ -74,8 +74,8 @@ def one_run(query: str, job_id: int) -> bool:
         out = e.stdout or ""
         out = out if isinstance(out, str) else out.decode("utf-8", "replace")
     compact = out.replace(" ", "")
-    skill_call = ('"name":"Skill"' in compact and '"plan"' in out) or \
-                 ('"name":"SlashCommand"' in compact and "/plan" in out)
+    skill_call = ('"name":"Skill"' in compact and '"wf-plan"' in out) or \
+                 ('"name":"SlashCommand"' in compact and "/wf-plan" in out)
     return skill_call or "TRIGGERED" in out
 
 def main():

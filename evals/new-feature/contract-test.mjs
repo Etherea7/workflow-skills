@@ -7,9 +7,9 @@ import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const read = (path) => readFileSync(join(root, path), "utf8").replace(/\r\n/g, "\n");
-const skill = read("skills/new-feature/SKILL.md");
-const merge = read("skills/new-feature/references/persistence-and-merge.md");
-const loop = read("skills/new-feature/references/tdd-loop.md");
+const skill = read("skills/wf-feature/SKILL.md");
+const merge = read("skills/wf-feature/references/persistence-and-merge.md");
+const loop = read("skills/wf-feature/references/tdd-loop.md");
 const rules = read("rules/AGENTS.md");
 const mergeFlat = merge.replace(/\s+/g, " ");
 const errors = [];
@@ -34,12 +34,12 @@ check(merge.includes("If Bash is unavailable") && merge.includes("If no equivale
 check(/Sonnet-class or stronger/.test(rules) && /Haiku-class/.test(rules), "empirical Claude model routing missing");
 
 for (const file of [
-  "skills/new-feature/scripts/next-spec-number.sh",
-  "skills/new-feature/scripts/secrets-check.sh",
-  "skills/new-feature/assets/spec-template.md",
-  "skills/new-feature/assets/plan-template.md",
-  "skills/new-feature/assets/tasks-template.md",
-  "skills/new-feature/assets/checklist-template.md"
+  "skills/wf-feature/scripts/next-spec-number.sh",
+  "skills/wf-feature/scripts/secrets-check.sh",
+  "skills/wf-feature/assets/spec-template.md",
+  "skills/wf-feature/assets/plan-template.md",
+  "skills/wf-feature/assets/tasks-template.md",
+  "skills/wf-feature/assets/checklist-template.md"
 ]) check(existsSync(join(root, file)), `missing vendored runtime file: ${file}`);
 
 // Mechanical regression: a descendant feature would normally fast-forward.

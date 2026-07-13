@@ -122,7 +122,7 @@ put("specs/004-metrics/checklist.md", checklist(
 ));
 
 if (config === "with-skill") {
-  for (const skill of ["next-step-improve", "plan", "new-feature", "debug"]) {
+  for (const skill of ["wf-improve", "wf-plan", "wf-feature", "wf-debug"]) {
     cpSync(join(repoRoot, "skills", skill), join(dest, ".agents", "skills", skill), { recursive: true });
   }
 }
