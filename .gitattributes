@@ -4,3 +4,6 @@
 *.mjs text eol=lf
 *.md text
 *.yml text
+# Committed eval evidence must stay byte-exact — tests hash these artifacts,
+# and autocrlf checkout conversion would drift the hashes on Windows.
+evals/*/evidence/artifacts/** -text

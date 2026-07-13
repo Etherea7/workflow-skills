@@ -7,14 +7,15 @@ open review questions, and the next milestone's in-progress state.
 
 ## Current handoff
 
-- Branch: `codex/m4-next-step-improve` in `.worktrees/m4-next-step-improve`
-  (provisional M4 isolation based on approved M3 checkpoint)
-- M4 base commit: `2502657` (approved M3 behavior/evidence checkpoint)
-- Active gates: M2 `new-feature` trigger plus scanner-sensitive behavior reruns
-  remain pending; M3 `debug` has historical behavior approval but its
-  scanner-sensitive reruns, triggers, and human gate remain open;
-  M4 skill/contract review is approved and live evidence is complete, but its
-  independent evidence review, triggers, and human gate remain open
+- Branch: `main` — `codex/m3-debug` and `codex/m4-next-step-improve` were
+  reviewed and merged 2026-07-13 (merge commits `9084256`, `b2f650c`; human
+  pre-authorized the protected-branch merges conditional on orchestrator
+  approval). See "Fable orchestrator review — 2026-07-13" below.
+- Active gates: M2 `new-feature` trigger measurement plus scanner-sensitive
+  behavior reruns remain pending; M3 `debug` scanner-sensitive reruns,
+  shared-harness triggers, and human gate remain open; M4 shared-harness
+  triggers and human gate remain open (its independent live-evidence review
+  was completed 2026-07-13, see below).
 - Review discipline: findings change the skill and trigger clean reruns; an
   agent must not merely reinterpret or raise an existing grade.
 
@@ -332,3 +333,121 @@ Still pending:
    escaped, and mixed user-profile paths are absent from transcripts.
 5. Preserve the one-run limitation and make no speed, cost, or statistical
    claim from recorded timings or token counts.
+
+## Fable orchestrator review — 2026-07-13
+
+Reviewing agent: Claude Fable 5 (orchestrator), with two sonnet review
+subagents (one per milestone) doing full content/evidence passes and the
+orchestrator independently rerunning every deterministic suite, verifying
+vendored-script byte-identity (md5 across all four copies), reading both
+SKILL.md bodies, checking live-results JSON against ledger claims, and
+reviewing the shared-scanner fail-closed diff line by line.
+
+### Verdicts
+
+- **M3 `debug`: APPROVE-FOR-MERGE** — zero blocking findings. Merged to
+  `main` at `9084256` (`--no-ff --no-commit`, staged-diff secrets scan clean,
+  then commit). Gate remains open: shared-harness triggers, scanner-sensitive
+  live reruns, human validation.
+- **M4 `next-step-improve`: APPROVE-FOR-MERGE** — zero blocking findings.
+  Merged to `main` at `b2f650c` (same protocol, scan clean). Gate remains
+  open: shared-harness triggers, human validation. The previously pending
+  independent live-evidence review is now DONE (see below).
+
+### M3 answers (Q1–Q6, all non-blocking)
+
+1. Yes — every final case has a committed sanitized transcript + portable Git
+   bundle; `evidence-test.mjs` (38/38, reverified) clones each bundle and
+   resolves every cited hash; no Temp reliance.
+2. Yes — the checklist's `Delegation evidence` section requires all five brief
+   fields, the structured return, and citation validation; the i4 transcript
+   shows validation progressing from `pending` to concrete file:line citations
+   before the fix commit, and the baseline is graded by the same standard
+   (credited for its genuine explorer use, failed only on missing durable
+   persistence).
+3. Yes — diagnosis-only non-mutation, infrastructure-event accounting, and
+   cleanup/retention reporting are consistent across SKILL.md body,
+   references, template, fixture, and are mechanically regression-tested.
+4. Yes — boundaries are deliberately mirrored across sibling skills' query
+   sets (debug's positive is new-feature's literal negative); unsafe
+   live-production experimentation is an explicit negative.
+5. Retain `agents/openai.yaml`, non-blocking — but the suite is inconsistent
+   (plan/new-feature lack it). Follow-up: backfill or document the asymmetry
+   before M6.
+6. Yes — the bailout fixture seeds three genuinely executed failed attempts,
+   leaves Handback empty, and never hints the real off-by-one; verified
+   directly in `build-fixture.mjs` and by the fixture smoke test.
+
+### M4 answers (Q1–Q6, all non-blocking)
+
+1. Yes — numbered `specs/NNN-improvement-survey/` work units reuse the
+   existing flat-numbering and one-checklist-per-work-unit conventions instead
+   of inventing a parallel state mechanism.
+2. Yes — fatal conditions (malformed frontmatter, id mismatch, duplicate
+   numbers, self-links, parent cycles) all throw before any write, so a bad
+   directory never clobbers a valid INDEX; recoverable conditions render under
+   "Attention needed".
+3. Yes — status is uniformly `checklist || spec || fallback`, and any
+   disagreement is surfaced as an Attention line, so precedence is
+   deterministic and visible.
+4. Yes — the human choice gate is unconditional in the SKILL.md body with the
+   ranking durably double-committed before the human is even asked; there is
+   no carve-out for user pre-authorization.
+5. Yes with a caveat — one increment at a time with post-child index
+   reconciliation is architecturally sound and evidenced for a single P2
+   selection; multi-cycle proposal sequencing is supported but not yet
+   exercised live (non-blocking).
+6. Yes — all excluded categories in the description have matching negatives in
+   both calibration and frozen holdout sets.
+
+### M4 live-evidence review (the pending independent review) — DONE
+
+The sonnet reviewer performed the five requested checks at the merged content
+(identical tree to `28181d3`'s branch tip `e15df78`): reran
+`evidence-test.mjs` (52/52); confirmed the fresh baseline 0/6 applies the
+conjunctive assertions consistently while crediting its useful shortlist
+narratively; confirmed resume-baseline 5/6 is fair (its bespoke PowerShell
+row validator demonstrably never invokes the committed generator's `--check`,
+which the assertion text requires — verified at transcript lines 5799–5849);
+confirmed no Temp dependence and no ordinary/escaped user paths in
+transcripts; no speed/cost/statistical claims made anywhere. Result: grades
+stand as committed.
+
+### Non-blocking findings carried forward
+
+1. `agents/openai.yaml` exists only for debug/next-step-improve — backfill
+   plan/new-feature or document the asymmetry (M6 candidate).
+2. `regenerate-index.mjs` validates spec `id:` against the directory name but
+   not the checklist's `work:` field — hardening candidate.
+3. `index-contract.md` prose ("ID mismatch" fatal) is slightly ahead of what
+   is enforced for checklists — same root cause as (2).
+4. Resume trigger queries across skills discriminate by prose wording, not
+   the checklist `workflow:` field that real resume detection reads —
+   acceptable for trigger evals, worth a comment.
+
+### Post-merge integration defect found and fixed (CRLF checkout drift)
+
+Post-merge verification on `main` failed two M4 suites that passed in the
+worktree: `contract-test.mjs` (3 checks) and `evidence-test.mjs` (working
+patch hash drift). Root cause: `core.autocrlf=true` + `* text=auto` meant the
+merge checkout wrote `.md`/`.patch` working copies with CRLF, while the
+worktree had LF bytes on disk; the repo blobs are identical. Two portable
+defects: contract-test matched phrases containing hard `\n` (debug's
+contract-test already flattens whitespace and was immune), and evidence-test
+sha256-hashes raw artifact bytes. Fix: `.gitattributes` now pins
+`evals/*/evidence/artifacts/** -text` (committed evidence must be byte-exact
+on every platform), and the M4 contract-test read helper normalizes CRLF.
+Any fresh Windows clone would have hit this; CI (Linux) would not.
+
+### M2 trigger rerun attempt — 2026-07-13 (invalid, session limit again)
+
+The unchanged 36-attempt calibration+holdout run was started fresh after the
+15:00 reset window. It aborted at attempt 19/36 with the harness's
+SessionLimit guard (zero-token rejection before model execution). Per the
+harness's own rules the partial attempts are invalid and were not graded; no
+`trigger-results.json` was written; the stub was removed cleanly (verified:
+no `~/.claude/skills/new-feature`, no leftover backup). Diagnostic-only
+observation from the partial stream (NOT evidence): positives q1/q4 hit 2/2,
+q2/q3 missed, negatives 0/8 false positives — consistent with the prior
+under-recall pattern, so the description likely still needs iteration once a
+full run is affordable. M2 trigger measurement remains open.

@@ -175,7 +175,9 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       partial hits/misses are invalid. The later shared-scanner fail-closed
       repair passes the M2 23/23 deterministic contract but requires clean
       scan-sensitive live behavior reruns; retain old evidence without
-      regrading. Keep unchecked.)
+      regrading. 2026-07-13 Fable rerun attempt: fresh 36-attempt run aborted
+      at 19/36 by the SessionLimit guard; partials invalid, no results file
+      written, stub cleaned (see ledger). Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M3 `debug`
@@ -196,7 +198,11 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       Codex review of exact commit `32e8a0e` APPROVE. A later shared-scanner
       fail-closed repair passes the 49/49 contract and focused scanner
       regression, but reopens safety-sensitive live behavior assertions for a
-      clean rerun. Shared-harness triggers also remain required. Keep unchecked.)
+      clean rerun. Shared-harness triggers also remain required.
+      2026-07-13 Fable orchestrator review: APPROVE-FOR-MERGE (sonnet content
+      reviewer, zero blocking findings; all deterministic suites reverified on
+      merged main) — merged to main at 9084256 with gate honestly open.
+      Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M4 `next-step-improve`
@@ -224,7 +230,11 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       also remains open: Codex hit its usage limit before review and two valid
       Fable attempts exited without a handback; silence is not approval. Temp
       fixtures were removed only after 52/52 passed, and the same test passed
-      again afterward. Keep unchecked.)
+      again afterward. 2026-07-13 Fable orchestrator review: APPROVE-FOR-MERGE
+      (sonnet content reviewer, zero blocking findings) — merged to main at
+      b2f650c; the independent live-evidence review is now DONE (all five
+      requested checks performed, grades stand — see ledger). Remaining open:
+      shared-harness triggers + human gate. Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M5 `project-setup`
@@ -259,6 +269,15 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
   judgment-heavy — route to mid-tier+ (sonnet-class); haiku remains fine for explorer/
   implementer delegations. eval-0 final run moved to sonnet, honestly labeled in the
   benchmark. Attempts archived in dwv/i4/eval-0-export/attempt{1,2}-* for audit.
+- 2026-07-13 CRLF CHECKOUT DRIFT FINDING: two M4 suites passed in their worktree but
+  failed on freshly merged main — core.autocrlf=true + `* text=auto` gave the merge
+  checkout CRLF working copies while the worktree had LF on disk (identical blobs).
+  Broke: contract-test phrases containing hard `\n` (debug's whitespace-flattening
+  idiom was immune — prefer it), and evidence-test's sha256 of raw artifact bytes.
+  Fix: `.gitattributes` pins `evals/*/evidence/artifacts/** -text` (committed
+  evidence is byte-exact everywhere) + CRLF normalization in the M4 read helper.
+  Rule for future suites: contract tests must be line-ending-agnostic; hash-verified
+  artifacts must carry `-text`.
 
 ## Handback
 
@@ -269,3 +288,14 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
   results, then request the final Codex/human gate. Human explicitly authorized
   provisional M3 work in isolated branch/worktree `codex/m3-debug`; do not merge
   it or claim its gate while M2 and M3 review items remain open.
+- 2026-07-13 (later, Fable orchestrator): human authorized review-then-merge of
+  the Codex worktrees. M3 and M4 reviewed (APPROVE-FOR-MERGE, zero blocking
+  findings each) and merged to main (9084256, b2f650c) with their gates
+  honestly open; M4's independent live-evidence review is done. CRLF checkout
+  drift found post-merge and fixed (see Loop log). A fresh M2 trigger rerun
+  aborted at 19/36 on the session limit — still the first unchecked item.
+  Remaining for M2–M4 closure: (a) M2 trigger calibration+holdout full run,
+  then likely a description iteration + rerun given the persistent
+  under-recall pattern; (b) shared-harness trigger runs for debug and
+  next-step-improve; (c) scan-sensitive live behavior reruns for M2/M3 after
+  the scanner repair; (d) human gates. Then M5 `project-setup`.

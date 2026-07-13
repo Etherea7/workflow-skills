@@ -4,7 +4,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const read = (path) => readFileSync(join(root, path), "utf8");
+const read = (path) => readFileSync(join(root, path), "utf8").replace(/\r\n/g, "\n");
 const skill = read("skills/next-step-improve/SKILL.md");
 const indexRef = read("skills/next-step-improve/references/index-contract.md");
 const priority = read("skills/next-step-improve/references/survey-and-prioritization.md");
