@@ -20,7 +20,7 @@ OUT = REPO_ROOT / "evals" / "new-feature" / "trigger-results.json"
 STUB_DIR = Path.home() / ".claude" / "skills" / "new-feature"
 BACKUP_DIR = STUB_DIR.with_name("new-feature.trigger-eval-backup")
 SCRATCH = Path(os.environ.get("TEMP", "/tmp")) / "dwv" / "m2-triggers"
-RUNS = int(os.environ.get("TRIGGER_RUNS", "2"))
+RUNS = 2
 MODEL = os.environ.get("TRIGGER_MODEL", "sonnet")
 TIMEOUT = 180
 TOKEN = "TRIGGERED_NEW_FEATURE_7F3A"
@@ -214,8 +214,8 @@ def main() -> None:
         "calibration": summarize([r for r in rows if r["suite"] == "calibration"]),
         "holdout": summarize([r for r in rows if r["suite"] == "holdout"]),
         "detection": (
-            "attempt-level Skill/SlashCommand call OR unique stub response token "
-            f"{TOKEN}"
+            "exact attempt-level Skill/SlashCommand input; unique stub token "
+            f"{TOKEN} is recorded only as corroborating diagnostics"
         ),
     }
     OUT.write_text(json.dumps({"summary": summary, "results": rows}, indent=2),

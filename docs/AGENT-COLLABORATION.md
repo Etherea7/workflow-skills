@@ -73,6 +73,12 @@ checks include the gate's adversarial case: a `plan` tool call plus text saying
 `new-feature` must remain a miss. The calibration plus holdout rerun is pending
 the 15:00 Asia/Singapore reset.
 
+Focused gate round 2 marked the merge regression, genuine-red fixture/i5
+reruns, and per-assertion grading resolved. Its remaining consistency notes were
+then fixed: the response token is explicitly diagnostic-only, the harness run
+count is a non-overridable two attempts, the checklist reports 23/23 contract
+checks, and its stale M0 handback now names the exact M2 resume point.
+
 ### Engineering and evaluation notes
 
 - The protected-branch case already forced two real workflow changes before

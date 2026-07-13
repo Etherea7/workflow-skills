@@ -2,9 +2,10 @@
 
 Method: 12 realistic queries (5 should-trigger, 7 near-miss negatives) × 2
 attempts, Claude Code Sonnet, `--max-turns 3`, with a reversible user-scope stub
-carrying the repository skill's real name and description. A trigger is an
-attempt-level Skill/SlashCommand call or the unique stub response token. Harness:
-`trigger-harness.py`.
+carrying the repository skill's real name and description. A trigger requires
+an exact attempt-level `Skill`/`SlashCommand` input naming `new-feature`; the
+unique stub token is recorded only as corroborating diagnostics and never
+changes a grade. Harness: `trigger-harness.py`.
 
 ## Completed iterations
 

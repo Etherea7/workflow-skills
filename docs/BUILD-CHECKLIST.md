@@ -147,7 +147,7 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       implementer delegation, N=3 bailout, secrets check, gated merge)
       (evidence: `skills/new-feature/`; `node scripts/validate.mjs` PASS;
       official `uvx --from skills-ref agentskills validate skills/new-feature`
-      → Valid skill; `node evals/new-feature/contract-test.mjs` → 21/21;
+      → Valid skill; `node evals/new-feature/contract-test.mjs` → 23/23;
       model routing encoded in `rules/AGENTS.md`; vendored scripts byte-identical)
 - [ ] Evals: triggers; refuses protected-branch merge without confirmation; resumes from checklist
       (behavior evidence complete 2026-07-13: `evals/new-feature/live-results-i4.{json,md}`
@@ -207,6 +207,8 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
 
 ## Handback
 
-- 2026-07-11 M0 complete; awaiting rules + templates approval before M1 (`plan` skill).
-  Review order: rules/AGENTS.md (the Delegation Protocol binds every skill) →
-  templates/checklist.md + spec.md (the memory + spec formats) → install.sh behavior notes.
+- 2026-07-13 M0 and M1 are closed. M2 implementation and all six behavior
+  configurations are complete; trigger calibration plus frozen holdout remains
+  pending after the 15:00 Asia/Singapore Claude reset. Resume at the first
+  unchecked M2 eval item, run the fixed two-attempt harness, update durable
+  results, then request the final Codex/human gate. Do not begin M3 first.
