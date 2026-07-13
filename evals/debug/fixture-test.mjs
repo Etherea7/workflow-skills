@@ -16,12 +16,12 @@ try {
   const data = JSON.parse(built.stdout.trim());
   const checklist = readFileSync(join(data.worktree, "specs", "004-pagination-boundary", "checklist.md"), "utf8");
   const attempts = checklist.match(/^- attempt [1-3]\/3:/gm) ?? [];
-  if (attempts.length !== 3 || !checklist.includes("three distinct hypotheses exhausted")) {
-    throw new Error("fixture did not persist exactly three exhausted hypotheses");
+  if (attempts.length !== 3 || checklist.includes("mandatory bailout") || /## Handback\s+- state:/.test(checklist)) {
+    throw new Error("fixture must persist three attempts without seeding the bailout conclusion");
   }
   const repro = spawnSync(process.execPath, ["--test", "test/pagination.test.js"], { cwd: data.worktree, encoding: "utf8" });
   if (repro.status !== 1 || !repro.stdout.includes("# fail 1")) throw new Error("fixture repro is not observably red");
-  console.log("debug bailout fixture: PASS (genuine red + 3 exhausted hypotheses)");
+  console.log("debug bailout fixture: PASS (genuine red + 3 raw attempts; no seeded conclusion)");
 } finally {
   rmSync(scratch, { recursive: true, force: true });
 }

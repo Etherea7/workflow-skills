@@ -1,6 +1,6 @@
 ---
 name: debug
-description: Reproduce, diagnose, and fix an observed software defect through evidence-led investigation, ranked hypotheses, bounded experiments, regression tests, and verified persistence. Use when behavior is broken, incorrect, flaky, crashing, failing tests, or producing errors and the user wants the cause found or repaired, including continuing an existing debug checklist. Do not use to implement new behavior (use new-feature), clarify an undecided expected behavior (use plan), review code without a reported defect, investigate active production systems without a safe local reproduction, or make trivial non-behavioral edits.
+description: Reproduce and diagnose an observed software defect through evidence-led investigation and ranked bounded hypotheses, then apply a regression-tested fix only when the user asks for repair. Use when behavior is broken, incorrect, flaky, crashing, failing tests, or producing errors and the user wants the cause found or the defect repaired, including continuing an existing debug checklist. Diagnosis-only requests remain non-mutating. Do not use to implement new behavior (use new-feature), clarify an undecided expected behavior (use plan), review code without a reported defect, investigate active production systems without a safe local reproduction, or make trivial non-behavioral edits.
 license: MIT
 metadata:
   suite: dev-workflows
@@ -48,6 +48,23 @@ Record the report in concrete terms:
 - actual behavior, exact error/output, frequency, and first known occurrence
 - environment/version/configuration and minimal input
 - safe reproduction command and affected/unaffected boundaries
+
+Classify authorization explicitly:
+
+- **diagnosis-only:** the user asked to find, explain, or investigate the cause
+  without requesting a repair. Do not create a branch/worktree/checklist, edit
+  files, add a regression test, commit, or merge. Use Step 3 only to run an
+  existing safe reproduction or an ad hoc read-only probe; then run the
+  read-only parts of Steps 4–5 and discriminating read-only experiments. Hand
+  back supported facts versus inference, remaining uncertainty, and a proposed
+  fix/verification plan. Stop before mutation.
+- **repair authorized:** the user asked to fix, patch, resolve, or implement the
+  correction. Continue through isolation, red oracle, bounded fixes, persistence,
+  and merge policy.
+
+If authorization is ambiguous, default to diagnosis-only and ask before editing.
+An existing debug checklist may be read during diagnosis-only work but must not
+be modified without repair or explicit artifact-write authorization.
 
 If expected behavior is materially undecided, invoke `plan` and stop this
 workflow until the requirement is testable. Do not convert a design choice into
@@ -104,7 +121,11 @@ leak a favored hypothesis. Ask for structured returns:
 If parallel delegation is available, separate scopes such as execution path,
 tests/history, and environment/configuration. Independence means investigators
 receive evidence, not the orchestrator's preferred answer. Validate cited facts
-before ranking them.
+before ranking them. Before selecting a cause, persist in the checklist's
+`Delegation evidence` section: the neutral brief with all five Delegation
+Protocol fields, the structured explorer return, and the orchestrator's
+citation-validation result. A summary that merely claims exploration happened
+does not satisfy this step.
 
 ## Step 5 — Rank hypotheses before attempting a fix
 
@@ -124,8 +145,12 @@ each attempt, state the causal prediction and scoped files. Apply only the
 smallest reversible experiment or fix. An implementer may perform the mechanical
 change only after the orchestrator supplies that exact brief.
 
-Record the attempted hypothesis even if the tool/edit fails. A hypothesis is
-successful only when the original reproduction changes as predicted and the
+Record a numbered hypothesis only after its discriminating command or edit
+actually executes. Tool, permission, timeout, or setup failure is an
+`infrastructure event`, never `attempt N/BAILOUT_N`; record it in the separate
+infrastructure log, make at most one scoped environment retry, then stop
+`awaiting-human` without incrementing the causal counter if it still cannot run.
+A hypothesis is successful only when the original reproduction changes as predicted and the
 causal explanation fits the evidence. On failure, revert attempt-owned
 production changes before the next hypothesis while preserving the committed
 red oracle and checklist evidence.
@@ -168,6 +193,7 @@ Report:
 - changed files and verified commits
 - original repro plus targeted/regression results
 - destination/merge state and any confirmation needed
+- removed worktrees/branches, or each intentionally retained path/branch and reason
 - remaining risk, uncertainty, or next diagnostic action
 
 Never claim "fixed" from code inspection alone.

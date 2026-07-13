@@ -52,8 +52,10 @@ Then:
 
 An attempt fails when its prediction is contradicted, the repro stays red, or
 the change creates a regression. Tool/setup failure is recorded but does not
-falsify the hypothesis; fix the environment once without incrementing the
+falsify the hypothesis. Put it under `Infrastructure events`, never in the
+numbered Loop log. Make one scoped environment retry without incrementing the
 hypothesis count, then stop awaiting-human if the command still cannot execute.
+On resume, infrastructure entries never contribute to `BAILOUT_N`.
 
 Before another hypothesis, revert only the failed attempt's production edits.
 Keep the committed regression oracle, checklist, logs, and observations. Confirm

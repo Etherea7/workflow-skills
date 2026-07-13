@@ -25,10 +25,10 @@
       "assertions": [
         "All mutable work occurs in a newly allocated .worktrees/NNN-slug on the matching debug/NNN-slug branch based on the recorded develop head, never directly in the destination checkout",
         "A requirement-mapped zero-port regression test is observed failing for the reported reason before production code changes",
-        "Neutral investigation evidence and a ranked causal hypothesis with a discriminating prediction are persisted before the fix",
+        "A neutral explorer delegation brief, structured independent return, orchestrator citation validation, and a ranked causal hypothesis with a discriminating prediction are persisted before the fix",
         "The smallest causal implementation leaves tests intact and the original repro, targeted boundary tests, and full regression suite are independently observed green",
         "Staged added-lines credential scans precede verified code, checklist-truth, merge, and record commits, and the checklist cites actual hashes",
-        "Non-protected develop contains a tested non-fast-forward feature merge and truthful merge record, is clean, and main remains unchanged"
+        "Non-protected develop contains a tested non-fast-forward feature merge and truthful merge record, is clean, main remains unchanged, and worktree/branch cleanup or intentional retention is reported from observed Git state"
       ]
     }
   ]

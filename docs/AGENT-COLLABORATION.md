@@ -123,7 +123,7 @@ failure mode.
 
 ## M3 `debug` progress
 
-Status: provisional implementation and first behavior comparison complete on
+Status: provisional implementation and review-driven behavior comparison complete on
 `codex/m3-debug`; not merged and not gated.
 
 Completed:
@@ -137,31 +137,42 @@ Completed:
   mandatory no-N+1 findings handback.
 - Debug checklist asset, byte-identical number/secrets scripts, and generated
   `agents/openai.yaml` from the skill-creator initializer.
-- 27/27 deterministic contract checks, official skills-ref validation, 15
-  calibration triggers, 6 frozen holdouts, and a genuine-red fixture smoke test.
-- Live behavior: bailout i1 is 6/6 versus 3/6; clean fresh-success i2 is
-  6/6 versus 0/6, total 12/12 versus 3/12. The successful i1 attempt was
-  diagnostic only after exposing an unreasonable hard-coded slug assertion;
-  both configurations were rebuilt and rerun after generalization. No
-  speed/cost claim is made.
+- 39/39 deterministic contract checks, official skills-ref validation, 15
+  calibration triggers, 6 frozen holdouts, a genuine-red fixture smoke test,
+  and deterministic infrastructure-event accounting.
+- Live behavior: final bailout i3 is 6/6 versus 3/6; final fresh-success i4 is
+  6/6 versus 2/6, total 12/12 versus 5/12 (+58.33 points). Four sanitized,
+  committed evidence bundles make the grades auditable without Temp. Earlier
+  attempts that exposed contract defects were diagnostic/invalidated, changed,
+  and rerun clean; they were not regraded. No speed/cost claim is made.
+- Review round 1 returned `CHANGES REQUIRED`: transient-only evidence,
+  insufficiently durable delegation evidence, a mutating diagnosis-only path,
+  ambiguous infrastructure accounting, missing cleanup reporting, and a
+  fixture-seeded bailout conclusion. The workflow/evals now commit evidence
+  bundles, require the five-field neutral brief plus structured return and
+  citation validation, keep diagnosis-only read-only, log infrastructure events
+  outside the attempt counter, report observed cleanup/retention, and seed only
+  the three raw failed attempts. Both affected behavior cases were rebuilt and
+  rerun after these changes.
 
 Still pending:
 
 - trigger calibration/holdout through the shared harness after M2 approves it
-- independent Codex review, any clean reruns caused by findings, and human gate
+- focused Codex follow-up review and human gate
 
 ### M3 review requested
 
-1. Is committing a known-red regression oracle before diagnosis acceptable and
-   sufficiently distinguished from committing an unverified fix?
-2. Does an infrastructure/tool failure correctly avoid consuming a hypothesis
-   while still terminating after one environment retry?
-3. Is the bailout handback complete without a separate `debug.md`, or should
-   evidence move out of the single required checklist?
+1. Do the committed i3/i4 evidence bundles now make each strict assertion
+   independently auditable, with no reliance on Temp transcripts?
+2. Does the five-field neutral delegation brief, structured independent return,
+   and explicit citation validation prove the investigation was independent?
+3. Are diagnosis-only non-mutation, infrastructure-event accounting, and
+   observed cleanup/retention now unambiguous across skill, references, asset,
+   fixture, and eval contract?
 4. Are trigger boundaries sharp enough between `debug`, ambiguous behavior
    (`plan`), new behavior (`new-feature`), review-only work, and unsafe live
    production experimentation?
 5. Should the generated `skills/debug/agents/openai.yaml` be retained even
    though earlier suite skills predate that recommended metadata?
-6. Does the seeded-boundary eval over-direct the baseline, and what successful
-   fresh diagnosis case best complements it without duplicating `new-feature`?
+6. With the seeded conclusion removed, does the bailout fixture now provide
+   evidence without forcing the expected conclusion?

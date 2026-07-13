@@ -46,4 +46,12 @@ final history and rerun gates after the merge.
 Record the merge hash from a short-lived record branch/worktree, scan and commit
 the truth update, then integrate it under the same policy. A protected
 destination requires separate explicit confirmation for this record merge.
-Only then mark the checklist `done`. Never force-push or rewrite shared history.
+Only then mark the checklist `done`.
+
+After verified integration, remove disposable verification/record worktrees and
+branches. Remove the debug worktree/branch when clean and fully contained in the
+destination, unless project policy or the user requires retention. If anything
+is retained, record its exact registered path, branch, head, and reason in
+Handback and the final response. Always report `git worktree list`, remaining
+debug/record branches, destination cleanliness, and the final checklist path.
+Never force-push or rewrite shared history.

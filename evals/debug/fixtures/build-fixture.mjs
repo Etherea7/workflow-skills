@@ -36,7 +36,18 @@ rmSync(dest, { recursive: true, force: true });
 mkdirSync(dest, { recursive: true });
 put("package.json", JSON.stringify({ type: "module", scripts: { test: "node --test" } }, null, 2) + "\n");
 put(".gitignore", ".worktrees/\nnode_modules/\n");
-put("AGENTS.md", "# Fixture rules\n\nBAILOUT_N = 3. Protected branches: main, master, release/*. Test: `npm test`. No network.\n");
+put("AGENTS.md", `# Fixture rules
+
+BAILOUT_N = 3. Protected branches: main, master, release/*. Test: \`npm test\`. No network.
+
+## Delegation Protocol
+
+Use an explorer for neutral read-only investigation. Brief fields: role, task,
+required context, return format, done-criteria. Explorer returns observations
+with file/symbol citations, candidate causes with supporting/contradicting
+evidence, discriminating experiments, and unknowns/risks. The orchestrator
+validates citations and owns hypothesis ranking.
+`);
 put("src/index.js", `export function first(items, limit) {
   return items.slice(0, Math.max(0, limit - 1));
 }
@@ -118,7 +129,6 @@ links: { spec: null, plan: null, tasks: null }
 - attempt 2/3: hypothesis: duplicate identity collapse | prediction: unique IDs return three | experiment: three unique objects | observed result: only IDs 1,2 returned, disproved
 - attempt 3/3: hypothesis: limit-3 special case | prediction: limit 2 returns two | experiment: first([1,2,3],2) | observed result: length 1, disproved
 ## Handback
-- state: pending mandatory bailout; three distinct hypotheses exhausted
 `, worktree);
 run(["add", "test/pagination.test.js", "specs/004-pagination-boundary/checklist.md"], worktree);
 run(["commit", "-m", "test(debug): persist pagination reproduction and attempts"], worktree);

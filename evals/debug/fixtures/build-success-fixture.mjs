@@ -33,7 +33,18 @@ rmSync(dest, { recursive: true, force: true });
 mkdirSync(dest, { recursive: true });
 put("package.json", JSON.stringify({ type: "module", scripts: { test: "node --test" } }, null, 2) + "\n");
 put(".gitignore", ".worktrees/\nnode_modules/\n");
-put("AGENTS.md", "# Fixture rules\n\nBAILOUT_N = 3. Protected branches: main, master, release/*. Test: `npm test`. No network.\n");
+put("AGENTS.md", `# Fixture rules
+
+BAILOUT_N = 3. Protected branches: main, master, release/*. Test: \`npm test\`. No network.
+
+## Delegation Protocol
+
+Use an explorer for neutral read-only investigation. Brief fields: role, task,
+required context, return format, done-criteria. Explorer returns observations
+with file/symbol citations, candidate causes with supporting/contradicting
+evidence, discriminating experiments, and unknowns/risks. The orchestrator
+validates citations and owns hypothesis ranking.
+`);
 put("src/index.js", `export function parsePort(value) {
   const port = Number.parseInt(value, 10);
   if (!port || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");

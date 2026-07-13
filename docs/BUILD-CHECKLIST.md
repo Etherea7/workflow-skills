@@ -165,14 +165,16 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
 - [x] Skeleton → body (repro-first, investigation delegation, hypothesis ranking, verify, bailout-with-findings)
       (provisional isolated M3 authorized by human while M2 trigger gate remains
       open; evidence: `skills/debug/`; official skills-ref validation PASS;
-      `node evals/debug/contract-test.mjs` → 27/27; vendored scripts
+      `node evals/debug/contract-test.mjs` -> 39/39; vendored scripts
       byte-identical; skill-creator UI metadata generated in `agents/openai.yaml`)
 - [ ] Evals: triggers; bailout after 3 hypotheses presents findings
       (partial evidence: frozen 15-query calibration + 6-query holdout sets;
-      fixture smoke PASS; live bailout i1 6/6 vs 3/6 plus clean fresh-success
-      i2 6/6 vs 0/6, total 12/12 vs 3/12 in
-      `evals/debug/live-results-i2.{json,md}`. Still required: shared-harness
-      trigger runs after M2 approval and independent Codex review. Keep unchecked.)
+      fixture smoke and infrastructure accounting PASS; final live bailout i3
+      6/6 vs 3/6 plus clean fresh-success i4 6/6 vs 2/6, total 12/12
+      vs 5/12 in `evals/debug/live-results-i4.{json,md}` with four committed
+      sanitized evidence bundles. Review round 1 findings were repaired and
+      rerun; focused follow-up review and shared-harness trigger runs after M2
+      approval remain required. Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M4 `next-step-improve`
