@@ -1,0 +1,17 @@
+[
+  {"query":"Create a brand-new TypeScript CLI repository from scratch, choose the minimal stack, scaffold it, and prove the local test loop before the first commit.","should_trigger":true},
+  {"query":"Bootstrap an empty directory as a new Python API project with project rules, a constitution, tests, linting, and a verified initial commit.","should_trigger":true},
+  {"query":"Initialize my new greenfield desktop app repo and generate AGENTS.md plus a thin CLAUDE.md after we settle the stack.","should_trigger":true},
+  {"query":"Set up a new React application from zero, document its commands, and do not commit unless the dev server and tests actually work.","should_trigger":true},
+  {"query":"Continue specs/000-bootstrap/checklist.md; the new repository has no commit because the build gate is still red.","should_trigger":true},
+  {"query":"Turn this expressly designated uninitialized folder into a fresh Rust service repository without overwriting the README already there.","should_trigger":true},
+  {"query":"I need a clean new library repo with package metadata, test/lint/build commands, agent rules, and an initial verified history.","should_trigger":true},
+  {"query":"Add CSV export to the existing billing app from specs/014-csv-export/spec.md.","should_trigger":false},
+  {"query":"The login endpoint returns 500; reproduce it and repair the defect.","should_trigger":false},
+  {"query":"We might add offline sync, but conflict behavior and storage constraints are undecided. Help clarify the feature.","should_trigger":false},
+  {"query":"Survey this mature repository and prioritize the next three engineering improvements.","should_trigger":false},
+  {"query":"Install the dev-workflows skill suite for Claude Code and Codex.","should_trigger":false},
+  {"query":"Change the existing project's formatter line width from 80 to 100.","should_trigger":false},
+  {"query":"Review the current pull request for correctness without editing files.","should_trigger":false},
+  {"query":"Deploy our existing Next.js site to production and configure its domain.","should_trigger":false}
+]

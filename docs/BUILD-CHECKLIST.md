@@ -33,6 +33,10 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
   credential scanner; canonical plus M2/M3/M4 vendored copies now fail closed
   on Git, added-line filtering, or pattern-matching failure. Safety-sensitive
   live gates using the former scanner require clean reruns, not regrading.
+- 2026-07-14 human accepted continuous real-project validation for M2–M5 and
+  explicitly authorized merging all reviewed implementations. Unexecuted live
+  trigger/scanner-sensitive cases remain honestly open as post-merge feedback
+  work, but are no longer pre-merge blockers. Do not relabel them as passed.
 
 ## Phase 0 — Verify + Interview
 
@@ -178,7 +182,7 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       regrading. 2026-07-13 Fable rerun attempt: fresh 36-attempt run aborted
       at 19/36 by the SessionLimit guard; partials invalid, no results file
       written, stub cleaned (see ledger). Keep unchecked.)
-- [ ] GATE: human validates
+- [x] GATE: human validates (2026-07-14: accepted use-on-real-projects feedback model)
 
 ## Phase 2 — M3 `debug`
 
@@ -203,7 +207,7 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       reviewer, zero blocking findings; all deterministic suites reverified on
       merged main) — merged to main at 9084256 with gate honestly open.
       Keep unchecked.)
-- [ ] GATE: human validates
+- [x] GATE: human validates (2026-07-14: accepted use-on-real-projects feedback model)
 
 ## Phase 2 — M4 `next-step-improve`
 
@@ -235,14 +239,34 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       b2f650c; the independent live-evidence review is now DONE (all five
       requested checks performed, grades stand — see ledger). Remaining open:
       shared-harness triggers + human gate. Keep unchecked.)
-- [ ] GATE: human validates
+- [x] GATE: human validates (2026-07-14: accepted use-on-real-projects feedback model)
 
 ## Phase 2 — M5 `project-setup`
 
-- [ ] Skeleton → body (requirements → constitution/spec/stack → scaffold → dev-loop verification → initial commit)
-- [ ] Generates project-scope AGENTS.md/CLAUDE.md from templates
+- [x] Skeleton → body (requirements → constitution/spec/stack → scaffold → dev-loop verification → initial commit)
+      (provisional isolated implementation on `codex/m5-project-setup`:
+      official skill validators PASS; deterministic contract 75/75; target
+      safety, `setup/000-bootstrap`, bounded dev-loop, scan-before-commit,
+      separate truth commit, and exact protected-default-branch gate encoded;
+      independent round-2 APPROVE; reviewed implementation commit `0131ee1`)
+- [x] Generates project-scope AGENTS.md/CLAUDE.md from templates
+      (plus constitution, complete `specs/000-bootstrap/` memory, and INDEX;
+      generated fixture structural check PASS with no unresolved markers;
+      CLAUDE first effective line is `@AGENTS.md`)
 - [ ] Evals: triggers; refuses to commit before dev loop verified
-- [ ] GATE: human validates
+      (partial deterministic evidence 2026-07-14 after review-driven rerun:
+      scaffold 10/10 valid red→green with distinct run/probe; commit gate 30/30
+      with forged Tests-N/A and existing-HEAD refusal plus real staged scan;
+      simulated drop/resume 33/33 preserves prior truth and executes only the
+      outstanding Readiness gate; completion-state consistency 5/5. Round 1
+      REQUEST CHANGES invalidated the earlier 65/7/12 evidence; all eight
+      findings plus three round-2 consistency findings were fixed and focused
+      round 2 returned APPROVE for deterministic M5. 15 calibration + 6 frozen
+      holdout queries and three behavior cases are definitions only. Live
+      trigger and paired behavior runs remain post-merge feedback work; no
+      uplift claim. Keep unchecked and do not relabel as passed.)
+- [x] GATE: human validates (2026-07-14: deterministic review accepted;
+      authorized merge with live behavior evaluated during real project use)
 
 ## Phase 2 — M6 Release
 
@@ -278,6 +302,17 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
   evidence is byte-exact everywhere) + CRLF normalization in the M4 read helper.
   Rule for future suites: contract tests must be line-ending-agnostic; hash-verified
   artifacts must carry `-text`.
+- 2026-07-14 M5 WINDOWS NPM SHIM FINDING: `spawnSync("npm", ..., shell:false)`
+  and `npm.cmd` were not executable directly in this Windows environment. The
+  deterministic harness now uses fixed argv through `cmd.exe` on Windows and
+  direct `npm` argv elsewhere; no user-controlled command string is composed.
+  Both scaffold and commit-gate suites pass after the repair.
+- 2026-07-14 M5 MERGE-CHECKOUT CRLF FINDING: the first authorized no-commit
+  merge was aborted when resume preservation failed only on `main`; fixture
+  templates inherited checkout CRLF while one insertion expected LF. The
+  fixture builder now normalizes CRLF before instantiation, contract coverage
+  locks it, and clean branch results are 75/75, 10/10, 30/30, 33/33, 5/5.
+  Never reuse results from the aborted merge; reform and rerun it.
 
 ## Handback
 
@@ -298,4 +333,10 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
   then likely a description iteration + rerun given the persistent
   under-recall pattern; (b) shared-harness trigger runs for debug and
   next-step-improve; (c) scan-sensitive live behavior reruns for M2/M3 after
-  the scanner repair; (d) human gates. Then M5 `project-setup`.
+  the scanner repair; (d) human gates. Human authorized starting isolated M5
+  despite those independent open gates. M5 implementation and deterministic
+  tests are committed on `codex/m5-project-setup` at `0131ee1` with independent
+  deterministic review APPROVE; see the collaboration ledger for exact
+  evidence. Human accepted continuous real-project validation, approved the
+  M2–M5 human gates, and authorized the reviewed M5 merge while keeping
+  unexecuted live evidence honestly open as post-merge feedback work.

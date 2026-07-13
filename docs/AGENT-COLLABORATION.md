@@ -7,7 +7,10 @@ open review questions, and the next milestone's in-progress state.
 
 ## Current handoff
 
-- Branch: `main` — `codex/m3-debug` and `codex/m4-next-step-improve` were
+- M5 active branch/worktree: `codex/m5-project-setup` at
+  `.worktrees/m5-project-setup/`, based on clean `main` commit `165fdd6`;
+  reviewed implementation commit `0131ee1`.
+  `codex/m3-debug` and `codex/m4-next-step-improve` were
   reviewed and merged 2026-07-13 (merge commits `9084256`, `b2f650c`; human
   pre-authorized the protected-branch merges conditional on orchestrator
   approval). See "Fable orchestrator review — 2026-07-13" below.
@@ -16,6 +19,11 @@ open review questions, and the next milestone's in-progress state.
   shared-harness triggers, and human gate remain open; M4 shared-harness
   triggers and human gate remain open (its independent live-evidence review
   was completed 2026-07-13, see below).
+- M5 status: deterministic implementation has independent forward-review
+  APPROVE after two rounds. On 2026-07-14 the human accepted real-project
+  feedback instead of isolated live runs, approved the human gate, and
+  authorized merge. Unexecuted trigger/behavior evidence remains open and must
+  not be described as passed.
 - Review discipline: findings change the skill and trigger clean reruns; an
   agent must not merely reinterpret or raise an existing grade.
 
@@ -451,3 +459,138 @@ observation from the partial stream (NOT evidence): positives q1/q4 hit 2/2,
 q2/q3 missed, negatives 0/8 false positives — consistent with the prior
 under-recall pattern, so the description likely still needs iteration once a
 full run is affordable. M2 trigger measurement remains open.
+
+## M5 `project-setup` implementation — 2026-07-14
+
+### Effort and current progress
+
+- Recovered Claude's interrupted post-M4 cleanup first. Five evidence
+  artifacts differed from their committed blobs only by checkout CRLF; each
+  normalized byte-for-byte to `HEAD`. Restored only those files, preserved the
+  intended `.gitattributes`, contract-helper, and collaboration-doc edits,
+  reran all merged M2–M4 deterministic/evidence suites, scanned the staged
+  diff, and committed the repair on `main` as `165fdd6`.
+- Created isolated worktree `.worktrees/m5-project-setup/` on
+  `codex/m5-project-setup`. M5 does not weaken or reinterpret the still-open
+  M2–M4 live gates.
+- Added `skills/project-setup/` with the official skill scaffold and generated
+  `agents/openai.yaml`. The workflow is requirements → safe target inventory →
+  `setup/000-bootstrap` isolation → project policy/artifacts → non-clobbering
+  scaffold → observed dev loop → staged scan → initial commit → separate truth
+  commit. Ambiguous consequential choices route to `plan`.
+- Added project assets for `AGENTS.md`, thin `CLAUDE.md`, constitution,
+  `specs/000-bootstrap/{spec,plan,tasks,checklist}.md`, and `specs/INDEX.md`.
+  Runtime helpers validate instantiated structure and evidence shape. Tests can
+  never be N/A; other N/A gates need a concrete stack-specific reason. The
+  initial-commit preflight also requires unborn `HEAD` and cross-checks commands
+  across AGENTS/plan/checklist. Checklist text is not execution proof, so the
+  workflow separately requires orchestrator observation. The canonical staged
+  secrets scanner is vendored byte-identically.
+- Protected-default-branch policy is explicit: the initial verified history
+  remains on `setup/000-bootstrap`; creating or updating `main`, `master`, or
+  `release/*` needs explicit confirmation for that exact action. Project setup
+  does not implicitly push, deploy, publish, configure remotes, or provision
+  external resources.
+- Added 15 trigger-calibration queries, 6 frozen holdouts, and three six-point
+  behavior contracts (fresh setup, red-loop refusal, resume). These are test
+  definitions only: no live trigger accuracy or model-uplift result is claimed.
+
+### Independent forward review and iteration 2
+
+Round 1 returned **REQUEST CHANGES** with eight blocking findings. It reproduced
+that all six checklist gates could be forged as N/A and that the preflight still
+passed after a commit. It also found a self-referential truth-hash checkbox,
+implementation-before-test fixture, a commit eval that pre-ticked evidence and
+skipped the staged scan, two resume gaps, unfinished final statuses, no resume
+test, and no Windows scanner fallback. The original 65/7/12 run is superseded
+and is not M5 gate evidence.
+
+The implementation changed rather than regrading that output:
+
+- framework/config scaffold is separated from product behavior; a real CLI
+  subprocess test is observed red before `src/cli.mjs` exists, then green after
+  the minimal implementation;
+- preflight rejects `Tests: N/A`, missing structured timestamp/exit/output,
+  command drift, and pre-existing `HEAD`, while explicitly disclaiming that
+  checklist prose proves execution;
+- the commit eval ticks only after each command runs, inspects the full staged
+  diff, runs `git diff --cached --check`, and invokes the byte-identical scanner
+  before the commit;
+- truth commit records only the initial hash; its own observed hash is reported
+  externally. Completion truth now finalizes tasks/ACs/status/INDEX and records
+  protected-branch state;
+- bootstrap memory is created before Git initialization, interrupted unborn
+  repositories have a bounded confirmation/recovery path, and a deterministic
+  drop/resume test preserves prior artifacts/evidence while running only the
+  outstanding gate;
+- scanner instructions resolve `<this-skill-root>`, prefer explicit Git Bash on
+  Windows, define an added-lines host fallback, and fail closed.
+
+### Deterministic evidence after review fixes
+
+- `node evals/project-setup/contract-test.mjs` → PASS, 75 checks.
+- `node evals/project-setup/scaffold-test.mjs` → PASS, 10 checks (dependency
+  restore, valid subprocess red→green, lint, distinct run and readiness).
+- `node evals/project-setup/commit-gate-test.mjs` → PASS, 30 assertions (forged
+  Tests N/A and existing `HEAD` refused; distinct run/probe and staged
+  diff/scanner precede commit).
+- `node evals/project-setup/resume-test.mjs` → PASS, 33 assertions (prior state
+  preserved; only outstanding Readiness gate executed).
+- `node evals/project-setup/completion-state-test.mjs` → PASS, 5 assertions
+  (status mismatch and done-with-unchecked-work refused; finalized truth passes).
+- `node scripts/validate.mjs` → PASS.
+- `scripts/check-encoding.sh` through explicit Git Bash → clean.
+- skill-creator `quick_validate.py` with UTF-8 mode → valid; official
+  `skills-ref` validation → valid.
+- First Windows harness attempt could not execute the npm command shim through
+  `spawnSync(..., shell: false)`. The harness now invokes fixed npm arguments
+  through `cmd.exe` only on Windows and keeps direct argv execution elsewhere;
+  all deterministic suites pass after the portability repair. Bare `bash` on
+  this machine remains disabled WSL; explicit Git-for-Windows Bash is healthy.
+  Independent round 2 returned **APPROVE** for the deterministic M5
+  implementation with no blocking findings. It rechecked all eight original
+  findings plus dependency/red ordering, distinct Run versus Readiness
+  commands, and ISO timestamps with `Z` or numeric offsets. This approval does
+  not convert unexecuted live trigger/model cases into evidence.
+- The reviewed skill/eval tree was staged alone, passed
+  `git diff --cached --check` and the vendored staged secrets scan, and was
+  committed on the isolated branch as `0131ee1`.
+
+### Protected-merge integration rerun
+
+The first authorized `--no-ff --no-commit` merge attempt was aborted without a
+commit when `resume-test.mjs` failed on the actual `main` checkout. The M5
+worktree had LF templates, but `main` checked them out as CRLF; the fixture
+builder preserved those bytes and a decision insertion expected LF. This was a
+real portability defect, not a grade adjustment. The builder now normalizes
+template CRLF before instantiation and the contract locks that behavior. Clean
+branch rerun: contract 75/75, scaffold 10/10, commit gate 30/30, resume 33/33,
+completion state 5/5. Re-form and retest the merge; do not reuse the aborted
+merge's partial results.
+
+### M5 review requested
+
+1. Is `setup/000-bootstrap` the right safe pre-default branch, with a separate
+   exact confirmation before a protected default branch is created or updated?
+2. Are absent, empty, expressly reusable non-empty, nested-repository, symlink,
+   and reparse-point target states handled without destructive assumptions?
+3. Does the evidence-shape preflight reinforce refusal of unrun, red, stale, or
+   unjustifiably N/A gates while honestly avoiding a claim that checklist text
+   itself proves execution?
+4. Are the generated `AGENTS.md`/`CLAUDE.md`, constitution, bootstrap artifacts,
+   and INDEX internally consistent and sufficient for cold resume?
+5. Are install/test/lint/typecheck/build/run/readiness applicability and N/A
+   evidence strict enough across CLI, server, application, and library shapes?
+6. Do trigger negatives separate greenfield setup cleanly from existing-product
+   features, debugging, ambiguous feature planning, improvement surveys, suite
+   installation, review-only work, and deployment?
+7. Are the deterministic commit-gate and scaffold tests non-vacuous, portable,
+   and appropriately limited pending clean live behavior/trigger runs?
+
+### Next actions
+
+1. Merge the reviewed M5 branch into protected `main` under the human's explicit
+   2026-07-14 authorization, after proposed-merge deterministic checks and a
+   clean staged secrets scan.
+2. Collect M2–M5 trigger/behavior feedback during real project use. Preserve
+   failures and user reports as new evidence; do not backfill isolated results.
