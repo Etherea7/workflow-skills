@@ -7,12 +7,11 @@ open review questions, and the next milestone's in-progress state.
 
 ## Current handoff
 
-- Branch: `main`
+- Branch: `codex/m3-debug` in `.worktrees/m3-debug` (provisional M3 isolation)
 - Last pre-session commit: `64985d2` (`new-feature` M2 implementation plus
   partial evals)
-- Active milestone: M2 `new-feature` evaluation and gate
-- Next milestone: M3 `debug` (start only after the M2 runs and this ledger are
-  complete)
+- Active gates: M2 `new-feature` trigger evaluation remains pending; M3 `debug`
+  is proceeding provisionally by explicit human authorization
 - Review discipline: findings change the skill and trigger clean reruns; an
   agent must not merely reinterpret or raise an existing grade.
 
@@ -124,10 +123,45 @@ failure mode.
 
 ## M3 `debug` progress
 
-Status: not started. This section will be updated after M2 evaluation and this
-ledger are complete, before any M3 implementation is handed off.
+Status: provisional implementation and first behavior comparison complete on
+`codex/m3-debug`; not merged and not gated.
 
-Planned contract from `BUILD-CHECKLIST.md` and `IMPLEMENTATION-PLAN.md`:
-reproduce first, delegate independent investigation, rank hypotheses, apply a
-scoped fix, verify the regression, and bail out with accumulated findings after
-three unsuccessful hypotheses.
+Completed:
+
+- `skills/debug/SKILL.md`: resume-first, safe isolation, valid repro before
+  production edits, neutral delegated investigation, orchestrator-ranked causes,
+  bounded hypotheses, independent verification, scanned persistence, and gated
+  integration.
+- `references/investigation-loop.md`: prediction-before-observation attempt
+  records, infrastructure-failure distinction, cleanup between causes, and a
+  mandatory no-N+1 findings handback.
+- Debug checklist asset, byte-identical number/secrets scripts, and generated
+  `agents/openai.yaml` from the skill-creator initializer.
+- 27/27 deterministic contract checks, official skills-ref validation, 15
+  calibration triggers, 6 frozen holdouts, and a genuine-red fixture smoke test.
+- Live behavior: bailout i1 is 6/6 versus 3/6; clean fresh-success i2 is
+  6/6 versus 0/6, total 12/12 versus 3/12. The successful i1 attempt was
+  diagnostic only after exposing an unreasonable hard-coded slug assertion;
+  both configurations were rebuilt and rerun after generalization. No
+  speed/cost claim is made.
+
+Still pending:
+
+- trigger calibration/holdout through the shared harness after M2 approves it
+- independent Codex review, any clean reruns caused by findings, and human gate
+
+### M3 review requested
+
+1. Is committing a known-red regression oracle before diagnosis acceptable and
+   sufficiently distinguished from committing an unverified fix?
+2. Does an infrastructure/tool failure correctly avoid consuming a hypothesis
+   while still terminating after one environment retry?
+3. Is the bailout handback complete without a separate `debug.md`, or should
+   evidence move out of the single required checklist?
+4. Are trigger boundaries sharp enough between `debug`, ambiguous behavior
+   (`plan`), new behavior (`new-feature`), review-only work, and unsafe live
+   production experimentation?
+5. Should the generated `skills/debug/agents/openai.yaml` be retained even
+   though earlier suite skills predate that recommended metadata?
+6. Does the seeded-boundary eval over-direct the baseline, and what successful
+   fresh diagnosis case best complements it without duplicating `new-feature`?

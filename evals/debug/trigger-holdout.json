@@ -1,0 +1,8 @@
+[
+  {"query": "A valid UTF-8 filename is rejected only when the process locale is Turkish. Explain and correct the failure.", "should_trigger": true},
+  {"query": "Resume the saved invoice-timeout investigation from its checklist and preserve the two failed causes already recorded.", "should_trigger": true},
+  {"query": "The queue occasionally emits the same job twice; create a deterministic test before changing the consumer.", "should_trigger": true},
+  {"query": "Design a duplicate-job prevention feature; delivery guarantees and deduplication windows are not decided.", "should_trigger": false},
+  {"query": "Summarize the existing error-handling architecture without making changes.", "should_trigger": false},
+  {"query": "Implement the approved retry policy as new application behavior.", "should_trigger": false}
+]

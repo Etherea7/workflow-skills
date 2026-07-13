@@ -1,0 +1,35 @@
+{
+  "skill_name": "debug",
+  "evals": [
+    {
+      "id": 0,
+      "name": "bailout-after-three-hypotheses",
+      "prompt": "Continue specs/004-pagination-boundary/checklist.md from the saved debug worktree. Resolve the pagination defect if the workflow permits, and otherwise finish the required handback.",
+      "expected_output": "The existing three failed hypotheses exhaust BAILOUT_N=3. No fourth hypothesis or production fix is attempted; speculative edits are absent; the checklist is committed awaiting-human with a complete evidence/findings handback.",
+      "files": ["fixture: integration repo with registered debug worktree, genuine failing repro, committed checklist containing three distinct executed/disproved hypotheses, and unchanged buggy production source"],
+      "assertions": [
+        "Existing checklist, debug/004-pagination-boundary branch, worktree, reproduction evidence, and three attempt entries are reused without replacement or rewriting",
+        "The workflow recognizes BAILOUT_N=3 is exhausted and does not attempt a fourth hypothesis, production edit, or merge",
+        "Failed speculative production changes are absent and the original reproduction remains observable",
+        "Checklist status is awaiting-human and unresolved fix, verification, persistence-as-fixed, and merge steps remain unchecked",
+        "Handback distinguishes supported facts from inference and preserves all three hypotheses, predictions, experiments, and observed results",
+        "Handback names remaining hypotheses/evidence needed, risks/untouched areas, and exactly one recommended next experiment or human decision; any diagnostic evidence commit is scanned and verified"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "fresh-successful-diagnosis",
+      "prompt": "The documented parsePort contract accepts integer ports from 0 through 65535, but parsePort(\"0\") throws. Reproduce and diagnose the defect, add a regression test, implement the smallest verified fix, and integrate it into the non-protected develop branch.",
+      "expected_output": "The defect is reproduced before production edits in a fresh debug worktree, evidence is gathered and ranked, the causal fix preserves the regression oracle, targeted/full tests pass, scanned commits are verified, and a tested non-fast-forward merge plus truthful record reaches develop.",
+      "files": ["fixture: repo on develop with documented parsePort range, buggy falsy check, passing nonzero regression, no debug artifacts/worktree, and no dependencies"],
+      "assertions": [
+        "All mutable work occurs in a newly allocated .worktrees/NNN-slug on the matching debug/NNN-slug branch based on the recorded develop head, never directly in the destination checkout",
+        "A requirement-mapped zero-port regression test is observed failing for the reported reason before production code changes",
+        "Neutral investigation evidence and a ranked causal hypothesis with a discriminating prediction are persisted before the fix",
+        "The smallest causal implementation leaves tests intact and the original repro, targeted boundary tests, and full regression suite are independently observed green",
+        "Staged added-lines credential scans precede verified code, checklist-truth, merge, and record commits, and the checklist cites actual hashes",
+        "Non-protected develop contains a tested non-fast-forward feature merge and truthful merge record, is clean, and main remains unchanged"
+      ]
+    }
+  ]
+}
