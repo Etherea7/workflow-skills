@@ -162,8 +162,21 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
 
 ## Phase 2 — M3 `debug`
 
-- [ ] Skeleton → body (repro-first, investigation delegation, hypothesis ranking, verify, bailout-with-findings)
+- [x] Skeleton → body (repro-first, investigation delegation, hypothesis ranking, verify, bailout-with-findings)
+      (provisional isolated M3 authorized by human while M2 trigger gate remains
+      open; evidence: `skills/debug/`; official skills-ref validation PASS;
+      `node evals/debug/contract-test.mjs` -> 49/49; vendored scripts
+      byte-identical; skill-creator UI metadata generated in `agents/openai.yaml`)
 - [ ] Evals: triggers; bailout after 3 hypotheses presents findings
+      (partial evidence: frozen 15-query calibration + 6-query holdout sets;
+      fixture smoke and infrastructure accounting PASS; final live bailout i3
+      6/6 vs 3/6 plus clean fresh-success i4 6/6 vs 2/6, total 12/12
+      vs 5/12 in `evals/debug/live-results-i4.{json,md}` with four committed
+      sanitized evidence summaries, executor transcripts, and portable Git
+      bundles; `node evals/debug/evidence-test.mjs` proves all cited commits
+      readable (38/38). Review findings were repaired and rerun; final focused
+      Codex review of exact commit `32e8a0e` APPROVE. Shared-harness trigger
+      runs after M2 approval remain required. Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M4 `next-step-improve`
@@ -211,4 +224,6 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
   configurations are complete; trigger calibration plus frozen holdout remains
   pending after the 15:00 Asia/Singapore Claude reset. Resume at the first
   unchecked M2 eval item, run the fixed two-attempt harness, update durable
-  results, then request the final Codex/human gate. Do not begin M3 first.
+  results, then request the final Codex/human gate. Human explicitly authorized
+  provisional M3 work in isolated branch/worktree `codex/m3-debug`; do not merge
+  it or claim its gate while M2 and M3 review items remain open.

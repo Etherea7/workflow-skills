@@ -7,12 +7,11 @@ open review questions, and the next milestone's in-progress state.
 
 ## Current handoff
 
-- Branch: `main`
+- Branch: `codex/m3-debug` in `.worktrees/m3-debug` (provisional M3 isolation)
 - Last pre-session commit: `64985d2` (`new-feature` M2 implementation plus
   partial evals)
-- Active milestone: M2 `new-feature` evaluation and gate
-- Next milestone: M3 `debug` (start only after the M2 runs and this ledger are
-  complete)
+- Active gates: M2 `new-feature` trigger evaluation remains pending; M3 `debug`
+  is proceeding provisionally by explicit human authorization
 - Review discipline: findings change the skill and trigger clean reruns; an
   agent must not merely reinterpret or raise an existing grade.
 
@@ -124,10 +123,68 @@ failure mode.
 
 ## M3 `debug` progress
 
-Status: not started. This section will be updated after M2 evaluation and this
-ledger are complete, before any M3 implementation is handed off.
+Status: provisional implementation and review-driven behavior comparison complete on
+`codex/m3-debug`; not merged and not gated.
 
-Planned contract from `BUILD-CHECKLIST.md` and `IMPLEMENTATION-PLAN.md`:
-reproduce first, delegate independent investigation, rank hypotheses, apply a
-scoped fix, verify the regression, and bail out with accumulated findings after
-three unsuccessful hypotheses.
+Completed:
+
+- `skills/debug/SKILL.md`: resume-first, safe isolation, valid repro before
+  production edits, neutral delegated investigation, orchestrator-ranked causes,
+  bounded hypotheses, independent verification, scanned persistence, and gated
+  integration.
+- `references/investigation-loop.md`: prediction-before-observation attempt
+  records, infrastructure-failure distinction, cleanup between causes, and a
+  mandatory no-N+1 findings handback.
+- Debug checklist asset, byte-identical number/secrets scripts, and generated
+  `agents/openai.yaml` from the skill-creator initializer.
+- 49/49 deterministic contract checks, official skills-ref validation, 15
+  calibration triggers, 6 frozen holdouts, a genuine-red fixture smoke test,
+  and deterministic infrastructure-event accounting.
+- Live behavior: final bailout i3 is 6/6 versus 3/6; final fresh-success i4 is
+  6/6 versus 2/6, total 12/12 versus 5/12 (+58.33 points). Four sanitized,
+  committed evidence bundles make the grades auditable without Temp. Earlier
+  attempts that exposed contract defects were diagnostic/invalidated, changed,
+  and rerun clean; they were not regraded. No speed/cost claim is made.
+- Review round 1 returned `CHANGES REQUIRED`: transient-only evidence,
+  insufficiently durable delegation evidence, a mutating diagnosis-only path,
+  ambiguous infrastructure accounting, missing cleanup reporting, and a
+  fixture-seeded bailout conclusion. The workflow/evals now commit evidence
+  bundles, require the five-field neutral brief plus structured return and
+  citation validation, keep diagnosis-only read-only, log infrastructure events
+  outside the attempt counter, report observed cleanup/retention, and seed only
+  the three raw failed attempts. Both affected behavior cases were rebuilt and
+  rerun after these changes.
+- Focused follow-up review accepted findings 2-6 but correctly found the four
+  summary-only evidence files could not make fixture-only hashes inspectable.
+  Each final run now also commits a sanitized raw executor transcript and a
+  complete portable Git bundle. `node evals/debug/evidence-test.mjs` verifies
+  all four bundles/transcripts (38/38), clones the histories, proves every cited
+  commit readable, and inspects the committed checklists. A final focused
+  re-review then found one escaped-path sanitization edge case. Commit `32e8a0e`
+  repaired it and extended the test to reject ordinary and JSON-escaped paths.
+- Final focused Codex review of exact commit `32e8a0e`: **APPROVE**. The reviewer
+  independently accepted the portable histories and 12/12 vs 5/12 grading,
+  verified zero remaining ordinary/escaped/mixed user paths, matched all four
+  evidence cases to all four transcripts, and found no reproducible blocker.
+
+Still pending:
+
+- trigger calibration/holdout through the shared harness after M2 approves it
+- human gate
+
+### M3 review requested
+
+1. Do the committed i3/i4 evidence bundles now make each strict assertion
+   independently auditable, with no reliance on Temp transcripts?
+2. Does the five-field neutral delegation brief, structured independent return,
+   and explicit citation validation prove the investigation was independent?
+3. Are diagnosis-only non-mutation, infrastructure-event accounting, and
+   observed cleanup/retention now unambiguous across skill, references, asset,
+   fixture, and eval contract?
+4. Are trigger boundaries sharp enough between `debug`, ambiguous behavior
+   (`plan`), new behavior (`new-feature`), review-only work, and unsafe live
+   production experimentation?
+5. Should the generated `skills/debug/agents/openai.yaml` be retained even
+   though earlier suite skills predate that recommended metadata?
+6. With the seeded conclusion removed, does the bailout fixture now provide
+   evidence without forcing the expected conclusion?

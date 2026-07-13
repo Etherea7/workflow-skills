@@ -1,0 +1,17 @@
+[
+  {"query": "The upload endpoint returns 500 for empty files. Reproduce the failure, find the cause, and fix it with a regression test.", "should_trigger": true},
+  {"query": "CI's date parser test is flaky only on Windows runners. Diagnose it and make the fix verifiable.", "should_trigger": true},
+  {"query": "Our CLI panics when --limit is zero; investigate the stack trace and repair the defect.", "should_trigger": true},
+  {"query": "Continue specs/012-token-refresh/checklist.md; debugging stopped after hypothesis two failed.", "should_trigger": true},
+  {"query": "User totals are rounded one cent too high compared with the documented formula. Find the root cause.", "should_trigger": true},
+  {"query": "This previously green migration test started failing after the driver upgrade. Reproduce and diagnose the regression.", "should_trigger": true},
+  {"query": "The worker's memory grows on every retry. Build a safe local reproduction, isolate the cause, and patch it.", "should_trigger": true},
+  {"query": "Add a --json flag to the CLI from this accepted specification, with tests and docs.", "should_trigger": false},
+  {"query": "I want some sort of offline mode, but sync conflicts and storage behavior are undecided.", "should_trigger": false},
+  {"query": "Review PR #81 for correctness and test coverage; do not change code.", "should_trigger": false},
+  {"query": "Rename getUser to fetchUser and update imports.", "should_trigger": false},
+  {"query": "What should we improve next? Produce a prioritized engineering roadmap.", "should_trigger": false},
+  {"query": "Set up a new React and FastAPI application from scratch.", "should_trigger": false},
+  {"query": "Log into the production database and experiment until the intermittent deletion stops.", "should_trigger": false},
+  {"query": "Optimize the parser for speed; no behavior is currently broken.", "should_trigger": false}
+]

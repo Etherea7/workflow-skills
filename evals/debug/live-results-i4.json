@@ -1,0 +1,91 @@
+{
+  "skill_name": "debug",
+  "iteration": 4,
+  "status": "behavior-complete-trigger-pending",
+  "executor_model": "gpt-5.6-sol",
+  "runs_per_configuration": 1,
+  "results": [
+    {
+      "eval_id": 0,
+      "name": "bailout-after-three-hypotheses",
+      "config": "with_skill",
+      "source_iteration": 3,
+      "passed": 6,
+      "failed": 0,
+      "total": 6,
+      "expectations": [
+        {"text": "Existing checklist, debug/004-pagination-boundary branch, worktree, reproduction evidence, and three attempt entries are reused without replacement or rewriting", "passed": true, "evidence": "Reused registered debug worktree and branch at seeded commit 2674caa; all raw issue/worktree evidence, ranked entries, predictions, experiments, and observed results remain intact."},
+        {"text": "The workflow recognizes BAILOUT_N=3 is exhausted and does not attempt a fourth hypothesis, production edit, or merge", "passed": true, "evidence": "Agent independently counted three raw attempts and left integration at b41ac82 without attempt 4, production edit, or merge."},
+        {"text": "Failed speculative production changes are absent and the original reproduction remains observable", "passed": true, "evidence": "git diff integration...debug/004-pagination-boundary -- src/index.js is empty; node --test test/pagination.test.js still exits 1 with # fail 1."},
+        {"text": "Checklist status is awaiting-human and unresolved fix, verification, persistence-as-fixed, and merge steps remain unchecked", "passed": true, "evidence": "Final checklist says status: awaiting-human; Resolve, Verify, Secrets-scan/persist, and Merge remain unchecked."},
+        {"text": "Handback distinguishes supported facts from inference and preserves all three hypotheses, predictions, experiments, and observed results", "passed": true, "evidence": "Handback separately lists all three attempts, a supported-facts line, and inference/unknowns without claiming a root cause."},
+        {"text": "Handback names remaining hypotheses/evidence needed, risks/untouched areas, and exactly one recommended next experiment or human decision; any diagnostic evidence commit is scanned and verified", "passed": true, "evidence": "Handback records remaining evidence, unchanged src/risk, one next decision, and retained debug state; scans preceded handback 430325c and record 33e01f7."}
+      ],
+      "final": {"destination": "b41ac82", "seeded_debug": "2674caa", "handback": "430325c", "record": "33e01f7", "evidence_summary": "evals/debug/evidence/i3-bailout-with-skill.md", "git_bundle": "evals/debug/evidence/artifacts/i3-bailout-with-skill.bundle", "executor_transcript": "evals/debug/evidence/artifacts/i3-bailout-with-skill-executor.txt"}
+    },
+    {
+      "eval_id": 0,
+      "name": "bailout-after-three-hypotheses",
+      "config": "baseline",
+      "source_iteration": 3,
+      "passed": 3,
+      "failed": 3,
+      "total": 6,
+      "expectations": [
+        {"text": "Existing checklist, debug/004-pagination-boundary branch, worktree, reproduction evidence, and three attempt entries are reused without replacement or rewriting", "passed": true, "evidence": "Reused the registered branch/worktree and preserved the three seeded loop entries and reproduction evidence."},
+        {"text": "The workflow recognizes BAILOUT_N=3 is exhausted and does not attempt a fourth hypothesis, production edit, or merge", "passed": true, "evidence": "Stopped at 3/3, made no production edit, and left integration at 28c01ac."},
+        {"text": "Failed speculative production changes are absent and the original reproduction remains observable", "passed": true, "evidence": "No src/index.js diff exists and the pagination test remains observably red with # fail 1."},
+        {"text": "Checklist status is awaiting-human and unresolved fix, verification, persistence-as-fixed, and merge steps remain unchecked", "passed": false, "evidence": "Used status: blocked rather than awaiting-human and replaced the unresolved loop step with a checked stop-at-limit step."},
+        {"text": "Handback distinguishes supported facts from inference and preserves all three hypotheses, predictions, experiments, and observed results", "passed": false, "evidence": "Handback does not enumerate the three prior predictions, experiments, and results or distinguish supported facts from inference."},
+        {"text": "Handback names remaining hypotheses/evidence needed, risks/untouched areas, and exactly one recommended next experiment or human decision; any diagnostic evidence commit is scanned and verified", "passed": false, "evidence": "It provides one next experiment and notes unchanged production, but omits explicit evidence-needed and risk sections."}
+      ],
+      "final": {"destination": "28c01ac", "seeded_debug": "8f57f48", "handback": "1c43db0", "evidence_summary": "evals/debug/evidence/i3-bailout-baseline.md", "git_bundle": "evals/debug/evidence/artifacts/i3-bailout-baseline.bundle", "executor_transcript": "evals/debug/evidence/artifacts/i3-bailout-baseline-executor.txt"}
+    },
+    {
+      "eval_id": 1,
+      "name": "fresh-successful-diagnosis",
+      "config": "with_skill",
+      "source_iteration": 4,
+      "passed": 6,
+      "failed": 0,
+      "total": 6,
+      "expectations": [
+        {"text": "All mutable work occurs in a newly allocated .worktrees/NNN-slug on the matching debug/NNN-slug branch based on the recorded develop head, never directly in the destination checkout", "passed": true, "evidence": "Allocated .worktrees/001-parseport-string-zero on debug/001-parseport-string-zero from develop ed68d36; mutable work stayed isolated until verified integration."},
+        {"text": "A requirement-mapped zero-port regression test is observed failing for the reported reason before production code changes", "passed": true, "evidence": "Committed test-only red oracle bdb81f7 after npm test reported 2 pass and 1 fail with RangeError; src was unchanged."},
+        {"text": "A neutral explorer delegation brief, structured independent return, orchestrator citation validation, and a ranked causal hypothesis with a discriminating prediction are persisted before the fix", "passed": true, "evidence": "The checklist durably records all five neutral brief fields, structured observations/citations/causes/experiments/unknowns, citation validation, and ranked hypotheses before fix 64d22c8."},
+        {"text": "The smallest causal implementation leaves tests intact and the original repro, targeted boundary tests, and full regression suite are independently observed green", "passed": true, "evidence": "One predicate changed; original repro exited 0 and printed 0, targeted/full tests passed, and the boundary probe accepted 0, 1, 65535 while rejecting invalid values."},
+        {"text": "Staged added-lines credential scans precede verified code, checklist-truth, merge, and record commits, and the checklist cites actual hashes", "passed": true, "evidence": "Checklist records scans and actual red bdb81f7, fix 64d22c8, truth 8c9985c, fix merge 8123731, record 7fa13f8, record merge 596fac0, cleanup record 7e6a36c, and final merge 04938d2."},
+        {"text": "Non-protected develop contains a tested non-fast-forward feature merge and truthful merge record, is clean, main remains unchanged, and worktree/branch cleanup or intentional retention is reported from observed Git state", "passed": true, "evidence": "Clean develop 04938d2 contains the verified non-fast-forward merges; main remains ed68d36; final observed state has only the root worktree and develop/main branches after cleanup."}
+      ],
+      "final": {"destination": "04938d2", "main": "ed68d36", "red": "bdb81f7", "fix": "64d22c8", "truth": "8c9985c", "feature_merge": "8123731", "record": "7fa13f8", "record_merge": "596fac0", "cleanup_record": "7e6a36c", "final_merge": "04938d2", "evidence_summary": "evals/debug/evidence/i4-success-with-skill.md", "git_bundle": "evals/debug/evidence/artifacts/i4-success-with-skill.bundle", "executor_transcript": "evals/debug/evidence/artifacts/i4-success-with-skill-executor.txt"}
+    },
+    {
+      "eval_id": 1,
+      "name": "fresh-successful-diagnosis",
+      "config": "baseline",
+      "source_iteration": 4,
+      "passed": 2,
+      "failed": 4,
+      "total": 6,
+      "expectations": [
+        {"text": "All mutable work occurs in a newly allocated .worktrees/NNN-slug on the matching debug/NNN-slug branch based on the recorded develop head, never directly in the destination checkout", "passed": false, "evidence": "No worktree or debug branch was created; source and test were edited directly on develop."},
+        {"text": "A requirement-mapped zero-port regression test is observed failing for the reported reason before production code changes", "passed": true, "evidence": "The regression test was added alone and npm test reported 2 pass and 1 fail with RangeError before src changed."},
+        {"text": "A neutral explorer delegation brief, structured independent return, orchestrator citation validation, and a ranked causal hypothesis with a discriminating prediction are persisted before the fix", "passed": false, "evidence": "An explorer was used, but no durable checklist persisted the five-field brief, structured return, citation validation, or ranked alternatives before the fix."},
+        {"text": "The smallest causal implementation leaves tests intact and the original repro, targeted boundary tests, and full regression suite are independently observed green", "passed": true, "evidence": "The one-predicate change preserved tests; npm test passed 3/3 and a separate boundary probe verified valid and invalid cases."},
+        {"text": "Staged added-lines credential scans precede verified code, checklist-truth, merge, and record commits, and the checklist cites actual hashes", "passed": false, "evidence": "No staged credential scans or durable checklist truth/record preceded direct commit 18f857b."},
+        {"text": "Non-protected develop contains a tested non-fast-forward feature merge and truthful merge record, is clean, main remains unchanged, and worktree/branch cleanup or intentional retention is reported from observed Git state", "passed": false, "evidence": "Develop is clean and main unchanged, but the fix was committed directly with no debug-branch merge, truthful record, or workflow cleanup report."}
+      ],
+      "final": {"destination": "18f857b", "main": "cf0d3b6", "evidence_summary": "evals/debug/evidence/i4-success-baseline.md", "git_bundle": "evals/debug/evidence/artifacts/i4-success-baseline.bundle", "executor_transcript": "evals/debug/evidence/artifacts/i4-success-baseline-executor.txt"}
+    }
+  ],
+  "aggregate": {
+    "with_skill": {"passed": 12, "total": 12, "rate": 1.0},
+    "baseline": {"passed": 5, "total": 12, "rate": 0.4167},
+    "absolute_uplift_points": 58.33
+  },
+  "limitations": [
+    "One run per configuration is contract evidence, not a reliability estimate.",
+    "Final grades combine the clean i3 bailout rerun and clean i4 success rerun. Earlier attempts were diagnostic or invalidated and were not regraded.",
+    "Live trigger calibration and frozen holdout runs are deferred until the shared M2 trigger methodology is approved."
+  ]
+}
