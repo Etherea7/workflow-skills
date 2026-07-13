@@ -114,8 +114,12 @@ score, and next workflow.
 Recommend exactly one first action and explain why it dominates the alternatives.
 Do not present false numerical precision: the score orders evidence; it does not
 replace judgment. Persist the ranking in the checklist, set the current cycle
-`awaiting-human`, and ask the human to select, defer, or reject a proposal.
-Never begin implementation from your own recommendation.
+`awaiting-human`. Before asking the human, stage only the generated index and
+survey spec/checklist, inspect the staged diff, run the credential scan, commit
+and verify the artifact hash, then record that hash in a second scanned and
+verified truth commit. Confirm the survey worktree is clean and the destination
+head is unchanged. Only then ask the human to select, defer, or reject a
+proposal. Never begin implementation from your own recommendation.
 
 ## Step 5 - Resolve the human choice
 
@@ -128,8 +132,13 @@ order, refresh the index and rerank before decomposition.
   the next-ranked item
 - **reject:** record rationale; do not resurrect it in the same cycle without
   new evidence
-- **request another survey:** begin one bounded rerank pass; after three
-  evidence-distinct passes without a selectable outcome, stop awaiting-human
+- **request another survey:** begin one bounded rerank pass; after the recorded
+  `BAILOUT_N` evidence-distinct passes without a selectable outcome, stop
+  `awaiting-human`
+
+Before dispatching selected work, persist the exact choice with the same
+scanned artifact-commit then truth-commit sequence from Step 4. This leaves the
+survey worktree clean and makes the child handoff cold-resumable.
 
 ## Step 6 - Decompose and route; do not implement
 
@@ -146,9 +155,13 @@ red-green oracle, or run overlapping child increments concurrently. A child
 workflow's bailout is evidence to preserve, not permission to retry under a new
 proposal ID or reset its counter.
 
-After every downstream return, record its artifact paths, status, commits, and
-next action. Regenerate/check `specs/INDEX.md` again because child workflows may
-have changed directory truth.
+After every downstream return, first reconcile the clean survey branch with the
+exact current destination head as specified in
+[persistence.md](references/persistence.md). Do not record or regenerate from a
+stale survey branch. Then record the child's artifact paths, status, commits,
+and next action. Regenerate/check `specs/INDEX.md` because child workflows may
+have changed destination directory truth. Persist the return and regenerated
+index before routing another increment.
 
 ## Step 7 - Persist and gate integration
 

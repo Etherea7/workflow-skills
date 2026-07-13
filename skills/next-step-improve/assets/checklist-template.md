@@ -23,14 +23,21 @@ proposals, decisions, or child returns.
 - [ ] Regenerate and check INDEX from directory truth
 - [ ] Gather and validate independent survey evidence
 - [ ] Rank no more than five proposals and recommend one
+- [ ] Scan and persist awaiting-human artifacts and truth
 - [ ] Record human selection/defer/reject decision
+- [ ] Scan and persist the selected decision before dispatch
 - [ ] Decompose selected work and route downstream
+- [ ] Reconcile exact advanced destination head after each child
 - [ ] Refresh INDEX after downstream returns
 - [ ] Scan, persist, integrate under policy, and record truth
 
 ## Index reconciliation log
 
 - attempt 1/{{N}}: prediction: ... | command/change: ... | observed result: ...
+
+## Destination reconciliation log
+
+- prior destination: ... | current destination: ... | merge/result: ... | verified commit: ...
 
 ## Delegation evidence
 

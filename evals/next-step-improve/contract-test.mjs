@@ -12,6 +12,7 @@ const decomposition = read("skills/next-step-improve/references/decomposition.md
 const persistence = read("skills/next-step-improve/references/persistence.md");
 const checklist = read("skills/next-step-improve/assets/checklist-template.md");
 const generator = read("skills/next-step-improve/scripts/regenerate-index.mjs");
+const secrets = read("scripts/secrets-check.sh");
 const description = skill.split("---", 3)[1];
 const errors = [];
 let checks = 0;
@@ -26,6 +27,7 @@ check(skill.indexOf("## Step 4") < skill.indexOf("## Step 5"), "ranking must pre
 check(skill.indexOf("## Step 5") < skill.indexOf("## Step 6"), "choice must precede decomposition");
 check(skill.indexOf("## Step 6") < skill.indexOf("## Step 7"), "routing must precede persistence");
 check(skill.includes("Never begin implementation from your own recommendation"), "human selection gate missing");
+check(skill.includes("second scanned and\nverified truth commit") && skill.includes("Before asking the human"), "pre-choice durable pause sequence missing");
 check(skill.includes("at most five proposals") && skill.includes("Recommend exactly one"), "bounded ranking contract missing");
 check(skill.includes("improve/NNN-slug") && skill.includes(".worktrees/NNN-slug/"), "numbered isolation contract missing");
 check(skill.includes("specs/NNN-slug/spec.md") && skill.includes("checklist.md"), "numbered survey artifact contract missing");
@@ -37,10 +39,15 @@ check(priority.includes("impact + urgency + confidence + (4 - effort)"), "priori
 check(indexRef.includes("checklist `status`") && indexRef.includes("spec frontmatter"), "status precedence missing");
 check(indexRef.includes("byte-identical") && indexRef.includes("--check"), "deterministic index contract missing");
 check(persistence.includes("git merge --no-ff --no-commit") && persistence.includes("explicit confirmation"), "safe protected integration missing");
+check(persistence.includes("Destination reconciliation after child work") && persistence.includes("only conflict is\nthe generated `specs/INDEX.md`"), "post-child destination reconciliation missing");
+check(skill.includes("recorded\n  `BAILOUT_N` evidence-distinct passes"), "configured rerank bailout threshold missing");
 check(checklist.includes("human decision: pending") && checklist.includes("Downstream returns"), "choice/child persistence fields missing");
 check(checklist.includes("role: explorer") && checklist.includes("orchestrator citation validation"), "delegation asset fields missing");
 check(generator.includes("invalid directory truth") && generator.includes("inventorySignature"), "safe render-before-replace guard missing");
+check(generator.includes("malformed ${field} list") && generator.includes("self related link"), "structural list/self-link validation missing");
+check(generator.includes("checklist.data.updated || spec.data.updated"), "checklist-first updated precedence missing");
 check(generator.includes("--check") && generator.includes("index check: STALE"), "non-mutating check mode missing");
+check(secrets.includes("git diff failed; refusing to pass") && secrets.includes("pattern matching failed; refusing to pass") && !secrets.includes("git diff --cached -U0 --no-color | grep"), "credential scanner does not fail closed");
 check(description.includes("what to build, fix, or improve next") && description.includes("prioritized engineering roadmap"), "positive trigger categories missing");
 check(description.includes("Do not use for implementing") && description.includes("review-only"), "negative trigger boundaries missing");
 check(!/\b(?:Claude|Codex|Sonnet|Haiku|Task tool|Agent tool)\b/.test([skill, indexRef, priority, decomposition, persistence].join("\n")), "host mechanics leaked into portable skill");
@@ -54,6 +61,8 @@ for (const file of [
   "skills/next-step-improve/scripts/next-spec-number.sh",
   "skills/next-step-improve/scripts/secrets-check.sh",
   "evals/next-step-improve/index-test.mjs",
+  "evals/next-step-improve/reconciliation-test.mjs",
+  "evals/next-step-improve/secrets-test.mjs",
   "evals/next-step-improve/fixture-test.mjs",
   "evals/next-step-improve/fixtures/build-fixture.mjs",
   "evals/next-step-improve/evals.json",

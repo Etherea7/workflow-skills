@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -49,7 +49,9 @@ links: { spec: spec.md }
 ${extra}
 `;
 
-rmSync(dest, { recursive: true, force: true });
+if (existsSync(dest) && readdirSync(dest).length > 0) {
+  throw new Error(`fixture destination must be absent or empty: ${dest}`);
+}
 mkdirSync(dest, { recursive: true });
 put(".gitignore", ".worktrees/\nnode_modules/\n");
 put("package.json", JSON.stringify({

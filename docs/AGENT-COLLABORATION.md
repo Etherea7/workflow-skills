@@ -188,6 +188,8 @@ Completed:
 Still pending:
 
 - trigger calibration/holdout through the shared harness after M2 approves it
+- clean safety-sensitive live behavior reruns after the shared scanner's
+  fail-closed repair; retain the old evidence, but do not regrade it
 - human gate
 
 ### M3 review requested
@@ -232,16 +234,34 @@ Completed:
   repository's flat numbering and one-checklist-per-work-unit conventions.
 - Added survey/checklist/index templates, four focused references, and
   byte-identical vendored numbering and secret-scan scripts.
-- Deterministic checks currently pass: 43/43 skill contract assertions, 24/24
-  index-generator assertions, fixture smoke test, repository validation, and
-  the official skill quick validator. Trigger suites contain 15 calibration
-  and 6 frozen holdout queries; behavior suites contain two cases.
+- Deterministic checks currently pass: 51/51 skill contract assertions, 30/30
+  index-generator assertions, 5/5 credential-scanner fail-closed/detection
+  assertions, 8/8 advanced-destination branch-topology assertions, fixture
+  smoke test, repository validation, and the official skill quick validator.
+  Trigger suites contain 15 calibration and 6 frozen holdout queries; behavior
+  suites contain two cases.
+- Exact-commit review of `91e2dbf` returned `CHANGES REQUIRED`: the canonical
+  credential scanner failed open, list/self-link validation and checklist-first
+  updated precedence diverged from the index contract, the first human pause
+  had no reachable persistence sequence, reranking hardcoded three instead of
+  `BAILOUT_N`, and post-child refresh omitted destination reconciliation. The
+  scanner and every vendored copy now fail closed, index semantics have focused
+  no-overwrite regressions, ranking/choice both persist artifact and truth
+  commits before pausing/dispatch, reranking uses the recorded threshold, and
+  an executable Git topology proves generated-INDEX reconciliation plus an
+  unchanged destination during integrated verification. The reviewer also
+  suggested a fixture containment guard; direct fixture execution now refuses
+  any non-empty destination.
+- The shared scanner repair was followed by clean M2 23/23 and M3 49/49
+  deterministic contract reruns plus M3 fixture/infrastructure checks. Because
+  earlier safety-sensitive live runs executed the former scanner, their results
+  remain historical evidence but require clean reruns rather than regrading.
 
 Still pending:
 
 - live behavior comparison and durable evidence bundles
 - shared trigger-harness execution after the M2 harness gate is available
-- independent exact-commit review and human approval
+- focused exact-commit re-review and human approval
 
 ### M4 review requested
 

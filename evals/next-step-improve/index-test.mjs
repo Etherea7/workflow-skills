@@ -33,13 +33,15 @@ try {
   put(normal, "specs/003-missing-spec/checklist.md", checklist("003-missing-spec", "Missing spec", "blocked", "debug", "- state: reproduction unavailable\n"));
   put(normal, "specs/004-status-mismatch/spec.md", spec("004-status-mismatch", "Mismatch", "ready"));
   put(normal, "specs/004-status-mismatch/checklist.md", checklist("004-status-mismatch", "Mismatch", "in-progress"));
+  put(normal, "specs/005-checklist-precedence/spec.md", spec("005-checklist-precedence", "Precedence", "ready").replace("2026-07-13", "2026-07-20"));
+  put(normal, "specs/005-checklist-precedence/checklist.md", checklist("005-checklist-precedence", "Precedence", "in-progress").replace("2026-07-14", "2026-07-10"));
   put(normal, "specs/not-numbered/spec.md", spec("not-numbered", "Ignored", "ready"));
 
   const generated = run(normal);
   check(generated.status === 0, `normal generation failed: ${generated.stderr}`);
   const first = readFileSync(join(normal, "specs", "INDEX.md"), "utf8");
   check(!first.includes("999-phantom") && !first.includes("not-numbered"), "stale/noncanonical rows survived");
-  for (const id of ["000-bootstrap", "001-parent", "002-child", "003-missing-spec", "004-status-mismatch"]) {
+  for (const id of ["000-bootstrap", "001-parent", "002-child", "003-missing-spec", "004-status-mismatch", "005-checklist-precedence"]) {
     check((first.match(new RegExp(`\\| ${id} \\|`, "g")) || []).length === 1, `${id} not present exactly once`);
   }
   check(first.indexOf("000-bootstrap") < first.indexOf("001-parent") && first.indexOf("001-parent") < first.indexOf("002-child"), "rows not numeric sorted");
@@ -48,6 +50,7 @@ try {
   check(first.includes("002-child: state: API decision required \\| owner: human"), "awaiting-human handback missing/unsafe");
   check(first.includes("003-missing-spec: missing spec.md"), "missing artifact not surfaced");
   check(first.includes("004-status-mismatch: spec status ready differs from checklist status in-progress"), "status mismatch not surfaced");
+  check(/\| 005-checklist-precedence \| Precedence \| in-progress \| new-feature \| 2026-07-10 \|/.test(first), "checklist updated/workflow/status did not take precedence");
   check(first.includes("Updated: 2026-07-14"), "updated date must derive from artifact truth");
   const secondRun = run(normal);
   check(secondRun.status === 0, "second generation failed");
@@ -75,6 +78,20 @@ try {
   const bad = run(malformed);
   check(bad.status === 2 && bad.stderr.includes("malformed or missing frontmatter"), "malformed frontmatter not rejected");
   check(readFileSync(join(malformed, "specs", "INDEX.md"), "utf8") === "KEEP\n", "malformed input overwrote index");
+
+  const malformedList = join(scratch, "malformed-list");
+  put(malformedList, "specs/INDEX.md", "KEEP LIST\n");
+  put(malformedList, "specs/021-bad-list/spec.md", spec("021-bad-list", "Bad list", "ready").replace("children: []", "children: [022-child"));
+  const badList = run(malformedList);
+  check(badList.status === 2 && badList.stderr.includes("malformed 021-bad-list children list"), "unclosed list metadata was not rejected");
+  check(readFileSync(join(malformedList, "specs", "INDEX.md"), "utf8") === "KEEP LIST\n", "malformed list overwrote index");
+
+  const selfRelated = join(scratch, "self-related");
+  put(selfRelated, "specs/INDEX.md", "KEEP SELF\n");
+  put(selfRelated, "specs/022-self/spec.md", spec("022-self", "Self", "ready").replace("related: []", "related: [022-self]"));
+  const badSelf = run(selfRelated);
+  check(badSelf.status === 2 && badSelf.stderr.includes("self related link"), "self-related metadata was not rejected");
+  check(readFileSync(join(selfRelated, "specs", "INDEX.md"), "utf8") === "KEEP SELF\n", "self-related input overwrote index");
 
   console.log(`next-step-improve index: PASS (${checks} directory-truth checks)`);
 } finally {

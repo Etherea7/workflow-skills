@@ -6,7 +6,7 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const read = (path) => readFileSync(join(root, path), "utf8");
+const read = (path) => readFileSync(join(root, path), "utf8").replace(/\r\n/g, "\n");
 const skill = read("skills/new-feature/SKILL.md");
 const merge = read("skills/new-feature/references/persistence-and-merge.md");
 const loop = read("skills/new-feature/references/tdd-loop.md");

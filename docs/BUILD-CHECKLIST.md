@@ -29,6 +29,10 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
 - 2026-07-13 M4 surveys are numbered work units at
   `specs/NNN-improvement-survey/`, not one global mutable checklist; this keeps
   the one-checklist-per-unit and flat artifact conventions intact
+- 2026-07-13 M4 review reproduced a fail-open bug in the canonical staged
+  credential scanner; canonical plus M2/M3/M4 vendored copies now fail closed
+  on Git, added-line filtering, or pattern-matching failure. Safety-sensitive
+  live gates using the former scanner require clean reruns, not regrading.
 
 ## Phase 0 — Verify + Interview
 
@@ -186,8 +190,10 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       sanitized evidence summaries, executor transcripts, and portable Git
       bundles; `node evals/debug/evidence-test.mjs` proves all cited commits
       readable (38/38). Review findings were repaired and rerun; final focused
-      Codex review of exact commit `32e8a0e` APPROVE. Shared-harness trigger
-      runs after M2 approval remain required. Keep unchecked.)
+      Codex review of exact commit `32e8a0e` APPROVE. A later shared-scanner
+      fail-closed repair passes the 49/49 contract and focused scanner
+      regression, but reopens safety-sensitive live behavior assertions for a
+      clean rerun. Shared-harness triggers also remain required. Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M4 `next-step-improve`
@@ -195,14 +201,18 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
 - [x] Skeleton → body (survey INDEX + checklists, prioritized proposals, decompose → new-feature, INDEX regeneration)
       (provisional isolated M4 authorized by human; evidence:
       `skills/next-step-improve/`; official skill validation PASS;
-      `node evals/next-step-improve/contract-test.mjs` -> 43/43; deterministic
-      `index-test.mjs` -> 24/24; fixture smoke PASS; generated `openai.yaml`;
+      `node evals/next-step-improve/contract-test.mjs` -> 51/51; deterministic
+      `index-test.mjs` -> 30/30; scanner fail-closed/detection -> 5/5;
+      destination-reconciliation topology -> 8/8; fixture smoke PASS;
+      generated `openai.yaml`;
       vendored number/secrets scripts byte-identical)
 - [ ] Evals: triggers; INDEX regenerated from directory truth
       (partial: 15 calibration + 6 frozen holdout queries, two strict behavior
-      cases, deterministic stale/cyclic/malformed INDEX coverage, and genuine
-      stale-index fixture are committed. Live behavior, shared trigger harness,
-      independent review, and human gate remain required. Keep unchecked.)
+      cases, deterministic stale/cyclic/malformed/self-link INDEX coverage,
+      advanced-destination reconciliation, and genuine stale-index fixture are
+      committed. Review round 1 returned five blocking findings; all are fixed
+      with clean deterministic reruns. Live behavior, focused re-review, shared
+      trigger harness, and human gate remain required. Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M5 `project-setup`

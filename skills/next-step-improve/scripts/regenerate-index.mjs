@@ -38,9 +38,12 @@ function unquote(value) {
   return text;
 }
 
-function listValue(value) {
+function listValue(value, field) {
   const text = value.trim();
   if (text === "[]" || text === "null" || text === "~" || text === "") return [];
+  if (text.startsWith("[") !== text.endsWith("]")) {
+    throw new Error(`malformed ${field} list: ${text}`);
+  }
   if (!text.startsWith("[") || !text.endsWith("]")) return [unquote(text)];
   return text.slice(1, -1).split(",").map((item) => unquote(item)).filter(Boolean);
 }
@@ -121,16 +124,16 @@ function collect(root) {
     const tasks = existsSync(join(directory, "tasks.md"));
     const status = checklist.data.status || spec.data.status || "missing";
     const workflow = checklist.data.workflow || spec.data.workflow || "unknown";
-    const updated = [checklist.data.updated, spec.data.updated].filter(Boolean).sort().at(-1) || "unknown";
+    const updated = checklist.data.updated || spec.data.updated || "unknown";
     return {
       id,
       title: spec.data.title || titleFrom(spec.text || checklist.text, id),
       status,
       workflow,
       updated,
-      parent: listValue(spec.data.parent || "")[0] || null,
-      children: listValue(spec.data.children || "[]"),
-      related: listValue(spec.data.related || "[]"),
+      parent: listValue(spec.data.parent || "", `${id} parent`)[0] || null,
+      children: listValue(spec.data.children || "[]", `${id} children`),
+      related: listValue(spec.data.related || "[]", `${id} related`),
       spec,
       checklist,
       plan,
@@ -172,7 +175,8 @@ function validate(items) {
       else if (byId.get(child).parent !== item.id) attention.get(item.id).push(`child ${child} does not name this parent`);
     }
     for (const related of item.related) {
-      if (!byId.has(related)) attention.get(item.id).push(`missing related ${related}`);
+      if (related === item.id) fatal.push(`${item.id} has a self related link`);
+      else if (!byId.has(related)) attention.get(item.id).push(`missing related ${related}`);
     }
   }
 
