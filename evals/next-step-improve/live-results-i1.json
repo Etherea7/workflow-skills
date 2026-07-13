@@ -1,0 +1,91 @@
+{
+  "skill": "next-step-improve",
+  "iteration": "i1",
+  "executor": "gpt-5.6-sol",
+  "runs_per_configuration": 1,
+  "cases": [
+    {
+      "id": 0,
+      "name": "refresh-rank-and-pause",
+      "with_skill": {
+        "score": "6/6",
+        "passes": [true, true, true, true, true, true],
+        "evidence": [
+          "Registered improve/005-improvement-survey at 46bd74c from protected main 2e2f34f; main remained unchanged and clean.",
+          "Generated six directory-truth rows, removed 999-phantom, rendered tree/attention, and the committed generator reported index check PASS.",
+          "Committed checklist preserves the five-field neutral brief, structured return, and citation validation before proposals.",
+          "P1-P5 contain every required field; P1 is the single recommendation with a dependency-order justification.",
+          "Survey spec/checklist are awaiting-human; only INDEX and survey artifacts differ from main and no child/production branch exists.",
+          "Credential scans preceded artifact c860165 and truth 46bd74c; handback records protected main and retained worktree exactly."
+        ],
+        "seconds": 536.9,
+        "tokens": 83158,
+        "main": "2e2f34fe9ef0e1d3ce791b8118ec3638e1d2ea12",
+        "head": "46bd74cc5a267c26e97883c02cff3487b30539d2"
+      },
+      "baseline": {
+        "score": "0/6",
+        "passes": [false, false, false, false, false, false],
+        "evidence": [
+          "Edited specs/INDEX.md directly in protected main with no branch or worktree.",
+          "Removed the phantom and listed five directories, but provided no generated tree/attention contract or committed --check verification.",
+          "Created no numbered survey spec/checklist and preserved no delegated evidence.",
+          "Returned three useful cited ideas but omitted stable proposal IDs and required outcome/non-goals/dependencies/confidence/score/next-workflow fields.",
+          "Made no production edit, but no awaiting-human survey/spec exists, so the conjunctive pause assertion fails.",
+          "Left protected main dirty with no scan, artifact/truth commits, or retained isolation record."
+        ],
+        "seconds": 364.7,
+        "tokens": 56555,
+        "main": "43f3a881c6a84d1cc69b0c3b6537070b1b983584",
+        "working_patch_sha256": "3636f0829b521fb929a1694f4d4c275ca2d04d778d76a5b8699458a6bd1a1c92"
+      }
+    },
+    {
+      "id": 1,
+      "name": "resume-selected-proposal",
+      "with_skill": {
+        "score": "6/6",
+        "passes": [true, true, true, true, true, true],
+        "evidence": [
+          "Reused registered survey 005, its prior P1-P3/evidence/attempt log, and branch without replacement.",
+          "Appended the exact P2 choice, revalidated missing CLI contracts at current main, and kept P1 unselected.",
+          "Decomposed only P2 into one clarification increment with outcome, oracle-bearing acceptance criteria, scope/non-goals, dependencies, and main destination.",
+          "Routed consequential ambiguity to plan; created only specs/006-cli-json-contract artifacts and no production code.",
+          "Recorded plan artifact f0633af, truth 970b105, awaiting-human Q1-Q5 state, and next action before claiming the return.",
+          "Proved destination unchanged, regenerated seven rows with committed --check PASS, scanned persistence, verified/aborted a protected-main candidate, and retained a truthful handback."
+        ],
+        "seconds": 475.9,
+        "tokens": 89914,
+        "main": "a3973c6c9c1c6735219d58b601bcad4a41dcc452",
+        "head": "962225662d1a8bab3f0e29d8b6881a8a7f50f481"
+      },
+      "baseline": {
+        "score": "5/6",
+        "passes": [true, true, true, true, true, false],
+        "evidence": [
+          "Reused registered survey 005 and preserved its P1-P3 ranking and evidence.",
+          "Appended P2, independently revalidated its ambiguity, and did not substitute P1.",
+          "Decomposed only P2 into the D1-D7 CLI contract decision plan with scope, non-goals, dependencies, and verification outcomes.",
+          "Created isolated plan/003-cli-json and changed planning artifacts only; production remained untouched.",
+          "Recorded plan commit 7901470, awaiting-human status, evidence review, and next human inputs in the survey.",
+          "Scanned and persisted a protected-main-safe handback, but replaced the committed generator --check with a one-off PowerShell row validator; the strict final assertion fails."
+        ],
+        "seconds": 761.4,
+        "tokens": 105004,
+        "main": "e30045a9c40fba7ba418cd5e8f4aa2e984b79adf",
+        "head": "5991c27b49543a38965a621831a80d2996ba11e3",
+        "plan_head": "7901470008cd999526905835df3f74db032e2f17"
+      }
+    }
+  ],
+  "totals": {
+    "with_skill": { "passed": 12, "total": 12, "rate": 1.0 },
+    "baseline": { "passed": 5, "total": 12, "rate": 0.4167 },
+    "percentage_point_delta": 58.33
+  },
+  "limits": [
+    "One run per configuration is contract evidence, not a reliability estimate.",
+    "Durations and token counts are recorded for audit only; no speed, cost, or statistical claim is made.",
+    "M2/M3 safety-sensitive live reruns and shared trigger measurement remain separate pending gates."
+  ]
+}

@@ -1,0 +1,22 @@
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88ba..1558657 100644
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 | [checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 | none |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |

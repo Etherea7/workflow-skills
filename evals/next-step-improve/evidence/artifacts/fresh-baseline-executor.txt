@@ -1,0 +1,1554 @@
+��node.exe : Reading additional input from stdin...
+At %USERPROFILE%\AppData\Roaming\npm\codex.ps1:24 char:5
++     & "node$exe"  "$basedir/node_modules/@openai/codex/bin/codex.js"  ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Reading additional input from stdin...:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+2026-07-13T08:42:14.973777Z  WARN codex_core::shell_snapshot: Failed to create shell snapshot for powershell: Shell
+snapshot not supported yet for PowerShell
+OpenAI Codex v0.144.1
+--------
+workdir: %TEMP%\dwv\m4-live\i1\fresh\baseline\project
+model: gpt-5.6-sol
+provider: openai
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f5aa4-2617-7b93-99a2-85e81c0a3103
+--------
+user
+Survey this repository and tell me what engineering work we should do next. Refresh specs/INDEX.md from the actual
+spec directories, give me a prioritized shortlist, and do not start implementation until I choose.
+codex
+I m using the `improve` skill because this is a repository audit and implementation-handoff request. I ll keep source
+code read-only, refresh only `specs/INDEX.md`, and use read-only explorer briefs under the repository s delegation
+protocol before I rank the next work.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw
+'%USERPROFILE%\\.agents\\skills\\improve\\SKILL.md'" in
+%TEMP%\dwv\m4-live\i1\fresh\baseline\project
+ succeeded in 2370ms:
+---
+name: improve
+description: Survey any codebase as a senior advisor and produce prioritized, self-contained implementation plans for
+OTHER models/agents to execute. Strictly read-only on source code ��   never implements, fixes, or refactors anything
+itself. Use when asked to audit a codebase, find improvement opportunities (bugs, security, performance, test
+coverage, tech debt, migrations, DX), suggest features or where to take the project next (roadmap, product direction),
+or generate handoff plans for another agent to implement.
+license: MIT
+metadata:
+  author: shadcn
+  version: "1.0.0"
+---
+
+# Improve
+
+You are a **senior advisor, not an implementer**. Your job is to deeply understand a codebase, find the highest-value
+improvement opportunities, and write implementation plans good enough that a *different, less capable model with zero
+context from this session* can execute, test, and maintain them.
+
+The economics of this skill: an expensive, high-ceiling model does the part where intelligence compounds
+(understanding, judging, specifying). Cheaper models do the execution. The plan is the product ��   its quality
+determines whether the executor succeeds.
+
+## Hard Rules
+
+1. **Never modify source code yourself.** No edits, no fixes, no "quick wins while you're in there." The ONLY files
+you may create or modify live under `plans/` in the repo root (create it if absent). The `execute` variant dispatches
+a *separate executor subagent* that edits code in an isolated git worktree ��   you review its diff and render a
+verdict; you still never edit code directly, and you never merge, push, or commit to the user's branch.
+2. **Never run commands that mutate the user's working tree** ��   no installs, no builds that write artifacts outside
+standard ignored dirs, no git commits, no formatters. Read, search, and run read-only analysis only (e.g. `tsc
+--noEmit`, lint in check mode, `npm audit` / `pnpm audit`, test suite if cheap and side-effect free). Two scoped
+exceptions: verification commands inside an executor's disposable worktree during `execute` review, and `gh issue
+create` under an explicit `--issues` flag.
+3. **Every plan must be fully self-contained.** The executor has not seen this conversation, this codebase survey, or
+any other plan. If a plan references "the pattern discussed above," it is broken.
+4. **Never reproduce secret values.** If the audit finds credentials, tokens, or `.env` contents, findings and plans
+reference the `file:line` and credential type only, and recommend rotation. The value itself must never appear in
+anything you write.
+5. **If the user asks you to implement directly, decline and point at the plan** ��   offer `execute <plan>`
+(dispatched executor + your review) or plan refinement instead.
+
+## Workflow
+
+### Phase 1 ��   Recon (always)
+
+Map the territory before judging it:
+
+- Read `README`, `CLAUDE.md`/`AGENTS.md`, `CONTRIBUTING`, root config files (`package.json`, `pyproject.toml`,
+`go.mod`, etc.), CI config, and the directory structure.
+- Identify: language(s), framework(s), package manager, **how to build / test / lint / typecheck** (exact commands �� 
+these go into every plan as verification gates), test coverage shape, deployment target.
+- Note repo conventions: code style, naming, folder layout, error-handling and state-management patterns. Plans must
+tell the executor to *match* these, with examples.
+- Check git signal where useful (`git log --oneline -30`, churn hotspots) for what's actively evolving vs. frozen.
+
+If the repo has no working verification command (no tests, broken build), record that ��   "establish a verification
+baseline" is often finding #1, and it must precede risky plans in the dependency order.
+
+### Phase 2 ��   Audit (parallel)
+
+Audit the codebase across the categories in [references/audit-playbook.md](references/audit-playbook.md) ��   read it
+now. Categories: **correctness/bugs, security, performance, test coverage, tech debt & architecture, dependencies &
+migrations, DX & tooling, docs, direction (features & what to build next)**.
+
+For repos of any real size, fan out with parallel read-only subagents (in Claude Code: **Explore** agents) ��   one per
+category (or cluster of related categories). If the host agent can't spawn subagents, audit directly yourself in
+category-priority order. **Subagents do not inherit this skill's context**, so each subagent prompt must include:
+
+- the **absolute path** to this skill's `references/audit-playbook.md` plus the exact section headings to read �� 
+**always including "## Finding format"** (subagents can read files ��   this is far cheaper than pasting; paste the
+sections only if the path may not resolve in the subagent's environment),
+- the recon facts that scope the search (languages, frameworks, key directories, what to skip),
+- domain-specific risk hints from recon (e.g. for a CLI that writes user files: "pay attention to path traversal and
+command injection"),
+- an explicit instruction to return findings only ��   no fixes, no file dumps ��   and to confirm it could read the
+playbook file.
+
+Audit depth follows the **effort level** (default `standard`; the user sets it with a `quick` / `deep` keyword
+anywhere in the invocation):
+
+| | `quick` | `standard` (default) | `deep` |
+|---|---|---|---|
+| Coverage | Recon hotspots only ��   highest-churn, highest-criticality code | Hotspot-weighted, key packages | Whole
+repo, every package |
+| Subagents | 0��  1 (sweep directly when feasible) | �0 �4 concurrent | �0 �8 concurrent, one per category |
+| Breadth | "medium" | "very thorough" for correctness + security, "medium" rest | "very thorough" everywhere |
+| Categories | correctness, security, tests | all nine | all nine |
+| Findings | top ~6, HIGH-confidence only | full table | full table incl. LOW-confidence "investigate" items |
+
+Whatever the level, say in the final report what was *not* audited. On a large monorepo even `deep` scopes subagents
+to packages, not the root.
+
+Every finding needs: evidence (`file:line` references), impact, effort estimate (S/M/L), risk of the fix itself, and
+confidence. No vibes-only findings.
+
+### Phase 3 ��   Vet, prioritize, confirm
+
+**Vet before presenting ��   subagents over-report.** For every finding that will make the table, open the cited code
+yourself and confirm it. Expect three failure classes: **by-design behavior** reported as a bug or vulnerability (e.g.
+honoring `https_proxy` flagged as SSRF ��   it's the standard proxy convention); **mis-attributed evidence** (real
+finding, wrong file or line); and duplicates across subagents. Downgrade, correct, or reject accordingly, and record
+rejections in the index's "considered and rejected" section so they aren't re-audited next run.
+
+Present the vetted findings table to the user, ordered by leverage (impact �� effort, weighted by confidence):
+
+| # | Finding | Category | Impact | Effort | Risk | Evidence |
+
+Present **direction findings separately**, after the table ��   they're options for the maintainer to weigh, not
+problems ranked against bugs, and burying "build a plugin system" under "fix the N+1" serves neither. 2��  4 grounded
+suggestions max, each with its evidence and trade-offs in two or three sentences.
+
+Then ask which findings to turn into plans (default suggestion: the top 3��  5 plus anything they flag). Also surface
+**dependency ordering** ��   e.g. "characterization tests for module X (plan 02) must land before the refactor of X
+(plan 05)."
+
+Wait for the selection. Do not write 30 plans nobody asked for. If running non-interactively (no user available to
+choose), write plans for the top 3��  5 by leverage and record that default in `plans/README.md`.
+
+### Phase 4 ��   Write the plans
+
+For each selected finding, write one plan file using the template in
+[references/plan-template.md](references/plan-template.md) ��   read it before writing the first plan. Plans go in:
+
+```
+plans/
+  README.md          �  � index: priority order, dependency graph, status table
+  001-<slug>.md
+  002-<slug>.md
+```
+
+**Excerpts come from your own reads, never from a subagent's report.** Before writing each plan, open every cited file
+yourself ��   subagent line numbers and attributions are leads, not facts, and a wrong excerpt becomes a wrong plan
+that fails its own drift check.
+
+Before writing anything: record `git rev-parse --short HEAD` ��   every plan stamps the commit it was written against
+(the executor uses it for drift detection). If `plans/` already exists from a previous run, **reconcile, don't
+duplicate**: read `plans/README.md`, keep numbering monotonic, skip findings already planned or listed as rejected,
+and mark superseded plans stale in the index. If `plans/` exists for some unrelated purpose, use `advisor-plans/`
+instead and say so.
+
+Write each plan **for the weakest plausible executor**. That means:
+
+- All context inlined: why this matters, exact file paths, current-state code excerpts, the repo's conventions to
+follow (with a snippet of an existing exemplar file).
+- Steps that are explicit and ordered, each with its own verification command and expected output.
+- Hard boundaries: files in scope, files explicitly out of scope, things that look related but must not be touched.
+- Machine-checkable done criteria ��   commands and expected results, not prose like "works correctly."
+- A test plan (what new tests to write, where, following which existing test as a pattern).
+- A maintenance note (what future changes will interact with this, what to watch in review).
+- Escape hatches: "if X turns out to be true, STOP and report back instead of improvising."
+
+Finish by writing `plans/README.md` with the recommended execution order, dependencies between plans, and a status
+column the executor models can update.
+
+## Invocation variants
+
+- Bare invocation �    full workflow above.
+- `quick` / `deep` (anywhere in the invocation) �    effort level for the audit; see the table in Phase 2. Composes
+with everything: `quick security`, `deep --issues`. Default is `standard`.
+- With a focus argument (e.g. `security`, `perf`, `tests`) �    run Recon, then audit only that category, then plan.
+- `branch` �    audit only the current working branch's changes: scope = files changed since the merge-base with the
+default branch (`git diff --name-only $(git merge-base origin/<default> HEAD)..HEAD`) plus their direct
+importers/callers. Light recon, all categories, usually no subagents. **Tag every finding `introduced` (by this
+branch) or `pre-existing` (in touched files)** ��   the table separates them; don't blame the branch for legacy debt,
+but do surface what it's building on top of. If on the default branch or zero commits ahead, say so and offer a full
+audit instead.
+- `next` (or `features`, `roadmap`) �    run Recon, then audit only the direction category, in more depth: 4��  6
+grounded suggestions, each with evidence, trade-offs, and a coarse effort estimate. Selected ones become design/spike
+plans, not build-everything plans.
+- `plan <description>` �    skip the audit; the user already knows what they want. Run Recon, investigate just enough
+to specify it properly, and write a single plan. If the description is too ambiguous to specify honestly, first try to
+resolve each ambiguity from the codebase itself; only what's left becomes questions to the user ��   asked one at a
+time, each with a recommended answer.
+- `review-plan <file>` �    critique an existing plan in `plans/` against the template's standards and tighten it. If
+you authored the plan in this same session, also have a fresh-context subagent read it cold and report ambiguities �� 
+self-critique misses gaps you mentally fill from context the executor won't have.
+- `execute <plan>` �    dispatch a cheaper executor subagent on one plan (isolated worktree), then review its diff like
+a tech lead ��   re-run done criteria, check scope, read the code ��   and render a verdict. Requires a host agent that
+can spawn subagents in an isolated worktree; if yours can't, say so and hand the plan over for manual execution
+instead. **Read [references/closing-the-loop.md](references/closing-the-loop.md) before the first dispatch.**
+- `reconcile` �    process what happened since last session: verify DONE plans, investigate BLOCKED ones, refresh
+drifted TODOs, retire dead findings. See [references/closing-the-loop.md](references/closing-the-loop.md).
+- `--issues` (modifier on any planning invocation) �    also publish each written plan as a GitHub issue via `gh`, URL
+recorded in the plan and index. Only with the explicit flag. See
+[references/closing-the-loop.md](references/closing-the-loop.md).
+
+## Tone of the output
+
+You are advising, not selling. State findings plainly with evidence, flag uncertainty honestly, and prefer "not worth
+doing" verdicts over padding the list. A short list of high-confidence, high-leverage plans beats a long one.
+
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw
+'%USERPROFILE%\\.agents\\skills\\improve\\references\\audit-playbook.md'" in
+%TEMP%\dwv\m4-live\i1\fresh\baseline\project
+ succeeded in 2350ms:
+# Audit Playbook
+
+What to look for, per category. Each subagent (or direct audit pass) gets the relevant section plus the **Finding
+format** at the bottom. Adapt depth to repo size ��   a 2K-line CLI gets a lighter pass than a 500K-line monorepo.
+
+A finding is only a finding with evidence. "Probably has N+1 queries somewhere" is not a finding; `orders/api.ts:142
+issues one query per order item inside a loop` is.
+
+---
+
+## 1. Correctness / Bugs
+
+The highest-trust category ��   real bugs found by reading, not speculation.
+
+- Error handling: swallowed exceptions, empty catch blocks, `catch (e) { console.log(e) }` on critical paths, missing
+error states in UI code.
+- Async hazards: unawaited promises, race conditions on shared state, missing cancellation/cleanup (stale closures in
+React effects, listeners never removed).
+- Null/undefined flows: non-null assertions (`!`) on values that can be null, optional chaining hiding a value that
+must exist, unchecked array indexing.
+- Boundary conditions: off-by-one, empty-collection handling, timezone/locale assumptions, integer overflow in
+counters/IDs.
+- State machines: impossible-state combinations representable in types, status enums with unhandled branches (look for
+`default:` that silently no-ops).
+- Concurrency: check-then-act on shared resources, missing transactions around multi-write operations, idempotency of
+retried operations (webhooks, queues).
+- Type escape hatches: `any` / `as` casts / `@ts-ignore` clusters ��   each one is a place the compiler was overruled.
+- Resource leaks: unclosed handles, connections, subscriptions; missing `finally`.
+
+## 2. Security
+
+Report only what's evidenced in the code. Do not generate exploit code in plans ��   describe the fix.
+
+**Handling rule:** never copy a secret value into a finding or plan ��   those files get committed. Reference the
+`file:line` and credential type only ("Stripe live key at `config.ts:12`"), and the fix sketch always includes
+rotation, not just removal (a committed secret is burned even after deletion).
+
+**By-design is not a finding:** standard platform conventions are intentional behavior ��   honoring
+`https_proxy`/`NO_PROXY`, reading `~/.netrc`, an explicitly local dev tool shelling out to configured package
+managers. Flag these only when the *implementation* adds risk beyond the convention itself.
+
+- Secrets: hardcoded keys/tokens/passwords, secrets in committed `.env` files, secrets logged or persisted in
+event/history stores.
+- Injection: string-built SQL/shell commands, `dangerouslySetInnerHTML` / `innerHTML` with user data,
+`eval`/`Function` on dynamic input, path traversal on user-supplied filenames.
+- AuthN/Z: endpoints/server actions missing auth checks, authorization checked client-side only, IDOR (object access
+by ID without ownership check), missing CSRF protection on state-changing routes.
+- Input validation: API boundaries trusting request bodies (no schema validation), file-upload handling
+(type/size/path), mass assignment from request objects.
+- Dependencies: run the ecosystem's audit command (`npm audit`, `pip-audit`, `cargo audit`) in read-only mode; flag
+critical/high with known exploits, not the noise floor.
+- Headers/config: CORS wildcard with credentials, missing CSP where it matters, cookies without
+`HttpOnly`/`Secure`/`SameSite`, debug/verbose modes reachable in production config.
+- Data exposure: PII in logs, stack traces returned to clients, internal error details in API responses.
+
+## 3. Performance
+
+Look for the algorithmic and architectural wins, not micro-optimizations.
+
+- N+1 patterns: query/fetch per item inside loops or per list-row rendering; missing batching or dataloader.
+- Wrong complexity: nested scans over the same collection, repeated `find`/`filter` inside hot loops where a Map keyed
+lookup belongs.
+- Caching gaps: identical expensive computations or fetches repeated per request/render; missing memoization at clear
+function boundaries; no HTTP/data-layer caching on stable data.
+- Payload size: over-fetching (select *, full objects where IDs suffice), missing pagination on unbounded lists, large
+JSON shipped to clients.
+- Frontend (if applicable): bundle composition (heavyweight deps for trivial use), missing code-splitting on
+rarely-hit routes, unoptimized images/fonts, client-side fetching for data available at render time, render
+waterfalls. For React/Next.js, defer to the repo's framework conventions and any installed best-practices guidelines.
+- Backend: synchronous work that belongs in a queue, missing indexes implied by query patterns (flag for verification
+��   don't claim without schema evidence), connection-per-request patterns where pooling exists.
+- Build/CI: slow CI from missing caching, redundant pipeline steps, test suites that could parallelize.
+
+## 4. Test Coverage
+
+The goal is not a percentage ��   it's *which untested code is dangerous*.
+
+- Map the critical paths (money, auth, data mutation, the feature the repo exists for) and check which have zero or
+trivial coverage.
+- Modules with high churn (git log) + no tests = top refactor risk; flag as "characterization tests first" candidates.
+- Existing test quality: tests that assert nothing meaningful, heavy mocking that tests the mocks, snapshot tests
+nobody reads, flaky patterns (real timers, real network, order dependence).
+- Missing test layers: unit-only suites with zero integration coverage on API boundaries, or the inverse (slow E2E for
+what a unit test would catch).
+- Verification infrastructure: is there a one-command way to know the codebase works? If not, that's finding #1 and a
+prerequisite plan for any risky change.
+
+## 5. Tech Debt & Architecture
+
+- Duplication: the same logic re-implemented in 3+ places (search for near-identical functions/components); divergent
+copies that have drifted.
+- Layering violations: UI importing from data layer internals, circular dependencies, "utils" modules that became a
+junk drawer with high fan-in.
+- Dead code: unexported-and-unused modules, feature flags fully rolled out but still branching, commented-out blocks
+with no explanation, deps in the manifest no longer imported.
+- God objects/modules: files an order of magnitude larger than the repo median that everything touches; functions with
+double-digit parameters or deep conditional nesting.
+- Inconsistent patterns: three ways of doing data fetching / error handling / styling in the same repo ��   pick the
+winner (the one the team converged on most recently) and plan the consolidation.
+- Abstraction mismatches: premature abstractions with a single implementation, or missing abstractions where the same
+change always requires touching N files in lockstep.
+
+## 6. Dependencies & Migrations
+
+- Major-version lag on core framework/runtime (not every minor bump ��   the ones with real cost to staying behind:
+EOL, security-fix cutoffs, ecosystem incompatibility).
+- Deprecated APIs in use that have announced removal timelines.
+- Abandoned dependencies (no release in years, archived repos) on critical paths.
+- Duplicate dependencies solving the same problem (two date libs, two HTTP clients).
+- Lockfile/manifest drift, version pinning inconsistencies across a monorepo.
+- For each migration candidate, estimate blast radius (files touched) ��   that drives effort and whether to recommend
+it at all.
+
+## 7. DX & Tooling
+
+- Missing or broken: typecheck script, lint config, formatter, pre-commit hooks, editorconfig.
+- Slow feedback loops: dev-server or test startup measured in minutes, no watch mode, CI without caching.
+- Onboarding friction: README setup steps that are wrong/incomplete, undocumented required env vars, no `.env.example`.
+- Missing `CLAUDE.md`/`AGENTS.md` ��   for repos where agents will execute the plans, this is high-leverage: recommend
+one and include its outline as a plan.
+- Error messages/logging: unstructured logs on services, missing request IDs/correlation, debugging requiring code
+changes.
+
+## 8. Docs
+
+Lowest default priority ��   only flag where absence has a concrete cost:
+
+- Public API surface (published packages) without reference docs.
+- Architectural decisions nobody can reconstruct (why X over Y) for actively-contested areas.
+- Stale docs that are actively wrong (worse than missing) ��   setup instructions, API examples that no longer compile.
+
+## 9. Direction ��   features & where to take this next
+
+Forward-looking: not what's broken, but what this codebase wants to become. **Grounding rule:** every suggestion must
+cite evidence from the repo itself ��   a suggestion that could apply to any project in the category ("add dark mode",
+"add AI") is noise, not a finding. Sources of grounded direction signal:
+
+- **Unfinished intent**: TODO/FIXME clusters around one theme, feature flags never rolled out, stubbed or half-built
+modules, commented-out feature code, abandoned mid-feature work visible in git history.
+- **Stated-but-undelivered**: README/docs/roadmap promises with no corresponding code, CLI flags or config options
+that are no-ops, issue templates for features that don't exist.
+- **Surface asymmetries**: one-directional pairs (export without import, create without bulk-create, webhooks out but
+not in), entities with CRUD minus one, a public API that internal code clearly needed and hand-rolled around.
+- **The adjacent possible**: capabilities the existing architecture makes disproportionately cheap ��   a plugin system
+one interface away, a public API one route file from the existing service layer, an integration the data model already
+supports.
+- **Friction worth productizing**: things users of this project evidently do by hand around it (visible in docs,
+examples, issues) that the project could absorb.
+
+Direction findings use the standard format with two adaptations: **Impact** is product/user value (who wants this and
+why now), and **Confidence** reflects how grounded the evidence is ��   not certainty that it's the right call.
+Strategy belongs to the maintainer; the advisor's job is grounded options with honest trade-offs. Effort estimates
+here are coarser; say so. Plans for selected direction findings are usually a *design/spike plan* (investigate,
+prototype, define the API, list open questions) rather than a build-everything plan ��   scope them that way.
+
+---
+
+## Finding format
+
+Every finding, from every category and every subagent, comes back in this shape:
+
+```markdown
+### [CATEGORY-NN] Short imperative title
+
+- **Evidence**: `path/file.ts:123` ��   one-sentence description of what's there. (Repeat per location; 2��  5 strongest
+locations, note "and ~N similar sites" if widespread.)
+- **Impact**: What goes wrong / what's being paid because of this. Concrete: "every order-list render issues 1+N
+queries", not "suboptimal".
+- **Effort**: S (hours) / M (a day-ish) / L (multi-day) ��   for the *fix*, including tests.
+- **Risk**: What the fix could break; LOW/MED/HIGH plus one line why.
+- **Confidence**: HIGH (read the code, certain) / MED (strong signal, needs verification) / LOW (smell, needs
+investigation). LOW-confidence findings may be reported but get an "investigate" plan, not a "fix" plan.
+- **Fix sketch**: 1��  3 sentences. Not the plan ��   just enough to judge effort honestly.
+```
+
+## Prioritization rubric
+
+Order findings by **leverage = impact �� effort, discounted by confidence and fix-risk**. Tiebreakers:
+
+1. Anything that unblocks other findings (verification baseline, characterization tests) floats up.
+2. Security findings with HIGH confidence float above equivalent-leverage non-security findings.
+3. Prefer findings whose fix has a clean verification story ��   executor models succeed at those.
+4. "Not worth doing" is a valid verdict; record it with one line of reasoning so the user knows it was considered.
+
+
+codex
+The skill s standard audit calls for parallel read-only coverage. I m first mapping the repository and spec layout;
+then I ll delegate bounded correctness/security, test/architecture, and dependencies/direction sweeps. I ll personally
+validate every shortlisted citation and the regenerated index.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command '$ErrorActionPreference='"'Stop'
+Write-Output '--- git ---'
+git status --short --branch
+git rev-parse --show-toplevel
+git log --oneline -15
+Write-Output '--- root ---'
+Get-ChildItem -Force | Select-Object Mode,Length,Name
+Write-Output '--- files ---'
+rg --files -g '"'!node_modules'"' -g '"'!dist'"' -g '"'!coverage'"'
+Write-Output '--- package ---'
+if (Test-Path package.json) { Get-Content -Raw package.json }
+Write-Output '--- docs ---'
+foreach ("'$f in @('"'README.md','AGENTS.md','CLAUDE.md','CONTRIBUTING.md')) { if (Test-Path "'$f) { Write-Output "###
+$f"; Get-Content -Raw $f } }
+Write-Output '"'--- workflows/config ---'
+"'$cfg = @('"'.github/workflows','tsconfig.json','eslint.config.js','.eslintrc','.eslintrc.json','.prettierrc','vitest.
+config.ts','jest.config.js')
+foreach ("'$p in $cfg) { if (Test-Path $p) { Write-Output "### $p"; if ((Get-Item $p).PSIsContainer) { Get-ChildItem
+$p -File | ForEach-Object { Write-Output "## $($_.FullName)"; Get-Content -Raw $_.FullName } } else { Get-Content -Raw
+$p } } }
+Write-Output '"'--- specs tree ---'
+if (Test-Path specs) { Get-ChildItem specs -Recurse -Force | Select-Object FullName,PSIsContainer,Length }" in
+%TEMP%\dwv\m4-live\i1\fresh\baseline\project
+ succeeded in 2506ms:
+--- git ---
+## main
+%TEMP%/dwv/m4-live/i1/fresh/baseline/project
+43f3a88 chore: seed roadmap fixture
+--- root ---
+
+test\queue.test.js
+src\queue.js
+specs\INDEX.md
+specs\004-metrics\spec.md
+specs\004-metrics\checklist.md
+specs\003-cli-json\spec.md
+specs\002-webhook-auth\spec.md
+specs\002-webhook-auth\checklist.md
+specs\001-profile\spec.md
+specs\001-profile\checklist.md
+AGENTS.md
+package.json
+README.md
+specs\000-bootstrap\spec.md
+specs\000-bootstrap\checklist.md
+Mode   Length Name
+----   ------ ----
+d--h--        .git
+d-----        .github
+d-----        specs
+d-----        src
+d-----        test
+-a---- 26     .gitignore
+-a---- 513    AGENTS.md
+-a---- 137    package.json
+-a---- 76     README.md
+--- files ---
+--- package ---
+{
+  "name": "roadmap-fixture",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test"
+  }
+}
+
+--- docs ---
+### README.md
+# Roadmap fixture
+
+Node 22 service. Specs are the planning source of truth.
+
+### AGENTS.md
+# Fixture rules
+
+Protected branches: main, master, release/*. BAILOUT_N = 3. Test: `npm test`.
+No network or production operations. Every commit requires a staged added-lines
+credential scan. Worktree root is `.worktrees/`.
+
+## Delegation Protocol
+
+Explorer briefs contain role, task, required context, return format, and
+done-criteria. Explorers are read-only and return observations with citations,
+risks, dependencies, and unknowns. The orchestrator validates citations and
+owns ranking and selection handoff.
+
+--- workflows/config ---
+### .github/workflows
+## %TEMP%\dwv\m4-live\i1\fresh\baseline\project\.github\workflows\ci.yml
+name: ci
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm test
+
+--- specs tree ---
+
+
+
+
+
+       167
+       216
+       215
+       210
+       207
+       308
+       267
+       233
+       296
+       231
+
+
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command '$files =
+@('"'src/queue.js','test/queue.test.js','specs/INDEX.md') + (Get-ChildItem specs -Directory | Sort-Object Name |
+ForEach-Object { Get-ChildItem "'$_.FullName -File | Sort-Object Name | Select-Object -ExpandProperty FullName })
+foreach ($f in $files) {
+  Write-Output "--- $f ---"
+  $i=0; Get-Content $f | ForEach-Object { $i++; '"'{0,4}: {1}' -f "'$i, $_ }
+}
+Write-Output '"'--- git tracked ---'
+git ls-files
+Write-Output '--- ignore ---'
+Get-Content .gitignore" in %TEMP%\dwv\m4-live\i1\fresh\baseline\project
+ succeeded in 2451ms:
+--- src/queue.js ---
+   1: export function enqueue(queue, item) { queue.push(item); return queue.length; }
+--- test/queue.test.js ---
+   1: import test from "node:test";
+   2: import assert from "node:assert/strict";
+   3: import { enqueue } from "../src/queue.js";
+   4: test("enqueue appends", () => { const q = []; assert.equal(enqueue(q, "x"), 1); });
+--- specs/INDEX.md ---
+   1: <!-- stale hand-edited index -->
+   2: # Specs index - stale
+   3: | ID | Title | Status |
+   4: |---|---|---|
+   5: | 999-phantom | Phantom | ready |
+   6: | 001-profile | Profile | in-progress |
+--- %TEMP%\dwv\m4-live\i1\fresh\baseline\project\specs\000-bootstrap\checklist.md ---
+   1: ---
+   2: work: 000-bootstrap
+   3: workflow: project-setup
+   4: status: done
+   5: updated: 2026-07-11
+   6: links: { spec: spec.md }
+   7: ---
+   8:
+   9: # Checklist - Bootstrap
+  10:
+  11: ## Steps
+  12:
+  13: - [x] Preserve observed state (evidence: fixture seed)
+  14:
+  15: ## Handback
+  16:
+  17:
+--- %TEMP%\dwv\m4-live\i1\fresh\baseline\project\specs\000-bootstrap\spec.md ---
+   1: ---
+   2: id: 000-bootstrap
+   3: title: Bootstrap
+   4: status: done
+   5: updated: 2026-07-10
+   6: parent: null
+   7: children: []
+   8: related: []
+   9: ---
+  10:
+  11: # Spec - Bootstrap
+  12:
+  13: ## Requirements
+  14:
+  15: - R1. Repository evidence for Bootstrap remains authoritative.
+--- %TEMP%\dwv\m4-live\i1\fresh\baseline\project\specs\001-profile\checklist.md ---
+   1: ---
+   2: work: 001-profile
+   3: workflow: new-feature
+   4: status: done
+   5: updated: 2026-07-11
+   6: links: { spec: spec.md }
+   7: ---
+   8:
+   9: # Checklist - Profile
+  10:
+  11: ## Steps
+  12:
+  13: - [x] Preserve observed state (evidence: fixture seed)
+  14:
+  15: ## Handback
+  16:
+  17:
+--- %TEMP%\dwv\m4-live\i1\fresh\baseline\project\specs\001-profile\spec.md ---
+   1: ---
+   2: id: 001-profile
+   3: title: Profile
+   4: status: done
+   5: updated: 2026-07-10
+   6: parent: null
+   7: children: []
+   8: related: []
+   9: ---
+  10:
+  11: # Spec - Profile
+  12:
+  13: ## Requirements
+  14:
+  15: - R1. Repository evidence for Profile remains authoritative.
+--- %TEMP%\dwv\m4-live\i1\fresh\baseline\project\specs\002-webhook-auth\checklist.md ---
+   1: ---
+   2: work: 002-webhook-auth
+   3: workflow: plan
+   4: status: awaiting-human
+   5: updated: 2026-07-11
+   6: links: { spec: spec.md }
+   7: ---
+   8:
+   9: # Checklist - Webhook authentication
+  10:
+  11: ## Steps
+  12:
+  13: - [x] Preserve observed state (evidence: fixture seed)
+  14:
+  15: ## Handback
+  16:
+  17: - state: awaiting a human decision on signature rotation and replay window
+  18:
+--- %TEMP%\dwv\m4-live\i1\fresh\baseline\project\specs\002-webhook-auth\spec.md ---
+   1: ---
+   2: id: 002-webhook-auth
+   3: title: Webhook authentication
+   4: status: awaiting-human
+   5: updated: 2026-07-10
+   6: parent: null
+   7: children: []
+   8: related: []
+   9: ---
+  10:
+  11: # Spec - Webhook authentication
+  12:
+  13: ## Requirements
+  14:
+  15: - R1. Repository evidence for Webhook authentication remains authoritative.
+--- %TEMP%\dwv\m4-live\i1\fresh\baseline\project\specs\003-cli-json\spec.md ---
+   1: ---
+   2: id: 003-cli-json
+   3: title: CLI JSON output
+   4: status: ready
+   5: updated: 2026-07-10
+   6: parent: null
+   7: children: []
+   8: related: []
+   9: ---
+  10:
+  11: # Spec - CLI JSON output
+  12:
+  13: ## Requirements
+  14:
+  15: - R1. Repository evidence for CLI JSON output remains authoritative.
+--- %TEMP%\dwv\m4-live\i1\fresh\baseline\project\specs\004-metrics\checklist.md ---
+   1: ---
+   2: work: 004-metrics
+   3: workflow: new-feature
+   4: status: blocked
+   5: updated: 2026-07-11
+   6: links: { spec: spec.md }
+   7: ---
+   8:
+   9: # Checklist - Metrics export
+  10:
+  11: ## Steps
+  12:
+  13: - [x] Preserve observed state (evidence: fixture seed)
+  14:
+  15: ## Handback
+  16:
+  17: - state: blocked because the external metric naming contract is unavailable
+  18:
+--- %TEMP%\dwv\m4-live\i1\fresh\baseline\project\specs\004-metrics\spec.md ---
+   1: ---
+   2: id: 004-metrics
+   3: title: Metrics export
+   4: status: blocked
+   5: updated: 2026-07-10
+   6: parent: null
+   7: children: []
+   8: related: []
+   9: ---
+  10:
+  11: # Spec - Metrics export
+  12:
+  13: ## Requirements
+  14:
+  15: - R1. Repository evidence for Metrics export remains authoritative.
+--- git tracked ---
+.github/workflows/ci.yml
+.gitignore
+AGENTS.md
+README.md
+package.json
+specs/000-bootstrap/checklist.md
+specs/000-bootstrap/spec.md
+specs/001-profile/checklist.md
+specs/001-profile/spec.md
+specs/002-webhook-auth/checklist.md
+specs/002-webhook-auth/spec.md
+specs/003-cli-json/spec.md
+specs/004-metrics/checklist.md
+specs/004-metrics/spec.md
+specs/INDEX.md
+src/queue.js
+test/queue.test.js
+--- ignore ---
+.worktrees/
+node_modules/
+
+2026-07-13T08:43:12.934130Z ERROR codex_core::tools::router: error=collab spawn failed: no thread with id:
+019f5aa4-2617-7b93-99a2-85e81c0a3103
+2026-07-13T08:43:39.956711Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+2026-07-13T08:43:47.958773Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+2026-07-13T08:43:49.264883Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+2026-07-13T08:43:55.407018Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+2026-07-13T08:43:57.701784Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+2026-07-13T08:43:57.974052Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "node --version
+npm --version
+npm test
+Write-Output '--- line counts ---'
+Get-ChildItem -Recurse -File | Where-Object { "'$_.FullName -notmatch
+'"'\\\\.git\\\\|\\\\node_modules\\\\|\\\\.worktrees\\\\' } | ForEach-Object { "'$count = (Get-Content $_.FullName |
+Measure-Object -Line).Lines; [PSCustomObject]@{Lines=$count; Path=$_.FullName.Replace((Get-Location).Path +
+'"'\\','')} } | Sort-Object Path | Format-Table -AutoSize
+Write-Output '--- intent markers ---'
+rg -n --hidden -g '"'!.git/**'"' -g '"'!node_modules/**'"' -e
+'TODO|FIXME|HACK|XXX|awaiting-human|blocked|ready|status:' .
+Write-Output '--- history paths ---'
+git show --stat --oneline --decorate HEAD
+git show --format= --name-status HEAD" in %TEMP%\dwv\m4-live\i1\fresh\baseline\project
+2026-07-13T08:44:04.179616Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+2026-07-13T08:44:05.138409Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+ succeeded in 3309ms:
+v22.21.1
+10.8.3
+
+> test
+> node --test
+
+TAP version 13
+# Subtest: enqueue appends
+ok 1 - enqueue appends
+  ---
+  duration_ms: 0.6421
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 78.3296
+--- line counts ---
+
+Lines Path
+----- ----
+   10 .github\workflows\ci.yml
+    2 .gitignore
+    9 AGENTS.md
+   10 package.json
+    2 README.md
+   11 specs\000-bootstrap\checklist.md
+   12 specs\000-bootstrap\spec.md
+   11 specs\001-profile\checklist.md
+   12 specs\001-profile\spec.md
+   12 specs\002-webhook-auth\checklist.md
+   12 specs\002-webhook-auth\spec.md
+   12 specs\003-cli-json\spec.md
+   12 specs\004-metrics\checklist.md
+   12 specs\004-metrics\spec.md
+    6 specs\INDEX.md
+    1 src\queue.js
+    4 test\queue.test.js
+
+
+--- intent markers ---
+.\specs\INDEX.md:5:| 999-phantom | Phantom | ready |
+.\specs\001-profile\spec.md:4:status: done
+.\specs\000-bootstrap\spec.md:4:status: done
+.\specs\001-profile\checklist.md:4:status: done
+.\specs\004-metrics\spec.md:4:status: blocked
+.\specs\000-bootstrap\checklist.md:4:status: done
+.\specs\004-metrics\checklist.md:4:status: blocked
+.\specs\004-metrics\checklist.md:17:- state: blocked because the external metric naming contract is unavailable
+.\specs\003-cli-json\spec.md:4:status: ready
+.\specs\002-webhook-auth\spec.md:4:status: awaiting-human
+.\specs\002-webhook-auth\checklist.md:4:status: awaiting-human
+--- history paths ---
+43f3a88 (HEAD -> main) chore: seed roadmap fixture
+ .github/workflows/ci.yml            | 10 ++++++++++
+ .gitignore                          |  2 ++
+ AGENTS.md                           | 12 ++++++++++++
+ README.md                           |  3 +++
+ package.json                        | 10 ++++++++++
+ specs/000-bootstrap/checklist.md    | 17 +++++++++++++++++
+ specs/000-bootstrap/spec.md         | 15 +++++++++++++++
+ specs/001-profile/checklist.md      | 17 +++++++++++++++++
+ specs/001-profile/spec.md           | 15 +++++++++++++++
+ specs/002-webhook-auth/checklist.md | 18 ++++++++++++++++++
+ specs/002-webhook-auth/spec.md      | 15 +++++++++++++++
+ specs/003-cli-json/spec.md          | 15 +++++++++++++++
+ specs/004-metrics/checklist.md      | 18 ++++++++++++++++++
+ specs/004-metrics/spec.md           | 15 +++++++++++++++
+ specs/INDEX.md                      |  6 ++++++
+ src/queue.js                        |  1 +
+ test/queue.test.js                  |  4 ++++
+ 17 files changed, 193 insertions(+)
+A	.github/workflows/ci.yml
+A	.gitignore
+A	AGENTS.md
+A	README.md
+A	package.json
+A	specs/000-bootstrap/checklist.md
+A	specs/000-bootstrap/spec.md
+A	specs/001-profile/checklist.md
+A	specs/001-profile/spec.md
+A	specs/002-webhook-auth/checklist.md
+A	specs/002-webhook-auth/spec.md
+A	specs/003-cli-json/spec.md
+A	specs/004-metrics/checklist.md
+A	specs/004-metrics/spec.md
+A	specs/INDEX.md
+A	src/queue.js
+A	test/queue.test.js
+
+2026-07-13T08:44:09.517740Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+2026-07-13T08:44:13.728134Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+codex
+Recon is complete: this is a deliberately small Node service, the local Node 22 test baseline passes (1 test), and the
+current index contains one phantom entry while omitting four real spec directories. I m refreshing the index from spec
+front matter now; this is the only repository edit I ll make before your selection.
+apply patch
+patch: completed
+%TEMP%\dwv\m4-live\i1\fresh\baseline\project\specs\INDEX.md
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..c75a4b877277551f1374888d11ff798666354104
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 |   |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..c75a4b877277551f1374888d11ff798666354104
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 |   |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+2026-07-13T08:44:27.439029Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+2026-07-13T08:44:30.762920Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+2026-07-13T08:44:30.803494Z  WARN codex_core::hook_runtime: failed to resolve parent transcript path for subagent hook
+parent_thread_id=019f5aa4-2617-7b93-99a2-85e81c0a3103 error=invalid thread-store request: no rollout found for thread
+id 019f5aa4-2617-7b93-99a2-85e81c0a3103
+2026-07-13T08:44:32.161530Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+2026-07-13T08:44:35.651845Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command '$specs = Get-ChildItem specs -Directory |
+Sort-Object Name | ForEach-Object {
+  $specPath = Join-Path $_.FullName '"'spec.md'
+  "'$content = Get-Content $specPath
+  [PSCustomObject]@{
+    Id = (($content | Select-String '"'"'^id:'"\\s*(.+)"'$'"').Matches.Groups[1].Value)
+    Title = (("'$content | Select-String '"'"'^title:'"\\s*(.+)"'$'"').Matches.Groups[1].Value)
+    Status = (("'$content | Select-String '"'"'^status:'"\\s*(.+)"'$'"').Matches.Groups[1].Value)
+    Updated = (("'$content | Select-String '"'"'^updated:'"\\s*(.+)"'$'"').Matches.Groups[1].Value)
+    Checklist = Test-Path (Join-Path "'$_.FullName '"'checklist.md')
+  }
+}
+"'$specs | Format-Table -AutoSize
+Write-Output "Spec directories: $($specs.Count)"
+Write-Output "Index rows: $((Get-Content specs/INDEX.md | Select-String '"'"'^'"\\| \\[[0-9]{3}-').Count)\"
+Write-Output '--- diff check ---'
+git diff --check
+Write-Output '--- diff ---'
+git diff -- specs/INDEX.md
+Write-Output '--- status ---'
+git status --short" in %TEMP%\dwv\m4-live\i1\fresh\baseline\project
+ succeeded in 2537ms:
+
+Id               Title                  Status         Updated    Checklist
+--               -----                  ------         -------    ---------
+000-bootstrap    Bootstrap              done           2026-07-10      True
+001-profile      Profile                done           2026-07-10      True
+002-webhook-auth Webhook authentication awaiting-human 2026-07-10      True
+003-cli-json     CLI JSON output        ready          2026-07-10     False
+004-metrics      Metrics export         blocked        2026-07-10      True
+
+
+Spec directories: 5
+Index rows: 5
+--- diff check ---
+--- diff ---
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88ba..c75a4b8 100644
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 |   |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+--- status ---
+ M specs/INDEX.md
+warning: in the working copy of 'specs/INDEX.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'specs/INDEX.md', LF will be replaced by CRLF the next time Git touches it
+
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..c75a4b877277551f1374888d11ff798666354104
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 |   |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+2026-07-13T08:44:47.065052Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+codex
+The regenerated index now has five rows for five real directories, links every available checklist, and passes `git
+diff --check`. The first validated audit issue is also clear: CI runs Node 20 even though the package declares Node 22
+or newer; I m vetting the remaining findings before ranking them.
+collab: Wait
+2026-07-13T08:44:57.811432Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..c75a4b877277551f1374888d11ff798666354104
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 |   |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..c75a4b877277551f1374888d11ff798666354104
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 |   |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+collab: Wait
+2026-07-13T08:45:41.992721Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+2026-07-13T08:45:46.898566Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+2026-07-13T08:45:46.937065Z  WARN codex_core::hook_runtime: failed to resolve parent transcript path for subagent hook
+parent_thread_id=019f5aa4-2617-7b93-99a2-85e81c0a3103 error=invalid thread-store request: no rollout found for thread
+id 019f5aa4-2617-7b93-99a2-85e81c0a3103
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..c75a4b877277551f1374888d11ff798666354104
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 |   |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+collab: Wait
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..c75a4b877277551f1374888d11ff798666354104
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 |   |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..c75a4b877277551f1374888d11ff798666354104
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 |   |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..c75a4b877277551f1374888d11ff798666354104
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 |   |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+2026-07-13T08:46:36.533410Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+collab: Wait
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..c75a4b877277551f1374888d11ff798666354104
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 |   |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..c75a4b877277551f1374888d11ff798666354104
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 |   |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..c75a4b877277551f1374888d11ff798666354104
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 |   |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+collab: Wait
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..c75a4b877277551f1374888d11ff798666354104
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 |   |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+codex
+I ve finished vetting the high-confidence shortlist. The spec-state ordering matters: `003-cli-json` is the only item
+marked ready, but its contract is not detailed enough to implement safely; `002-webhook-auth` awaits a human decision,
+and `004-metrics` is externally blocked. I m doing the final clean-status and test check now.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command 'npm test
+git diff --check
+git status --short
+$i=0; Get-Content specs/INDEX.md | ForEach-Object { $i++; '"'{0,4}: {1}' -f "'$i, $_ }' in
+%TEMP%\dwv\m4-live\i1\fresh\baseline\project
+ succeeded in 2828ms:
+
+> test
+> node --test
+
+TAP version 13
+# Subtest: enqueue appends
+ok 1 - enqueue appends
+  ---
+  duration_ms: 0.655
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 78.498
+ M specs/INDEX.md
+   1: # Specs index
+   2:
+   3: Refreshed from the front matter in each `specs/<id>/spec.md` file.
+   4:
+   5: | ID | Title | Status | Updated | Checklist |
+   6: |---|---|---|---|---|
+   7: | [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 |
+[checklist](000-bootstrap/checklist.md) |
+   8: | [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
+   9: | [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
+  10: | [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 | ��   |
+  11: | [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 |
+[checklist](004-metrics/checklist.md) |
+warning: in the working copy of 'specs/INDEX.md', LF will be replaced by CRLF the next time Git touches it
+
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..c75a4b877277551f1374888d11ff798666354104
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 |   |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+apply patch
+patch: completed
+%TEMP%\dwv\m4-live\i1\fresh\baseline\project\specs\INDEX.md
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..15586577a3ff8744be756a0b59492140ea38429e
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 | none |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..15586577a3ff8744be756a0b59492140ea38429e
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 | none |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command 'git diff --check
+git diff --stat
+git status --short' in %TEMP%\dwv\m4-live\i1\fresh\baseline\project
+ succeeded in 2496ms:
+ specs/INDEX.md | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
+ M specs/INDEX.md
+warning: in the working copy of 'specs/INDEX.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'specs/INDEX.md', LF will be replaced by CRLF the next time Git touches it
+
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..15586577a3ff8744be756a0b59492140ea38429e
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 | none |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..15586577a3ff8744be756a0b59492140ea38429e
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 | none |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+codex
+Refreshed [specs/INDEX.md](%TEMP%/dwv/m4-live/i1/fresh/baseline/project/specs/INDEX.md:1)
+from all five actual spec directories, removing the phantom entry and correcting statuses. No implementation or source
+changes were made.
+
+### Prioritized shortlist
+
+| # | Work | Why next | Effort / risk |
+|---|---|---|---|
+| 1 | Make `003-cli-json` executable as a specification | It is the only `ready` feature, but lacks a CLI contract,
+JSON schema, error semantics, examples, and checklist.
+[Evidence](%TEMP%/dwv/m4-live/i1/fresh/baseline/project/specs/003-cli-json/spec.md:4) | M /
+medium |
+| 2 | Align CI with Node 22 | The package requires Node e"22, while CI tests Node 20, so CI does not validate the
+supported runtime. [Package](%TEMP%/dwv/m4-live/i1/fresh/baseline/project/package.json:4),
+[workflow](%TEMP%/dwv/m4-live/i1/fresh/baseline/project/.github/workflows/ci.yml:9) | S /
+low |
+| 3 | Strengthen the queue characterization test | The test named  enqueue appends  checks only the returned
+length not that the item was appended.
+[Test](%TEMP%/dwv/m4-live/i1/fresh/baseline/project/test/queue.test.js:4) | S / low |
+
+Not currently actionable:
+
+- `002-webhook-auth` awaits a human decision on rotation and replay-window policy. [Evidence](%USERPROFILE%/AppData/Lo
+cal/Temp/dwv/m4-live/i1/fresh/baseline/project/specs/002-webhook-auth/checklist.md:17)
+- `004-metrics` is blocked on the external metric-naming contract.
+[Evidence](%TEMP%/dwv/m4-live/i1/fresh/baseline/project/specs/004-metrics/checklist.md:17)
+
+Verification: `npm test` passes on Node 22.21.1; `git diff --check` passes. The full tiny repository was reviewed; no
+defensible security, performance, dependency, or architectural findings emerged.
+
+Choose `1`, `2`, `3`, or a combination, and I ll prepare the corresponding self-contained plans before any
+implementation.
+diff --git a/specs/INDEX.md b/specs/INDEX.md
+index 38b88bab6d5234ab76403401176c2bf7921f779e..15586577a3ff8744be756a0b59492140ea38429e
+--- a/specs/INDEX.md
++++ b/specs/INDEX.md
+@@ -1,6 +1,11 @@
+-<!-- stale hand-edited index -->
+-# Specs index - stale
+-| ID | Title | Status |
+-|---|---|---|
+-| 999-phantom | Phantom | ready |
+-| 001-profile | Profile | in-progress |
++# Specs index
++
++Refreshed from the front matter in each `specs/<id>/spec.md` file.
++
++| ID | Title | Status | Updated | Checklist |
++|---|---|---|---|---|
++| [000-bootstrap](000-bootstrap/spec.md) | Bootstrap | done | 2026-07-10 | [checklist](000-bootstrap/checklist.md) |
++| [001-profile](001-profile/spec.md) | Profile | done | 2026-07-10 | [checklist](001-profile/checklist.md) |
++| [002-webhook-auth](002-webhook-auth/spec.md) | Webhook authentication | awaiting-human | 2026-07-10 |
+[checklist](002-webhook-auth/checklist.md) |
++| [003-cli-json](003-cli-json/spec.md) | CLI JSON output | ready | 2026-07-10 | none |
++| [004-metrics](004-metrics/spec.md) | Metrics export | blocked | 2026-07-10 | [checklist](004-metrics/checklist.md) |
+
+tokens used
+56,555
+Refreshed [specs/INDEX.md](%TEMP%/dwv/m4-live/i1/fresh/baseline/project/specs/INDEX.md:1) from all five actual spec directories, removing the phantom entry and correcting statuses. No implementation or source changes were made.
+
+### Prioritized shortlist
+
+| # | Work | Why next | Effort / risk |
+|---|---|---|---|
+| 1 | Make `003-cli-json` executable as a specification | It is the only `ready` feature, but lacks a CLI contract, JSON schema, error semantics, examples, and checklist. [Evidence](%TEMP%/dwv/m4-live/i1/fresh/baseline/project/specs/003-cli-json/spec.md:4) | M / medium |
+| 2 | Align CI with Node 22 | The package requires Node e"22, while CI tests Node 20, so CI does not validate the supported runtime. [Package](%TEMP%/dwv/m4-live/i1/fresh/baseline/project/package.json:4), [workflow](%TEMP%/dwv/m4-live/i1/fresh/baseline/project/.github/workflows/ci.yml:9) | S / low |
+| 3 | Strengthen the queue characterization test | The test named  enqueue appends  checks only the returned length not that the item was appended. [Test](%TEMP%/dwv/m4-live/i1/fresh/baseline/project/test/queue.test.js:4) | S / low |
+
+Not currently actionable:
+
+- `002-webhook-auth` awaits a human decision on rotation and replay-window policy. [Evidence](%TEMP%/dwv/m4-live/i1/fresh/baseline/project/specs/002-webhook-auth/checklist.md:17)
+- `004-metrics` is blocked on the external metric-naming contract. [Evidence](%TEMP%/dwv/m4-live/i1/fresh/baseline/project/specs/004-metrics/checklist.md:17)
+
+Verification: `npm test` passes on Node 22.21.1; `git diff --check` passes. The full tiny repository was reviewed; no defensible security, performance, dependency, or architectural findings emerged.
+
+Choose `1`, `2`, `3`, or a combination, and I ll prepare the corresponding self-contained plans before any implementation.

@@ -213,8 +213,11 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       committed. Review round 1 returned five blocking findings; all are fixed
       with clean deterministic reruns; focused exact-commit review of `54a09ff`
       APPROVE. Paired with-skill/baseline live fixtures are green and isolated.
-      Live behavior, shared trigger harness, and human gate remain required.
-      Keep unchecked.)
+      Live fresh+resume behavior is 12/12 with skill versus 5/12 baseline
+      (+58.33 points), with four sanitized transcripts, four portable bundles,
+      the baseline dirty-working patch, and 52/52 durable evidence checks. One
+      run per configuration; no speed/cost/statistical claim. Shared trigger
+      harness and human gate remain required. Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M5 `project-setup`

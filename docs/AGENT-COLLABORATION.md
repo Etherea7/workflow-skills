@@ -267,10 +267,23 @@ Completed:
   repositories. Only the former installs M4 and its permitted downstream
   workflow dependencies; both start from identical stale index and green-test
   truth and refuse non-empty destinations.
+- Live behavior i1: fresh survey is 6/6 with skill versus 0/6 baseline; saved
+  P2 resume is 6/6 versus 5/6, total 12/12 versus 5/12 (+58.33 percentage
+  points). The fresh baseline produced a useful cited shortlist but edited
+  protected `main` directly without a survey/checklist, delegation evidence,
+  generator check, scans, or commits. The resume baseline correctly preserved
+  and routed P2 through an isolated awaiting-human plan; it loses only the
+  strict final assertion because it substituted a bespoke PowerShell row check
+  for the committed generator's `--check`.
+- `evals/next-step-improve/evidence-test.mjs` passes 52/52. It verifies all
+  four portable bundles, every cited commit and checklist, sanitized executor
+  transcripts, the fresh-baseline working patch hash, and the 12/12 vs 5/12
+  totals without relying on retained Temp fixtures. This is one run per
+  configuration; timings/tokens are audit context only and support no speed,
+  cost, or statistical claim.
 
 Still pending:
 
-- live behavior comparison and durable evidence bundles
 - shared trigger-harness execution after the M2 harness gate is available
 - human approval
 
