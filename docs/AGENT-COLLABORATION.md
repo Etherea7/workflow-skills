@@ -160,12 +160,17 @@ Completed:
   complete portable Git bundle. `node evals/debug/evidence-test.mjs` verifies
   all four bundles/transcripts (38/38), clones the histories, proves every cited
   commit readable, and inspects the committed checklists. A final focused
-  re-review of this exact evidence checkpoint is requested.
+  re-review then found one escaped-path sanitization edge case. Commit `32e8a0e`
+  repaired it and extended the test to reject ordinary and JSON-escaped paths.
+- Final focused Codex review of exact commit `32e8a0e`: **APPROVE**. The reviewer
+  independently accepted the portable histories and 12/12 vs 5/12 grading,
+  verified zero remaining ordinary/escaped/mixed user paths, matched all four
+  evidence cases to all four transcripts, and found no reproducible blocker.
 
 Still pending:
 
 - trigger calibration/holdout through the shared harness after M2 approves it
-- focused Codex follow-up review and human gate
+- human gate
 
 ### M3 review requested
 
