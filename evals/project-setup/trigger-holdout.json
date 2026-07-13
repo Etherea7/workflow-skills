@@ -1,0 +1,8 @@
+[
+  {"query":"Start a completely new Go worker repository in this empty folder; establish its policies and demonstrate test, lint, build, and run before committing.","should_trigger":true},
+  {"query":"Resume the uncommitted bootstrap branch for my new app; specs/000-bootstrap says readiness has not passed yet.","should_trigger":true},
+  {"query":"Scaffold a fresh package from an agreed spec and create project-level instructions for both Codex and Claude.","should_trigger":true},
+  {"query":"Implement the accepted webhook retry feature in our current service.","should_trigger":false},
+  {"query":"Diagnose why the current scaffold's npm test command fails on Windows.","should_trigger":false},
+  {"query":"What should this established monorepo improve next quarter?","should_trigger":false}
+]

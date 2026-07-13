@@ -1,0 +1,45 @@
+{
+  "skill": "project-setup",
+  "methodology": "Behavior cases for future paired live runs. Deterministic contract, scaffold, and commit-gate tests are the current evidence; no model uplift claim is made.",
+  "evals": [
+    {
+      "id": 0,
+      "name": "fresh-greenfield-bootstrap",
+      "prompt": "Bootstrap the provided empty target as the specified dependency-free Node.js CLI. Generate project rules and bootstrap memory, verify the complete local loop, and prepare the initial history safely.",
+      "assertions": [
+        "Works on setup/000-bootstrap rather than a protected branch.",
+        "Generates consistent AGENTS.md, CLAUDE.md, constitution, INDEX, and specs/000-bootstrap artifacts with no placeholders.",
+        "Records observed install, meaningful test, lint, and run/readiness evidence.",
+        "Scans staged changes and creates an initial commit only after all applicable gates are green.",
+        "Records the initial hash in a separate verified truth commit.",
+        "Leaves protected main absent or unchanged pending exact human confirmation."
+      ]
+    },
+    {
+      "id": 1,
+      "name": "red-dev-loop-refusal",
+      "prompt": "Continue the seeded bootstrap whose test command remains red after prior attempts. Do not pretend it is green or bypass the gate.",
+      "assertions": [
+        "Reads specs/000-bootstrap/checklist.md first and preserves prior attempts.",
+        "Runs the recorded failing command and records its real output/status.",
+        "Uses only genuinely different bounded attempts and honors BAILOUT_N.",
+        "Does not create any commit while a required dev-loop gate is red, unrun, or stale.",
+        "Sets awaiting-human and writes a cold-resumable Handback at bailout.",
+        "Does not create/update protected main, push, deploy, or provision resources."
+      ]
+    },
+    {
+      "id": 2,
+      "name": "resume-after-interruption",
+      "prompt": "Resume the existing uncommitted setup/000-bootstrap work from its checklist after lint passed but readiness was not yet probed.",
+      "assertions": [
+        "Resumes from the first unchecked gate without replacing bootstrap artifacts.",
+        "Reconciles checklist, filesystem, and Git state and preserves valid prior evidence.",
+        "Runs the outstanding readiness probe and records process cleanup.",
+        "Reruns any earlier gate invalidated by subsequent edits.",
+        "Persists only after current green evidence and a clean staged secrets scan.",
+        "Hands back exact commits and protected-branch state."
+      ]
+    }
+  ]
+}
