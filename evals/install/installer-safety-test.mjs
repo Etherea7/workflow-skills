@@ -92,6 +92,12 @@ try {
   result = run(malformed, ["--uninstall"]);
   check(result.status === 0 && existsSync(join(malformed.claude, "wf-debug")), "unclosed frontmatter authorized deletion");
 
+  const nested = fixture("nested-marker");
+  mkdirSync(join(nested.claude, "wf-debug"), { recursive: true });
+  writeFileSync(join(nested.claude, "wf-debug", "SKILL.md"), "---\nname: wf-debug\nmetadata:\n  example:\n    suite: dev-workflows\n---\n", "utf8");
+  result = run(nested);
+  check(result.status !== 0 && existsSync(join(nested.claude, "wf-debug")), "nested example marker authorized replacement as direct ownership");
+
   const rulesCollision = fixture("rules-collision");
   mkdirSync(rulesCollision.rules, { recursive: true });
   const personalRules = "personal rules\n";

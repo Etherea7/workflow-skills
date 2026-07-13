@@ -29,7 +29,7 @@ is_managed_skill() {
     fm {
       if ($0 ~ /^metadata:[[:space:]]*$/) { metadata=1; next }
       if ($0 ~ /^[^[:space:]][^:]*:/) metadata=0
-      if (metadata && $0 ~ /^[[:space:]]+suite:[[:space:]]*dev-workflows[[:space:]]*$/) owned=1
+      if (metadata && $0 ~ /^  suite:[[:space:]]*dev-workflows[[:space:]]*$/) owned=1
     }
     END { if (!closed) exit 1 }
   ' "$file"
