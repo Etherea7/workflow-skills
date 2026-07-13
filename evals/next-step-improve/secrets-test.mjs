@@ -50,6 +50,9 @@ try {
   check(brokenFilter.status === 2 && brokenFilter.stderr.includes("pattern matching failed; refusing to pass"), "pattern-filter failure did not fail closed");
   const detected = scan();
   check(detected.status === 1 && detected.stderr.includes("POTENTIAL SECRETS"), "matching staged addition was not rejected");
+  check(detected.stderr.includes("class: aws-access-key"), "matching staged addition did not report a stable class label");
+  check(!detected.stdout.includes(syntheticCredential), "synthetic credential leaked to stdout");
+  check(!detected.stderr.includes(syntheticCredential), "synthetic credential leaked to stderr");
 
   console.log(`secrets-check: PASS (${checks} fail-closed/detection checks)`);
 } finally {
