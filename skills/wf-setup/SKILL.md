@@ -1,6 +1,6 @@
 ---
 name: wf-setup
-description: Bootstrap a new software project or repository from requirements and stack choices into a constitution, project rules, bootstrap artifacts, working scaffold, observed development loop, and safe initial commit. Use for empty or explicitly uninitialized targets. Never use for functionality in an existing product (use wf-feature), defect diagnosis (use wf-debug), one unclear feature (use wf-plan), repository prioritization (use wf-improve), suite installation, or trivial established-project edits.
+description: Bootstrap, initialize, or scaffold a new greenfield software project or repository from requirements and stack choices into a constitution, project rules, working scaffold, observed development loop, and safe initial commit. Use for empty or explicitly uninitialized targets. Never use for functionality or configuration changes in an existing product (use wf-feature), diagnosing a failing current scaffold (use wf-debug), one unclear feature (use wf-plan), repository prioritization (use wf-improve), suite installation, or trivial established-project edits.
 license: MIT
 metadata:
   suite: dev-workflows

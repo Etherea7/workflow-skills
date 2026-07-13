@@ -1,6 +1,6 @@
 ---
 name: wf-plan
-description: Clarify vague or ambiguous software requirements into a testable spec before code is written. Use when desired behavior is unclear, under-specified, or open-ended, including ambiguity handed off by wf-setup, wf-feature, wf-debug, or wf-improve. Produces numbered requirements and a resumable checklist. Do not use for requirements already precise enough to implement, implementation planning of a ready task, or non-software planning.
+description: Clarify vague, ambiguous, undecided, or under-specified software requirements into a testable spec before code is written. Use to figure out desired behavior, resolve open choices, or turn an uncertain feature or application idea into numbered requirements and a resumable checklist, including ambiguity handed off by wf-setup, wf-feature, wf-debug, or wf-improve. Do not use for requirements already precise or fully specced and ready to implement, implementation planning of a ready task, defects with known expected behavior, reviews, trivial renames, personal trip or study schedules, stakeholder project plans, architecture writing, or other non-software planning.
 license: MIT
 metadata:
   suite: dev-workflows

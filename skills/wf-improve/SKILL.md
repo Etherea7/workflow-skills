@@ -1,6 +1,6 @@
 ---
 name: wf-improve
-description: Survey an existing software repository to prioritize what to build, fix, or improve next, produce a prioritized engineering roadmap, reassess stalled work, or regenerate specs/INDEX.md. Rebuilds the index from directory truth and routes a selected increment to wf-feature, wf-plan, or wf-debug. Do not use for implementing an already ready change, diagnosing a named defect, defining one unclear feature, review-only work without prioritization, or greenfield setup.
+description: Survey an existing software repository to prioritize what to build, fix, or improve next, produce a prioritized engineering roadmap or backlog, reassess stalled work, or regenerate specs/INDEX.md. Rebuilds the index from directory truth and routes a selected increment to wf-feature, wf-plan, or wf-debug. Do not use for implementing an already ready change, diagnosing a named defect, defining one unclear feature, reviewing or assessing one proposed plan without repository prioritization, merely running tests or reporting failures, marketing or business roadmaps outside software, or greenfield setup.
 license: MIT
 metadata:
   suite: dev-workflows

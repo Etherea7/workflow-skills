@@ -49,7 +49,7 @@ check(generator.includes("checklist.data.updated || spec.data.updated"), "checkl
 check(generator.includes("--check") && generator.includes("index check: STALE"), "non-mutating check mode missing");
 check(secrets.includes("git diff failed; refusing to pass") && secrets.includes("pattern matching failed; refusing to pass") && !secrets.includes("git diff --cached -U0 --no-color | grep"), "credential scanner does not fail closed");
 check(description.includes("what to build, fix, or improve next") && description.includes("prioritized engineering roadmap"), "positive trigger categories missing");
-check(description.includes("Do not use for implementing") && description.includes("review-only"), "negative trigger boundaries missing");
+check(description.includes("Do not use for implementing") && description.includes("reviewing or assessing"), "negative trigger boundaries missing");
 check(!/\b(?:Claude|Codex|Sonnet|Haiku|Task tool|Agent tool)\b/.test([skill, indexRef, priority, decomposition, persistence].join("\n")), "host mechanics leaked into portable skill");
 
 for (const file of [

@@ -1,6 +1,6 @@
 ---
 name: wf-debug
-description: Reproduce and diagnose an observed software defect with evidence-led investigation and bounded ranked hypotheses, applying a regression-tested fix only when repair is requested. Use for broken, incorrect, flaky, crashing, or failing behavior and existing debug checklists. Do not use for new behavior (use wf-feature), undecided expected behavior (use wf-plan), review without a reported defect, unsafe live-system investigation, or trivial edits.
+description: Reproduce and diagnose an observed software defect with evidence-led investigation and bounded ranked hypotheses, applying a regression-tested fix only when repair is requested. Use for broken, incorrect, flaky, crashing, failing, leaking, or error-producing behavior and existing debug checklists. Do not use for new behavior (use wf-feature), undecided expected behavior (use wf-plan), review or architecture summaries without a reported defect, production experimentation without a safe local reproduction, performance optimization when nothing is broken, or trivial renames.
 license: MIT
 metadata:
   suite: dev-workflows

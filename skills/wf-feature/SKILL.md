@@ -1,6 +1,6 @@
 ---
 name: wf-feature
-description: Implement or continue ready software functionality through an isolated worktree, red-green tests, verified commits, documentation, and a protected-branch merge gate. Use for a ready spec, accepted ticket, existing feature checklist, or nontrivial application, API, or CLI behavior. Never use for unclear requirements (use wf-plan), defect diagnosis or repair (use wf-debug), review-only work, roadmaps, greenfield setup, or trivial non-behavioral edits.
+description: Implement or continue ready software functionality through an isolated worktree, red-green tests, verified commits, documentation, and a protected-branch merge gate. Use for a ready spec, accepted ticket, existing feature checklist, or nontrivial application, API, or CLI behavior. Never use for unclear or undecided requirements (use wf-plan), defect diagnosis or repair (use wf-debug), code or plan review without implementation, repository roadmaps, greenfield setup, trivial renames, or requests that explicitly forbid the workflow.
 license: MIT
 metadata:
   suite: dev-workflows
