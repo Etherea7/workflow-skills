@@ -27,7 +27,7 @@ I’m using the `debug` skill because this is a reproducible contract violation 
 and a bounded fix. I’ll also delegate the required neutral read-only exploration, then validate its citations and
 integrate only on the non-protected `develop` branch.
 exec
-"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw 'C:\\Users\\65876\\AppData\
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw '%USERPROFILE%\\AppData\
 \Local\\Temp\\dwv\\m3-live\\i4\\success\\with_skill\\project\\.agents\\skills\\debug\\SKILL.md'" in
 %TEMP%\dwv\m3-live\i4\success\with_skill\project
  succeeded in 2411ms:
@@ -237,11 +237,11 @@ Never claim "fixed" from code inspection alone.
 
 
 exec
-"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw 'C:\\Users\\65876\\AppData\
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw '%USERPROFILE%\\AppData\
 \Local\\Temp\\dwv\\m3-live\\i4\\success\\with_skill\\project\\.agents\\skills\\debug\\references\\investigation-loop.md
 '" in %TEMP%\dwv\m3-live\i4\success\with_skill\project
 exec
-"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw 'C:\\Users\\65876\\AppData\
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw '%USERPROFILE%\\AppData\
 \Local\\Temp\\dwv\\m3-live\\i4\\success\\with_skill\\project\\.agents\\skills\\debug\\references\\persistence-and-merge
 .md'" in %TEMP%\dwv\m3-live\i4\success\with_skill\project
 exec
@@ -430,11 +430,11 @@ branch refs/heads/develop
 ed68d36 chore: seed successful-debug fixture
 
 exec
-"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw 'C:\\Users\\65876\\AppData\
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw '%USERPROFILE%\\AppData\
 \Local\\Temp\\dwv\\m3-live\\i4\\success\\with_skill\\project\\.agents\\skills\\debug\\references\\persistence-and-merge
 .md'" in %TEMP%\dwv\m3-live\i4\success\with_skill\project
 exec
-"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw 'C:\\Users\\65876\\AppData\
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw '%USERPROFILE%\\AppData\
 \Local\\Temp\\dwv\\m3-live\\i4\\success\\with_skill\\project\\.agents\\skills\\debug\\references\\investigation-loop.md
 '" in %TEMP%\dwv\m3-live\i4\success\with_skill\project
 exec
@@ -1531,7 +1531,7 @@ not ok 2 - zero port parses
   ---
   duration_ms: 0.1507
   type: 'test'
-  location: 'C:\\Users\\65876\\AppData\\Local\\Temp\\dwv\\m3-live\\i4\\success\\with_skill\\project\\.worktrees\\001-pa
+  location: '%TEMP%\\dwv\\m3-live\\i4\\success\\with_skill\\project\\.worktrees\\001-pa
 rseport-string-zero\\test\\regression.test.js:5:1'
   failureType: 'testCodeFailure'
   error: 'port must be 0..65535'
@@ -2627,7 +2627,7 @@ explicit `Number.isNaN(port)` check, preserving the range checks and existing pa
 exec
 "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "git status --short --branch; git rev-parse
 HEAD; git diff --exit-code; git diff --cached --exit-code; git -C
-'C:\\Users\\65876\\AppData\\Local\\Temp\\dwv\\m3-live\\i4\\success\\with_skill\\project' status --short --branch" in
+'%TEMP%\\dwv\\m3-live\\i4\\success\\with_skill\\project' status --short --branch" in
 %TEMP%\dwv\m3-live\i4\success\with_skill\project\.worktrees\001-parseport-string-zero
  succeeded in 2521ms:
 ## debug/001-parseport-string-zero

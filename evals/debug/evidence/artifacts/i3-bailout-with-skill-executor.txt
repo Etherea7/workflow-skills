@@ -26,7 +26,7 @@ I’m using the `debug` skill because this is a saved defect investigation and r
 checklist state, delegate the required neutral read-only exploration, then validate the evidence and either land the
 regression-tested fix or complete the prescribed handback.
 exec
-"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw 'C:\\Users\\65876\\AppData\
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw '%USERPROFILE%\\AppData\
 \Local\\Temp\\dwv\\m3-live\\i3\\bailout\\with_skill\\project\\.agents\\skills\\debug\\SKILL.md'" in
 %TEMP%\dwv\m3-live\i3\bailout\with_skill\project
  succeeded in 2445ms:
@@ -440,7 +440,7 @@ branch refs/heads/debug/004-pagination-boundary
 ..\project\AGENTS.md
 
 exec
-"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw 'C:\\Users\\65876\\AppData\
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw '%USERPROFILE%\\AppData\
 \Local\\Temp\\dwv\\m3-live\\i3\\bailout\\with_skill\\project\\.agents\\skills\\debug\\references\\investigation-loop.md
 '" in %TEMP%\dwv\m3-live\i3\bailout\with_skill\project
 exec
@@ -448,7 +448,7 @@ exec
 'specs/004-pagination-boundary/checklist.md'" in
 %TEMP%\dwv\m3-live\i3\bailout\with_skill\project\.worktrees\004-pagination-boundary
 exec
-"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw 'C:\\Users\\65876\\AppData\
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw '%USERPROFILE%\\AppData\
 \Local\\Temp\\dwv\\m3-live\\i3\\bailout\\with_skill\\project\\.agents\\skills\\debug\\references\\persistence-and-merge
 .md'" in %TEMP%\dwv\m3-live\i3\bailout\with_skill\project
  succeeded in 2700ms:
@@ -771,7 +771,7 @@ not ok 1 - limit returns exactly that many items
   ---
   duration_ms: 1.8079
   type: 'test'
-  location: 'C:\\Users\\65876\\AppData\\Local\\Temp\\dwv\\m3-live\\i3\\bailout\\with_skill\\project\\.worktrees\\004-pa
+  location: '%TEMP%\\dwv\\m3-live\\i3\\bailout\\with_skill\\project\\.worktrees\\004-pa
 gination-boundary\\test\\pagination.test.js:4:1'
   failureType: 'testCodeFailure'
   error: |-
@@ -819,7 +819,7 @@ not ok 1 - limit returns exactly that many items
   ---
   duration_ms: 1.8079
   type: 'test'
-  location: 'C:\\Users\\65876\\AppData\\Local\\Temp\\dwv\\m3-live\\i3\\bailout\\with_skill\\project\\.worktrees\\004-pa
+  location: '%TEMP%\\dwv\\m3-live\\i3\\bailout\\with_skill\\project\\.worktrees\\004-pa
 gination-boundary\\test\\pagination.test.js:4:1'
   failureType: 'testCodeFailure'
   error: |-

@@ -183,7 +183,7 @@ not ok 1 - zero port parses
   duration_ms: 0.7787
   type: 'test'
   location:
-'C:\\Users\\65876\\AppData\\Local\\Temp\\dwv\\m3-live\\i4\\success\\baseline\\project\\test\\regression.test.js:4:1'
+'%TEMP%\\dwv\\m3-live\\i4\\success\\baseline\\project\\test\\regression.test.js:4:1'
   failureType: 'testCodeFailure'
   error: 'port must be 0..65535'
   code: 'ERR_TEST_FAILURE'
@@ -231,7 +231,7 @@ not ok 1 - zero port parses
   duration_ms: 0.7787
   type: 'test'
   location:
-'C:\\Users\\65876\\AppData\\Local\\Temp\\dwv\\m3-live\\i4\\success\\baseline\\project\\test\\regression.test.js:4:1'
+'%TEMP%\\dwv\\m3-live\\i4\\success\\baseline\\project\\test\\regression.test.js:4:1'
   failureType: 'testCodeFailure'
   error: 'port must be 0..65535'
   code: 'ERR_TEST_FAILURE'

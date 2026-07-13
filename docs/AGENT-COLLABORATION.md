@@ -158,7 +158,7 @@ Completed:
   summary-only evidence files could not make fixture-only hashes inspectable.
   Each final run now also commits a sanitized raw executor transcript and a
   complete portable Git bundle. `node evals/debug/evidence-test.mjs` verifies
-  all four bundles/transcripts (34/34), clones the histories, proves every cited
+  all four bundles/transcripts (38/38), clones the histories, proves every cited
   commit readable, and inspects the committed checklists. A final focused
   re-review of this exact evidence checkpoint is requested.
 

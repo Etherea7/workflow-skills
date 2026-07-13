@@ -79,7 +79,8 @@ try {
     }
 
     const transcript = readFileSync(transcriptPath, "utf8");
-    assert(!/C:[\\/]Users[\\/]65876/i.test(transcript), `${item.name}: transcript contains unsanitized user path`);
+    assert(!/C:[\\/]Users[\\/]65876/i.test(transcript), `${item.name}: transcript contains ordinary unsanitized user path`);
+    assert(!/C:\\\\Users\\\\65876/i.test(transcript), `${item.name}: transcript contains escaped unsanitized user path`);
     for (const text of item.transcriptHas) assert(transcript.includes(text), `${item.name}: transcript missing ${text}`);
   }
   console.log(`debug durable evidence: PASS (${checks} bundle/transcript checks; all cited commits readable)`);

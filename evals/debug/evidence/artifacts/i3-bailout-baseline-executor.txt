@@ -397,7 +397,7 @@ not ok 1 - limit returns exactly that many items
   ---
   duration_ms: 1.9913
   type: 'test'
-  location: 'C:\\Users\\65876\\AppData\\Local\\Temp\\dwv\\m3-live\\i3\\bailout\\baseline\\project\\.worktrees\\004-pagi
+  location: '%TEMP%\\dwv\\m3-live\\i3\\bailout\\baseline\\project\\.worktrees\\004-pagi
 nation-boundary\\test\\pagination.test.js:4:1'
   failureType: 'testCodeFailure'
   error: |-
@@ -512,7 +512,7 @@ not ok 1 - limit returns exactly that many items
   ---
   duration_ms: 1.9913
   type: 'test'
-  location: 'C:\\Users\\65876\\AppData\\Local\\Temp\\dwv\\m3-live\\i3\\bailout\\baseline\\project\\.worktrees\\004-pagi
+  location: '%TEMP%\\dwv\\m3-live\\i3\\bailout\\baseline\\project\\.worktrees\\004-pagi
 nation-boundary\\test\\pagination.test.js:4:1'
   failureType: 'testCodeFailure'
   error: |-

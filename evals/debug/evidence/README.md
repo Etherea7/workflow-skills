@@ -8,10 +8,10 @@ Each final graded run has three committed artifacts:
 - a complete portable Git bundle (`artifacts/*.bundle`) containing every
   fixture ref and all objects reachable from it.
 
-Absolute Temp/user-profile prefixes in transcripts are replaced with
-`%TEMP%`/`%USERPROFILE%`; NUL transport bytes and trailing whitespace are
-removed. Content is otherwise unchanged. The staged/full-file credential scan
-must pass before these artifacts are committed.
+Ordinary and JSON-escaped absolute Temp/user-profile prefixes in transcripts
+are replaced with `%TEMP%`/`%USERPROFILE%`; NUL transport bytes and trailing
+whitespace are removed. Content is otherwise unchanged. The staged/full-file
+credential scan must pass before these artifacts are committed.
 
 Run the complete portable audit:
 

@@ -174,7 +174,7 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       vs 5/12 in `evals/debug/live-results-i4.{json,md}` with four committed
       sanitized evidence summaries, executor transcripts, and portable Git
       bundles; `node evals/debug/evidence-test.mjs` proves all cited commits
-      readable (34/34). Review findings were repaired and rerun; focused final
+      readable (38/38). Review findings were repaired and rerun; focused final
       review plus shared-harness trigger runs after M2 approval remain required.
       Keep unchecked.)
 - [ ] GATE: human validates
