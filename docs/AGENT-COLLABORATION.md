@@ -528,7 +528,7 @@ The implementation changed rather than regrading that output:
 
 ### Deterministic evidence after review fixes
 
-- `node evals/project-setup/contract-test.mjs` → PASS, 74 checks.
+- `node evals/project-setup/contract-test.mjs` → PASS, 75 checks.
 - `node evals/project-setup/scaffold-test.mjs` → PASS, 10 checks (dependency
   restore, valid subprocess red→green, lint, distinct run and readiness).
 - `node evals/project-setup/commit-gate-test.mjs` → PASS, 30 assertions (forged
@@ -555,6 +555,18 @@ The implementation changed rather than regrading that output:
 - The reviewed skill/eval tree was staged alone, passed
   `git diff --cached --check` and the vendored staged secrets scan, and was
   committed on the isolated branch as `0131ee1`.
+
+### Protected-merge integration rerun
+
+The first authorized `--no-ff --no-commit` merge attempt was aborted without a
+commit when `resume-test.mjs` failed on the actual `main` checkout. The M5
+worktree had LF templates, but `main` checked them out as CRLF; the fixture
+builder preserved those bytes and a decision insertion expected LF. This was a
+real portability defect, not a grade adjustment. The builder now normalizes
+template CRLF before instantiation and the contract locks that behavior. Clean
+branch rerun: contract 75/75, scaffold 10/10, commit gate 30/30, resume 33/33,
+completion state 5/5. Re-form and retest the merge; do not reuse the aborted
+merge's partial results.
 
 ### M5 review requested
 

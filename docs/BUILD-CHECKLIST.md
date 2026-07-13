@@ -245,7 +245,7 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
 
 - [x] Skeleton → body (requirements → constitution/spec/stack → scaffold → dev-loop verification → initial commit)
       (provisional isolated implementation on `codex/m5-project-setup`:
-      official skill validators PASS; deterministic contract 74/74; target
+      official skill validators PASS; deterministic contract 75/75; target
       safety, `setup/000-bootstrap`, bounded dev-loop, scan-before-commit,
       separate truth commit, and exact protected-default-branch gate encoded;
       independent round-2 APPROVE; reviewed implementation commit `0131ee1`)
@@ -307,6 +307,12 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
   deterministic harness now uses fixed argv through `cmd.exe` on Windows and
   direct `npm` argv elsewhere; no user-controlled command string is composed.
   Both scaffold and commit-gate suites pass after the repair.
+- 2026-07-14 M5 MERGE-CHECKOUT CRLF FINDING: the first authorized no-commit
+  merge was aborted when resume preservation failed only on `main`; fixture
+  templates inherited checkout CRLF while one insertion expected LF. The
+  fixture builder now normalizes CRLF before instantiation, contract coverage
+  locks it, and clean branch results are 75/75, 10/10, 30/30, 33/33, 5/5.
+  Never reuse results from the aborted merge; reform and rerun it.
 
 ## Handback
 

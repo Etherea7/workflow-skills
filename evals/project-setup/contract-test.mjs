@@ -16,6 +16,7 @@ const claude = read("skills/project-setup/assets/project-CLAUDE-template.md");
 const triggers = JSON.parse(read("evals/project-setup/trigger-evals.json"));
 const holdout = JSON.parse(read("evals/project-setup/trigger-holdout.json"));
 const evals = JSON.parse(read("evals/project-setup/evals.json"));
+const fixtureBuilder = read("evals/project-setup/build-fixture.mjs");
 const errors = [];
 let checks = 0;
 const check = (condition, message) => { checks += 1; if (!condition) errors.push(message); };
@@ -104,6 +105,7 @@ check(triggers.length === 15 && triggers.filter(({ should_trigger }) => should_t
 check(holdout.length === 6 && holdout.filter(({ should_trigger }) => should_trigger).length === 3, "holdout trigger balance drift");
 check(evals.evals.length === 3 && evals.evals.every(({ assertions }) => assertions.length === 6), "behavior eval shape drift");
 check(evals.methodology.includes("no model uplift claim"), "honest eval limitation missing");
+check(fixtureBuilder.includes('.replace(/\\r\\n/g, "\\n")'), "fixture templates must normalize checkout CRLF");
 
 if (errors.length) {
   for (const error of errors) console.error(`FAIL: ${error}`);

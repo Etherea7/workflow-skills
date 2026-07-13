@@ -37,7 +37,7 @@ const replacements = {
   PENDING: "pending",
 };
 const instantiate = (source, destination) => {
-  let content = readFileSync(join(assets, source), "utf8");
+  let content = readFileSync(join(assets, source), "utf8").replace(/\r\n/g, "\n");
   for (const [key, value] of Object.entries(replacements)) {
     content = content.replaceAll(`{{${key}}}`, value);
   }
