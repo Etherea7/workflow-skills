@@ -20,8 +20,10 @@ open review questions, and the next milestone's in-progress state.
   triggers and human gate remain open (its independent live-evidence review
   was completed 2026-07-13, see below).
 - M5 status: deterministic implementation has independent forward-review
-  APPROVE after two rounds. Live trigger/behavior evidence and the human gate
-  remain open; no M5 merge or milestone gate is claimed.
+  APPROVE after two rounds. On 2026-07-14 the human accepted real-project
+  feedback instead of isolated live runs, approved the human gate, and
+  authorized merge. Unexecuted trigger/behavior evidence remains open and must
+  not be described as passed.
 - Review discipline: findings change the skill and trigger clean reruns; an
   agent must not merely reinterpret or raise an existing grade.
 
@@ -575,8 +577,8 @@ The implementation changed rather than regrading that output:
 
 ### Next actions
 
-1. Run clean shared-harness trigger calibration/holdout and paired live behavior
-   cases when provider capacity permits; record raw durable evidence and the
-   one-run limitation.
-2. Request the M5 human gate. Merge to protected `main` only with explicit
-   confirmation for the exact reviewed commit.
+1. Merge the reviewed M5 branch into protected `main` under the human's explicit
+   2026-07-14 authorization, after proposed-merge deterministic checks and a
+   clean staged secrets scan.
+2. Collect M2–M5 trigger/behavior feedback during real project use. Preserve
+   failures and user reports as new evidence; do not backfill isolated results.

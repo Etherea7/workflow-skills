@@ -33,6 +33,10 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
   credential scanner; canonical plus M2/M3/M4 vendored copies now fail closed
   on Git, added-line filtering, or pattern-matching failure. Safety-sensitive
   live gates using the former scanner require clean reruns, not regrading.
+- 2026-07-14 human accepted continuous real-project validation for M2–M5 and
+  explicitly authorized merging all reviewed implementations. Unexecuted live
+  trigger/scanner-sensitive cases remain honestly open as post-merge feedback
+  work, but are no longer pre-merge blockers. Do not relabel them as passed.
 
 ## Phase 0 — Verify + Interview
 
@@ -178,7 +182,7 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       regrading. 2026-07-13 Fable rerun attempt: fresh 36-attempt run aborted
       at 19/36 by the SessionLimit guard; partials invalid, no results file
       written, stub cleaned (see ledger). Keep unchecked.)
-- [ ] GATE: human validates
+- [x] GATE: human validates (2026-07-14: accepted use-on-real-projects feedback model)
 
 ## Phase 2 — M3 `debug`
 
@@ -203,7 +207,7 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       reviewer, zero blocking findings; all deterministic suites reverified on
       merged main) — merged to main at 9084256 with gate honestly open.
       Keep unchecked.)
-- [ ] GATE: human validates
+- [x] GATE: human validates (2026-07-14: accepted use-on-real-projects feedback model)
 
 ## Phase 2 — M4 `next-step-improve`
 
@@ -235,7 +239,7 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       b2f650c; the independent live-evidence review is now DONE (all five
       requested checks performed, grades stand — see ledger). Remaining open:
       shared-harness triggers + human gate. Keep unchecked.)
-- [ ] GATE: human validates
+- [x] GATE: human validates (2026-07-14: accepted use-on-real-projects feedback model)
 
 ## Phase 2 — M5 `project-setup`
 
@@ -259,9 +263,10 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       findings plus three round-2 consistency findings were fixed and focused
       round 2 returned APPROVE for deterministic M5. 15 calibration + 6 frozen
       holdout queries and three behavior cases are definitions only. Live
-      trigger and paired behavior runs remain required; no uplift claim. Keep
-      unchecked.)
-- [ ] GATE: human validates
+      trigger and paired behavior runs remain post-merge feedback work; no
+      uplift claim. Keep unchecked and do not relabel as passed.)
+- [x] GATE: human validates (2026-07-14: deterministic review accepted;
+      authorized merge with live behavior evaluated during real project use)
 
 ## Phase 2 — M6 Release
 
@@ -326,5 +331,6 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
   despite those independent open gates. M5 implementation and deterministic
   tests are committed on `codex/m5-project-setup` at `0131ee1` with independent
   deterministic review APPROVE; see the collaboration ledger for exact
-  evidence. Do not merge or claim M5's gate before live evals and explicit
-  human approval.
+  evidence. Human accepted continuous real-project validation, approved the
+  M2–M5 human gates, and authorized the reviewed M5 merge while keeping
+  unexecuted live evidence honestly open as post-merge feedback work.
