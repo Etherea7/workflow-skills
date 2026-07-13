@@ -21,7 +21,7 @@
         {"text": "Handback distinguishes supported facts from inference and preserves all three hypotheses, predictions, experiments, and observed results", "passed": true, "evidence": "Handback separately lists all three attempts, a supported-facts line, and inference/unknowns without claiming a root cause."},
         {"text": "Handback names remaining hypotheses/evidence needed, risks/untouched areas, and exactly one recommended next experiment or human decision; any diagnostic evidence commit is scanned and verified", "passed": true, "evidence": "Handback records remaining evidence, unchanged src/risk, one next decision, and retained debug state; scans preceded handback 430325c and record 33e01f7."}
       ],
-      "final": {"destination": "b41ac82", "seeded_debug": "2674caa", "handback": "430325c", "record": "33e01f7", "evidence_bundle": "evals/debug/evidence/i3-bailout-with-skill.md", "transient_transcript": "%TEMP%/dwv/m3-live/i3/bailout/with_skill/agent.err.txt"}
+      "final": {"destination": "b41ac82", "seeded_debug": "2674caa", "handback": "430325c", "record": "33e01f7", "evidence_summary": "evals/debug/evidence/i3-bailout-with-skill.md", "git_bundle": "evals/debug/evidence/artifacts/i3-bailout-with-skill.bundle", "executor_transcript": "evals/debug/evidence/artifacts/i3-bailout-with-skill-executor.txt"}
     },
     {
       "eval_id": 0,
@@ -39,7 +39,7 @@
         {"text": "Handback distinguishes supported facts from inference and preserves all three hypotheses, predictions, experiments, and observed results", "passed": false, "evidence": "Handback does not enumerate the three prior predictions, experiments, and results or distinguish supported facts from inference."},
         {"text": "Handback names remaining hypotheses/evidence needed, risks/untouched areas, and exactly one recommended next experiment or human decision; any diagnostic evidence commit is scanned and verified", "passed": false, "evidence": "It provides one next experiment and notes unchanged production, but omits explicit evidence-needed and risk sections."}
       ],
-      "final": {"destination": "28c01ac", "seeded_debug": "8f57f48", "handback": "1c43db0", "evidence_bundle": "evals/debug/evidence/i3-bailout-baseline.md", "transient_transcript": "%TEMP%/dwv/m3-live/i3/bailout/baseline/agent.err.txt"}
+      "final": {"destination": "28c01ac", "seeded_debug": "8f57f48", "handback": "1c43db0", "evidence_summary": "evals/debug/evidence/i3-bailout-baseline.md", "git_bundle": "evals/debug/evidence/artifacts/i3-bailout-baseline.bundle", "executor_transcript": "evals/debug/evidence/artifacts/i3-bailout-baseline-executor.txt"}
     },
     {
       "eval_id": 1,
@@ -57,7 +57,7 @@
         {"text": "Staged added-lines credential scans precede verified code, checklist-truth, merge, and record commits, and the checklist cites actual hashes", "passed": true, "evidence": "Checklist records scans and actual red bdb81f7, fix 64d22c8, truth 8c9985c, fix merge 8123731, record 7fa13f8, record merge 596fac0, cleanup record 7e6a36c, and final merge 04938d2."},
         {"text": "Non-protected develop contains a tested non-fast-forward feature merge and truthful merge record, is clean, main remains unchanged, and worktree/branch cleanup or intentional retention is reported from observed Git state", "passed": true, "evidence": "Clean develop 04938d2 contains the verified non-fast-forward merges; main remains ed68d36; final observed state has only the root worktree and develop/main branches after cleanup."}
       ],
-      "final": {"destination": "04938d2", "main": "ed68d36", "red": "bdb81f7", "fix": "64d22c8", "truth": "8c9985c", "feature_merge": "8123731", "record": "7fa13f8", "record_merge": "596fac0", "cleanup_record": "7e6a36c", "final_merge": "04938d2", "evidence_bundle": "evals/debug/evidence/i4-success-with-skill.md", "transient_transcript": "%TEMP%/dwv/m3-live/i4/success/with_skill/agent.err.txt"}
+      "final": {"destination": "04938d2", "main": "ed68d36", "red": "bdb81f7", "fix": "64d22c8", "truth": "8c9985c", "feature_merge": "8123731", "record": "7fa13f8", "record_merge": "596fac0", "cleanup_record": "7e6a36c", "final_merge": "04938d2", "evidence_summary": "evals/debug/evidence/i4-success-with-skill.md", "git_bundle": "evals/debug/evidence/artifacts/i4-success-with-skill.bundle", "executor_transcript": "evals/debug/evidence/artifacts/i4-success-with-skill-executor.txt"}
     },
     {
       "eval_id": 1,
@@ -75,7 +75,7 @@
         {"text": "Staged added-lines credential scans precede verified code, checklist-truth, merge, and record commits, and the checklist cites actual hashes", "passed": false, "evidence": "No staged credential scans or durable checklist truth/record preceded direct commit 18f857b."},
         {"text": "Non-protected develop contains a tested non-fast-forward feature merge and truthful merge record, is clean, main remains unchanged, and worktree/branch cleanup or intentional retention is reported from observed Git state", "passed": false, "evidence": "Develop is clean and main unchanged, but the fix was committed directly with no debug-branch merge, truthful record, or workflow cleanup report."}
       ],
-      "final": {"destination": "18f857b", "main": "cf0d3b6", "evidence_bundle": "evals/debug/evidence/i4-success-baseline.md", "transient_transcript": "%TEMP%/dwv/m3-live/i4/success/baseline/agent.err.txt"}
+      "final": {"destination": "18f857b", "main": "cf0d3b6", "evidence_summary": "evals/debug/evidence/i4-success-baseline.md", "git_bundle": "evals/debug/evidence/artifacts/i4-success-baseline.bundle", "executor_transcript": "evals/debug/evidence/artifacts/i4-success-baseline-executor.txt"}
     }
   ],
   "aggregate": {

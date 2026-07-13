@@ -1,0 +1,545 @@
+node.exe : Reading additional input from stdin...
+At %USERPROFILE%\AppData\Roaming\npm\codex.ps1:24 char:5
++     & "node$exe"  "$basedir/node_modules/@openai/codex/bin/codex.js"  ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Reading additional input from stdin...:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+2026-07-13T04:33:02.746541Z  WARN codex_core::shell_snapshot: Failed to create shell snapshot for powershell: Shell
+snapshot not supported yet for PowerShell
+OpenAI Codex v0.144.1
+--------
+workdir: %TEMP%\dwv\m3-live\i4\success\baseline\project
+model: gpt-5.6-sol
+provider: openai
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f59bf-fecc-76c0-a407-fc2df6cce585
+--------
+user
+The documented parsePort contract accepts integer ports from 0 through 65535, but parsePort with the string zero
+throws. Reproduce and diagnose the defect, add a regression test, implement the smallest verified fix, and integrate
+it into the non-protected develop branch.
+codex
+I’ll reproduce this on the current branch, use the required read-only explorer for an independent diagnosis, then add
+the narrow regression test and fix, run `npm test`, and commit the verified change on `develop` if the branch and
+worktree are safe.
+  → Inspect branch/worktree and reproduce parsePort failure
+  • Validate root cause and add a regression test
+  • Implement the smallest fix and run the full test suite
+  • Commit the verified change on develop
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "git status --short --branch; rg -n
+\"parsePort|65535|port\" . --glob '"'!node_modules/**'"'" in
+%TEMP%\dwv\m3-live\i4\success\baseline\project
+ succeeded in 2498ms:
+## develop
+.\test\regression.test.js:1:import test from "node:test";
+.\test\regression.test.js:2:import assert from "node:assert/strict";
+.\test\regression.test.js:3:import { parsePort } from "../src/index.js";
+.\test\regression.test.js:4:test("nonzero port parses", () => assert.equal(parsePort("8080"), 8080));
+.\test\regression.test.js:5:test("out-of-range port throws", () => assert.throws(() => parsePort("70000"),
+RangeError));
+.\src\index.js:1:export function parsePort(value) {
+.\src\index.js:2:  const port = Number.parseInt(value, 10);
+.\src\index.js:3:  if (!port || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");
+.\src\index.js:4:  return port;
+.\AGENTS.md:9:with file/symbol citations, candidate causes with supporting/contradicting
+.\docs\ports.md:3:`parsePort(value)` accepts integer ports from 0 through 65535 inclusive and throws `RangeError`
+outside that range.
+
+2026-07-13T04:33:20.160659Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command 'Get-Content package.json; Get-Content
+src/index.js; Get-Content test/regression.test.js; Get-Content docs/ports.md; npm test' in
+%TEMP%\dwv\m3-live\i4\success\baseline\project
+ succeeded in 2784ms:
+{
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
+export function parsePort(value) {
+  const port = Number.parseInt(value, 10);
+  if (!port || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");
+  return port;
+}
+import test from "node:test";
+import assert from "node:assert/strict";
+import { parsePort } from "../src/index.js";
+test("nonzero port parses", () => assert.equal(parsePort("8080"), 8080));
+test("out-of-range port throws", () => assert.throws(() => parsePort("70000"), RangeError));
+# Port parsing
+
+`parsePort(value)` accepts integer ports from 0 through 65535 inclusive and throws `RangeError` outside that range.
+
+> test
+> node --test
+
+TAP version 13
+# Subtest: nonzero port parses
+ok 1 - nonzero port parses
+  ---
+  duration_ms: 0.7904
+  type: 'test'
+  ...
+# Subtest: out-of-range port throws
+ok 2 - out-of-range port throws
+  ---
+  duration_ms: 0.3541
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 78.0945
+
+codex
+The worktree is clean and already on the non-protected `develop` branch. The implementation rejects any falsy parsed
+value, so the documented lower bound is the suspicious boundary; I’m confirming it with a focused reproduction before
+changing the test.
+2026-07-13T04:33:28.086732Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "node --input-type=module -e \"import {
+parsePort } from './src/index.js'; try { console.log(parsePort('0')); } catch (error) { console.error(error.name + ':
+' + error.message); process.exitCode = 1; }\"" in
+%TEMP%\dwv\m3-live\i4\success\baseline\project
+2026-07-13T04:33:31.643024Z ERROR codex_core::tools::router: error=Exit code: 1
+Wall time: 2.5 seconds
+Output:
+RangeError: port must be 0..65535
+
+ exited 1 in 2475ms:
+RangeError: port must be 0..65535
+
+2026-07-13T04:33:33.285244Z ERROR codex_core::tools::router: error=timeout_ms must be at least 10000
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command 'git log -5 --oneline --decorate; git diff
+--check; git status --porcelain=v1' in %TEMP%\dwv\m3-live\i4\success\baseline\project
+ succeeded in 2474ms:
+cf0d3b6 (HEAD -> develop, main) chore: seed successful-debug fixture
+
+collab: Wait
+2026-07-13T04:33:41.058612Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+2026-07-13T04:33:51.093553Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+collab: Wait
+2026-07-13T04:34:07.731159Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+2026-07-13T04:34:11.265678Z  WARN codex_protocol::openai_models: Model personality requested but model_messages is
+missing, falling back to base instructions. model=gpt-5.6-sol personality=pragmatic
+apply patch
+patch: completed
+%TEMP%\dwv\m3-live\i4\success\baseline\project\test\regression.test.js
+diff --git a/test/regression.test.js b/test/regression.test.js
+index 36b68a7d682fd1389ff65ae72f5715b477d125fd..757d81ff0f500b4f99f11b0cb9d68d15e3700a1f
+--- a/test/regression.test.js
++++ b/test/regression.test.js
+@@ -1,5 +1,6 @@
+ import test from "node:test";
+ import assert from "node:assert/strict";
+ import { parsePort } from "../src/index.js";
++test("zero port parses", () => assert.equal(parsePort("0"), 0));
+ test("nonzero port parses", () => assert.equal(parsePort("8080"), 8080));
+ test("out-of-range port throws", () => assert.throws(() => parsePort("70000"), RangeError));
+
+diff --git a/test/regression.test.js b/test/regression.test.js
+index 36b68a7d682fd1389ff65ae72f5715b477d125fd..757d81ff0f500b4f99f11b0cb9d68d15e3700a1f
+--- a/test/regression.test.js
++++ b/test/regression.test.js
+@@ -1,5 +1,6 @@
+ import test from "node:test";
+ import assert from "node:assert/strict";
+ import { parsePort } from "../src/index.js";
++test("zero port parses", () => assert.equal(parsePort("0"), 0));
+ test("nonzero port parses", () => assert.equal(parsePort("8080"), 8080));
+ test("out-of-range port throws", () => assert.throws(() => parsePort("70000"), RangeError));
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command 'npm test' in
+%TEMP%\dwv\m3-live\i4\success\baseline\project
+2026-07-13T04:34:18.300954Z ERROR codex_core::tools::router: error=Exit code: 1
+Wall time: 2.8 seconds
+Output:
+
+> test
+> node --test
+
+TAP version 13
+# Subtest: zero port parses
+not ok 1 - zero port parses
+  ---
+  duration_ms: 0.7787
+  type: 'test'
+  location:
+'C:\\Users\\65876\\AppData\\Local\\Temp\\dwv\\m3-live\\i4\\success\\baseline\\project\\test\\regression.test.js:4:1'
+  failureType: 'testCodeFailure'
+  error: 'port must be 0..65535'
+  code: 'ERR_TEST_FAILURE'
+  name: 'RangeError'
+  stack: |-
+    parsePort (file:///%USERPROFILE%/AppData/Local/Temp/dwv/m3-live/i4/success/baseline/project/src/index.js:3:48)
+    TestContext.<anonymous>
+(file:///%USERPROFILE%/AppData/Local/Temp/dwv/m3-live/i4/success/baseline/project/test/regression.test.js:4:45)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: nonzero port parses
+ok 2 - nonzero port parses
+  ---
+  duration_ms: 0.1751
+  type: 'test'
+  ...
+# Subtest: out-of-range port throws
+ok 3 - out-of-range port throws
+  ---
+  duration_ms: 0.3429
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 2
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 77.7579
+
+ exited 1 in 2753ms:
+
+> test
+> node --test
+
+TAP version 13
+# Subtest: zero port parses
+not ok 1 - zero port parses
+  ---
+  duration_ms: 0.7787
+  type: 'test'
+  location:
+'C:\\Users\\65876\\AppData\\Local\\Temp\\dwv\\m3-live\\i4\\success\\baseline\\project\\test\\regression.test.js:4:1'
+  failureType: 'testCodeFailure'
+  error: 'port must be 0..65535'
+  code: 'ERR_TEST_FAILURE'
+  name: 'RangeError'
+  stack: |-
+    parsePort (file:///%USERPROFILE%/AppData/Local/Temp/dwv/m3-live/i4/success/baseline/project/src/index.js:3:48)
+    TestContext.<anonymous>
+(file:///%USERPROFILE%/AppData/Local/Temp/dwv/m3-live/i4/success/baseline/project/test/regression.test.js:4:45)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: nonzero port parses
+ok 2 - nonzero port parses
+  ---
+  duration_ms: 0.1751
+  type: 'test'
+  ...
+# Subtest: out-of-range port throws
+ok 3 - out-of-range port throws
+  ---
+  duration_ms: 0.3429
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 2
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 77.7579
+
+diff --git a/test/regression.test.js b/test/regression.test.js
+index 36b68a7d682fd1389ff65ae72f5715b477d125fd..757d81ff0f500b4f99f11b0cb9d68d15e3700a1f
+--- a/test/regression.test.js
++++ b/test/regression.test.js
+@@ -1,5 +1,6 @@
+ import test from "node:test";
+ import assert from "node:assert/strict";
+ import { parsePort } from "../src/index.js";
++test("zero port parses", () => assert.equal(parsePort("0"), 0));
+ test("nonzero port parses", () => assert.equal(parsePort("8080"), 8080));
+ test("out-of-range port throws", () => assert.throws(() => parsePort("70000"), RangeError));
+
+codex
+The new boundary test fails exactly as reported while the two existing tests still pass. The explorer independently
+confirmed the same cause: `Number.parseInt("0", 10)` returns `0`, and the `!port` guard incorrectly treats that valid
+value as invalid.
+The focused regression test reproduces the defect. Independent exploration and local validation agree that the
+truthiness check rejects valid numeric zero.
+  ✓ Inspect branch/worktree and reproduce parsePort failure
+  ✓ Validate root cause and add a regression test
+  → Implement the smallest fix and run the full test suite
+  • Commit the verified change on develop
+apply patch
+patch: completed
+%TEMP%\dwv\m3-live\i4\success\baseline\project\src\index.js
+diff --git a/src/index.js b/src/index.js
+index d6c2488f440e90582cb0d0212e87cceec499b823..90fd1782cc2d4fa74a912a465b38bbd6244bd73c
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,5 @@
+ export function parsePort(value) {
+   const port = Number.parseInt(value, 10);
+-  if (!port || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");
++  if (Number.isNaN(port) || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");
+   return port;
+ }
+diff --git a/test/regression.test.js b/test/regression.test.js
+index 36b68a7d682fd1389ff65ae72f5715b477d125fd..757d81ff0f500b4f99f11b0cb9d68d15e3700a1f
+--- a/test/regression.test.js
++++ b/test/regression.test.js
+@@ -1,5 +1,6 @@
+ import test from "node:test";
+ import assert from "node:assert/strict";
+ import { parsePort } from "../src/index.js";
++test("zero port parses", () => assert.equal(parsePort("0"), 0));
+ test("nonzero port parses", () => assert.equal(parsePort("8080"), 8080));
+ test("out-of-range port throws", () => assert.throws(() => parsePort("70000"), RangeError));
+
+diff --git a/src/index.js b/src/index.js
+index d6c2488f440e90582cb0d0212e87cceec499b823..90fd1782cc2d4fa74a912a465b38bbd6244bd73c
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,5 @@
+ export function parsePort(value) {
+   const port = Number.parseInt(value, 10);
+-  if (!port || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");
++  if (Number.isNaN(port) || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");
+   return port;
+ }
+diff --git a/test/regression.test.js b/test/regression.test.js
+index 36b68a7d682fd1389ff65ae72f5715b477d125fd..757d81ff0f500b4f99f11b0cb9d68d15e3700a1f
+--- a/test/regression.test.js
++++ b/test/regression.test.js
+@@ -1,5 +1,6 @@
+ import test from "node:test";
+ import assert from "node:assert/strict";
+ import { parsePort } from "../src/index.js";
++test("zero port parses", () => assert.equal(parsePort("0"), 0));
+ test("nonzero port parses", () => assert.equal(parsePort("8080"), 8080));
+ test("out-of-range port throws", () => assert.throws(() => parsePort("70000"), RangeError));
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command 'npm test; if ($LASTEXITCODE -ne 0) { exit
+$LASTEXITCODE }; node --input-type=module -e "import assert from '"'node:assert/strict'; import { parsePort } from
+'./src/index.js'; assert.equal(parsePort('0'), 0); assert.equal(parsePort('65535'), 65535); for (const value of ['-1',
+'65536', '', 'abc']) assert.throws(() => parsePort(value), RangeError); console.log('boundary probes passed');\"; if
+("'$LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; git diff --check; git diff -- src/index.js test/regression.test.js;
+git status --short --branch' in %TEMP%\dwv\m3-live\i4\success\baseline\project
+ succeeded in 2935ms:
+
+> test
+> node --test
+
+TAP version 13
+# Subtest: zero port parses
+ok 1 - zero port parses
+  ---
+  duration_ms: 0.7968
+  type: 'test'
+  ...
+# Subtest: nonzero port parses
+ok 2 - nonzero port parses
+  ---
+  duration_ms: 0.1118
+  type: 'test'
+  ...
+# Subtest: out-of-range port throws
+ok 3 - out-of-range port throws
+  ---
+  duration_ms: 0.3551
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 76.9058
+boundary probes passed
+diff --git a/src/index.js b/src/index.js
+index d6c2488..90fd178 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,5 @@
+ export function parsePort(value) {
+   const port = Number.parseInt(value, 10);
+-  if (!port || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");
++  if (Number.isNaN(port) || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");
+   return port;
+ }
+diff --git a/test/regression.test.js b/test/regression.test.js
+index 36b68a7..757d81f 100644
+--- a/test/regression.test.js
++++ b/test/regression.test.js
+@@ -1,5 +1,6 @@
+ import test from "node:test";
+ import assert from "node:assert/strict";
+ import { parsePort } from "../src/index.js";
++test("zero port parses", () => assert.equal(parsePort("0"), 0));
+ test("nonzero port parses", () => assert.equal(parsePort("8080"), 8080));
+ test("out-of-range port throws", () => assert.throws(() => parsePort("70000"), RangeError));
+## develop
+ M src/index.js
+ M test/regression.test.js
+warning: in the working copy of 'src/index.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test/regression.test.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/index.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test/regression.test.js', LF will be replaced by CRLF the next time Git touches it
+
+diff --git a/src/index.js b/src/index.js
+index d6c2488f440e90582cb0d0212e87cceec499b823..90fd1782cc2d4fa74a912a465b38bbd6244bd73c
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,5 @@
+ export function parsePort(value) {
+   const port = Number.parseInt(value, 10);
+-  if (!port || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");
++  if (Number.isNaN(port) || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");
+   return port;
+ }
+diff --git a/test/regression.test.js b/test/regression.test.js
+index 36b68a7d682fd1389ff65ae72f5715b477d125fd..757d81ff0f500b4f99f11b0cb9d68d15e3700a1f
+--- a/test/regression.test.js
++++ b/test/regression.test.js
+@@ -1,5 +1,6 @@
+ import test from "node:test";
+ import assert from "node:assert/strict";
+ import { parsePort } from "../src/index.js";
++test("zero port parses", () => assert.equal(parsePort("0"), 0));
+ test("nonzero port parses", () => assert.equal(parsePort("8080"), 8080));
+ test("out-of-range port throws", () => assert.throws(() => parsePort("70000"), RangeError));
+
+codex
+The one-line guard change now accepts `"0"` while preserving `RangeError` for negative, over-maximum, empty, and
+nonnumeric inputs. The full suite passes 3/3, boundary probes pass, and the diff is whitespace-clean; I’m committing
+these two scoped changes directly to `develop`.
+The minimal guard change is implemented and verified by the full test suite plus focused lower/upper/invalid boundary
+probes.
+  ✓ Inspect branch/worktree and reproduce parsePort failure
+  ✓ Validate root cause and add a regression test
+  ✓ Implement the smallest fix and run the full test suite
+  → Commit the verified change on develop
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command 'git add -- src/index.js
+test/regression.test.js; git commit -m "fix: accept zero port"; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; git
+status --short --branch; git log -1 --oneline --decorate' in
+%TEMP%\dwv\m3-live\i4\success\baseline\project
+ succeeded in 2550ms:
+[develop 18f857b] fix: accept zero port
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+## develop
+18f857b (HEAD -> develop) fix: accept zero port
+warning: in the working copy of 'src/index.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test/regression.test.js', LF will be replaced by CRLF the next time Git touches it
+
+diff --git a/src/index.js b/src/index.js
+index d6c2488f440e90582cb0d0212e87cceec499b823..90fd1782cc2d4fa74a912a465b38bbd6244bd73c
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,5 @@
+ export function parsePort(value) {
+   const port = Number.parseInt(value, 10);
+-  if (!port || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");
++  if (Number.isNaN(port) || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");
+   return port;
+ }
+diff --git a/test/regression.test.js b/test/regression.test.js
+index 36b68a7d682fd1389ff65ae72f5715b477d125fd..757d81ff0f500b4f99f11b0cb9d68d15e3700a1f
+--- a/test/regression.test.js
++++ b/test/regression.test.js
+@@ -1,5 +1,6 @@
+ import test from "node:test";
+ import assert from "node:assert/strict";
+ import { parsePort } from "../src/index.js";
++test("zero port parses", () => assert.equal(parsePort("0"), 0));
+ test("nonzero port parses", () => assert.equal(parsePort("8080"), 8080));
+ test("out-of-range port throws", () => assert.throws(() => parsePort("70000"), RangeError));
+
+The verified fix and regression test were committed on the non-protected develop branch as 18f857b.
+  ✓ Inspect branch/worktree and reproduce parsePort failure
+  ✓ Validate root cause and add a regression test
+  ✓ Implement the smallest fix and run the full test suite
+  ✓ Commit the verified change on develop
+diff --git a/src/index.js b/src/index.js
+index d6c2488f440e90582cb0d0212e87cceec499b823..90fd1782cc2d4fa74a912a465b38bbd6244bd73c
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,5 @@
+ export function parsePort(value) {
+   const port = Number.parseInt(value, 10);
+-  if (!port || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");
++  if (Number.isNaN(port) || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");
+   return port;
+ }
+diff --git a/test/regression.test.js b/test/regression.test.js
+index 36b68a7d682fd1389ff65ae72f5715b477d125fd..757d81ff0f500b4f99f11b0cb9d68d15e3700a1f
+--- a/test/regression.test.js
++++ b/test/regression.test.js
+@@ -1,5 +1,6 @@
+ import test from "node:test";
+ import assert from "node:assert/strict";
+ import { parsePort } from "../src/index.js";
++test("zero port parses", () => assert.equal(parsePort("0"), 0));
+ test("nonzero port parses", () => assert.equal(parsePort("8080"), 8080));
+ test("out-of-range port throws", () => assert.throws(() => parsePort("70000"), RangeError));
+
+codex
+Implemented and committed on `develop` as `18f857b` (`fix: accept zero port`).
+
+- Reproduced `parsePort("0")` throwing `RangeError`.
+- Diagnosed falsy-value validation in
+[src/index.js](%USERPROFILE%/AppData/Local/Temp/dwv/m3-live/i4/success/baseline/project/src/index.js:3).
+- Replaced `!port` with `Number.isNaN(port)`.
+- Added the `"0"` regression case in [regression.test.js](%USERPROFILE%/AppData/Local/Temp/dwv/m3-live/i4/success/base
+line/project/test/regression.test.js:4).
+- `npm test`: 3/3 passing.
+- Additional boundary probes passed.
+- Worktree is clean.
+diff --git a/src/index.js b/src/index.js
+index d6c2488f440e90582cb0d0212e87cceec499b823..90fd1782cc2d4fa74a912a465b38bbd6244bd73c
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,5 @@
+ export function parsePort(value) {
+   const port = Number.parseInt(value, 10);
+-  if (!port || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");
++  if (Number.isNaN(port) || port < 0 || port > 65535) throw new RangeError("port must be 0..65535");
+   return port;
+ }
+diff --git a/test/regression.test.js b/test/regression.test.js
+index 36b68a7d682fd1389ff65ae72f5715b477d125fd..757d81ff0f500b4f99f11b0cb9d68d15e3700a1f
+--- a/test/regression.test.js
++++ b/test/regression.test.js
+@@ -1,5 +1,6 @@
+ import test from "node:test";
+ import assert from "node:assert/strict";
+ import { parsePort } from "../src/index.js";
++test("zero port parses", () => assert.equal(parsePort("0"), 0));
+ test("nonzero port parses", () => assert.equal(parsePort("8080"), 8080));
+ test("out-of-range port throws", () => assert.throws(() => parsePort("70000"), RangeError));
+
+tokens used
+25,470

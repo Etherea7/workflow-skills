@@ -47,12 +47,22 @@ for (const file of [
   "skills/debug/agents/openai.yaml",
   "evals/debug/evals.json",
   "evals/debug/infrastructure-event-test.mjs",
+  "evals/debug/evidence-test.mjs",
   "evals/debug/trigger-evals.json",
   "evals/debug/trigger-holdout.json",
   "evals/debug/evidence/i3-bailout-with-skill.md",
   "evals/debug/evidence/i3-bailout-baseline.md",
   "evals/debug/evidence/i4-success-with-skill.md",
-  "evals/debug/evidence/i4-success-baseline.md"
+  "evals/debug/evidence/i4-success-baseline.md",
+  "evals/debug/evidence/README.md",
+  "evals/debug/evidence/artifacts/i3-bailout-with-skill.bundle",
+  "evals/debug/evidence/artifacts/i3-bailout-with-skill-executor.txt",
+  "evals/debug/evidence/artifacts/i3-bailout-baseline.bundle",
+  "evals/debug/evidence/artifacts/i3-bailout-baseline-executor.txt",
+  "evals/debug/evidence/artifacts/i4-success-with-skill.bundle",
+  "evals/debug/evidence/artifacts/i4-success-with-skill-executor.txt",
+  "evals/debug/evidence/artifacts/i4-success-baseline.bundle",
+  "evals/debug/evidence/artifacts/i4-success-baseline-executor.txt"
 ]) check(existsSync(join(root, file)), `missing debug runtime/eval file: ${file}`);
 
 for (const [canonical, vendored] of [

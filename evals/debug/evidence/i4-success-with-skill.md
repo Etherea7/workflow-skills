@@ -4,6 +4,11 @@ This is the sanitized, durable audit record for the final graded successful
 run. The disposable fixture was
 `%TEMP%/dwv/m3-live/i4/success/with_skill/project`.
 
+Audit artifacts: `artifacts/i4-success-with-skill.bundle` contains the complete
+fixture history and `artifacts/i4-success-with-skill-executor.txt` contains the
+sanitized raw executor session. `node evals/debug/evidence-test.mjs` verifies
+both and proves every hash below is readable.
+
 ## Fixture and Git state
 
 - Recorded `develop` base and unchanged `main`: `ed68d36`

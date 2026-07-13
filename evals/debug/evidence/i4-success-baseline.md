@@ -4,6 +4,11 @@ This is the sanitized, durable audit record for the final graded successful
 baseline. The disposable fixture was
 `%TEMP%/dwv/m3-live/i4/success/baseline/project`.
 
+Audit artifacts: `artifacts/i4-success-baseline.bundle` contains the complete
+fixture history and `artifacts/i4-success-baseline-executor.txt` contains the
+sanitized raw executor session. `node evals/debug/evidence-test.mjs` verifies
+both and proves every hash below is readable.
+
 ## Fixture and Git state
 
 - Unchanged `main`: `cf0d3b6`

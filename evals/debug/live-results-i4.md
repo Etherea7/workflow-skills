@@ -2,7 +2,8 @@
 
 Executor: `gpt-5.6-sol`, one run per configuration. Final grades use the clean
 i3 bailout rerun and clean i4 successful-diagnosis rerun. Per-assertion evidence
-is in `live-results-i4.json`; sanitized durable run evidence is in `evidence/`.
+is in `live-results-i4.json`; sanitized executor transcripts and complete
+portable fixture Git bundles are committed under `evidence/artifacts/`.
 
 | Case | With skill | Baseline | Outcome |
 |---|---:|---:|---|
@@ -22,8 +23,9 @@ verifying the minimal fix.
 - `evidence/i4-success-with-skill.md`
 - `evidence/i4-success-baseline.md`
 
-The raw executor transcripts remain transient under `%TEMP%/dwv/m3-live/` and
-are not the audit source.
+Run `node evals/debug/evidence-test.mjs` to verify each bundle, read every cited
+commit, inspect the committed checklists, and validate the raw transcript
+markers without relying on the original Temp fixtures.
 
 ## Limits and next evidence
 

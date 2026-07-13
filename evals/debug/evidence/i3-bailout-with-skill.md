@@ -3,6 +3,11 @@
 This is the sanitized, durable audit record for the final graded bailout run.
 The disposable fixture was `%TEMP%/dwv/m3-live/i3/bailout/with_skill/project`.
 
+Audit artifacts: `artifacts/i3-bailout-with-skill.bundle` contains the complete
+fixture history and `artifacts/i3-bailout-with-skill-executor.txt` contains the
+sanitized raw executor session. `node evals/debug/evidence-test.mjs` verifies
+both and proves every hash below is readable.
+
 ## Fixture and Git state
 
 - Integration base/destination: `b41ac82`

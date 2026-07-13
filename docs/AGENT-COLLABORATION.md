@@ -137,7 +137,7 @@ Completed:
   mandatory no-N+1 findings handback.
 - Debug checklist asset, byte-identical number/secrets scripts, and generated
   `agents/openai.yaml` from the skill-creator initializer.
-- 39/39 deterministic contract checks, official skills-ref validation, 15
+- 49/49 deterministic contract checks, official skills-ref validation, 15
   calibration triggers, 6 frozen holdouts, a genuine-red fixture smoke test,
   and deterministic infrastructure-event accounting.
 - Live behavior: final bailout i3 is 6/6 versus 3/6; final fresh-success i4 is
@@ -154,6 +154,13 @@ Completed:
   outside the attempt counter, report observed cleanup/retention, and seed only
   the three raw failed attempts. Both affected behavior cases were rebuilt and
   rerun after these changes.
+- Focused follow-up review accepted findings 2-6 but correctly found the four
+  summary-only evidence files could not make fixture-only hashes inspectable.
+  Each final run now also commits a sanitized raw executor transcript and a
+  complete portable Git bundle. `node evals/debug/evidence-test.mjs` verifies
+  all four bundles/transcripts (34/34), clones the histories, proves every cited
+  commit readable, and inspects the committed checklists. A final focused
+  re-review of this exact evidence checkpoint is requested.
 
 Still pending:
 
