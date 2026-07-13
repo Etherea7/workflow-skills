@@ -172,7 +172,10 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       restored its measurement stub/scratch and rejected its unproved CRLF edit.
       A direct unchanged harness retry then reached 14/36 attempts before a
       zero-token session limit; no result JSON or grade was produced and all
-      partial hits/misses are invalid. Keep unchecked.)
+      partial hits/misses are invalid. The later shared-scanner fail-closed
+      repair passes the M2 23/23 deterministic contract but requires clean
+      scan-sensitive live behavior reruns; retain old evidence without
+      regrading. Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M3 `debug`
@@ -217,7 +220,11 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       (+58.33 points), with four sanitized transcripts, four portable bundles,
       the baseline dirty-working patch, and 52/52 durable evidence checks. One
       run per configuration; no speed/cost/statistical claim. Shared trigger
-      harness and human gate remain required. Keep unchecked.)
+      harness and human gate remain required. Independent live-evidence review
+      also remains open: Codex hit its usage limit before review and two valid
+      Fable attempts exited without a handback; silence is not approval. Temp
+      fixtures were removed only after 52/52 passed, and the same test passed
+      again afterward. Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M5 `project-setup`

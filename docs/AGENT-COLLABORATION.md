@@ -10,9 +10,11 @@ open review questions, and the next milestone's in-progress state.
 - Branch: `codex/m4-next-step-improve` in `.worktrees/m4-next-step-improve`
   (provisional M4 isolation based on approved M3 checkpoint)
 - M4 base commit: `2502657` (approved M3 behavior/evidence checkpoint)
-- Active gates: M2 `new-feature` trigger evaluation remains pending; M3 `debug`
-  behavior is independently approved but its triggers/human gate remain open;
-  M4 is proceeding provisionally by explicit human authorization
+- Active gates: M2 `new-feature` trigger plus scanner-sensitive behavior reruns
+  remain pending; M3 `debug` has historical behavior approval but its
+  scanner-sensitive reruns, triggers, and human gate remain open;
+  M4 skill/contract review is approved and live evidence is complete, but its
+  independent evidence review, triggers, and human gate remain open
 - Review discipline: findings change the skill and trigger clean reruns; an
   agent must not merely reinterpret or raise an existing grade.
 
@@ -59,6 +61,11 @@ attempts before a zero-token session-limit exception. The harness wrote no
 `trigger-results.json`; partial hits/misses were not graded. The installed stub,
 backup, scratch, and Python cache were verified absent after cleanup. M2 remains
 open for one complete unchanged calibration+holdout run.
+
+The later M4 review reproduced a fail-open path in the shared scanner. Canonical
+and M2/M3/M4 copies are repaired and the M2 deterministic contract reran 23/23,
+but M2's scan-sensitive live behavior configurations require clean reruns. The
+old 18/18 versus 8/18 results remain historical evidence and are not regraded.
 
 The first provisional harness invocation targeted Codex discovery. It was
 stopped before completion because M1's established gate measures native Claude
@@ -281,9 +288,20 @@ Completed:
   totals without relying on retained Temp fixtures. This is one run per
   configuration; timings/tokens are audit context only and support no speed,
   cost, or statistical claim.
+- Independent live-evidence review is not complete. Codex CLI refused before
+  review work with a hard usage reset at 2026-07-20 09:38 local time. One Fable
+  command was rejected by CLI option parsing before model invocation; two
+  correctly formed Fable invocations then exited 1 with no output or handback.
+  All three left the worktree clean. Do not treat silence as approval. The
+  portable evidence remains ready for the next external reviewer.
+- After `evidence-test.mjs` passed, the bounded `%TEMP%/dwv/m4-live/i1`
+  fixtures were safely removed. The same 52/52 evidence test passed again after
+  deletion, proving the committed audit no longer relies on Temp state.
 
 Still pending:
 
+- independent review of the 12/12 versus 5/12 live evidence at exact commit
+  `28181d3`
 - shared trigger-harness execution after the M2 harness gate is available
 - human approval
 
@@ -301,3 +319,16 @@ Still pending:
    still recording later proposals?
 6. Are trigger boundaries sharp enough between roadmap/prioritization work and
    a single ready feature, a concrete bug, review-only work, or greenfield setup?
+
+### M4 live-evidence review requested
+
+1. Run `node evals/next-step-improve/evidence-test.mjs` and independently grade
+   all 12 fixed assertions from the portable bundles/transcripts.
+2. Confirm the fresh baseline's 0/6 applies the conjunctive assertions
+   consistently while still crediting its useful shortlist in the narrative.
+3. Confirm the resume baseline is 5/6: its bespoke PowerShell row validator
+   does not satisfy the explicit committed-generator `--check` requirement.
+4. Confirm no assertion depends on deleted Temp fixtures and that ordinary,
+   escaped, and mixed user-profile paths are absent from transcripts.
+5. Preserve the one-run limitation and make no speed, cost, or statistical
+   claim from recorded timings or token counts.
