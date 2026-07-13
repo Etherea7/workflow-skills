@@ -1,6 +1,6 @@
 ---
 name: new-feature
-description: Implement a described software feature or change from a ready spec using an isolated git worktree, tests-first development, delegated exploration and mechanical implementation, bounded red-green loops, verified commits, documentation updates, and a protected-branch merge gate. Use for requests to build, add, or change application behavior when requirements are sufficiently precise, including continuing an existing specs/NNN-slug feature checklist. Do not use when requirements still need clarification (use plan), when diagnosing a bug (use debug), for code review only, or for trivial non-behavioral edits that do not warrant a feature workflow.
+description: Mandatory workflow for every nontrivial request to implement or continue ready software functionality, even when the user does not ask for a workflow. Use for implementation from a spec path, accepted ticket or issue, ready requirements, or an existing feature checklist; adding CLI/API/application behavior; tests-first feature requests; and resuming prior feature work. Provides an isolated worktree, red-green tests, verified commits, docs, and a protected-branch merge gate. Never use for unclear requirements (use plan), bug diagnosis or repair (use debug), code/PR review without implementation, roadmaps, new-project setup, or trivial non-behavioral renames.
 license: MIT
 metadata:
   suite: dev-workflows
@@ -163,6 +163,7 @@ summary, commit(s), and exact test evidence before any merge decision.
 - First integrate and test safely per the reference. Before confirmation for a
   protected destination, create a disposable non-protected verification
   branch/worktree at the exact destination head; form the proposed merge there,
+  using `git merge --no-ff --no-commit <source>` (never `--no-commit` alone),
   run required gates, scan the staged diff, then abort/remove it. Do not run any
   merge command in the protected checkout before confirmation. Conflict or
   integrated-test failure stops without a merge commit.
@@ -171,7 +172,8 @@ summary, commit(s), and exact test evidence before any merge decision.
   merge. No reply, silence, prior standing approval, or "finish everything"
   counts. Do not run the merge until confirmation arrives.
 - Non-protected destination: auto-merge is allowed after verified green unless
-  project rules forbid it. Verify the merge result and record its commit.
+  project rules forbid it. Use the same non-fast-forward, no-commit integration
+  sequence before committing. Verify the merge result and record its commit.
 
 After a permitted merge, verify the destination contains the work and rerun the
 required gates on its final tree. Record the merge commit and final status in

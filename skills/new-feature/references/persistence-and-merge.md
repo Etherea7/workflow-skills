@@ -47,7 +47,8 @@ Before either kind of merge, verify the destination checkout/worktree is clean
 and still at the reviewed head. If it advanced, recompute the merge and evidence.
 For pre-confirmation testing of a protected destination, create a disposable
 non-protected branch/worktree (for example `verify/NNN-slug`) at that exact head.
-Form the integration there with the repository's supported no-commit merge mode;
+Form the integration there with an explicitly non-fast-forward, no-commit merge
+(`git merge --no-ff --no-commit <source>` when Git is the repository tool);
 never run a merge command in the protected checkout before confirmation. On the
 proposed merged tree, run every required targeted/regression/build gate. If
 conflicts or tests fail, abort/preserve evidence and hand back. If green, inspect
@@ -62,6 +63,11 @@ rerun required gates and the secrets scan, then commit it. If it advanced, the
 old confirmation no longer covers the changed merge: recompute evidence and ask
 again. Verify final destination history contains the feature commit and rerun
 required gates after the merge commit.
+
+`--no-commit` alone is forbidden: Git may fast-forward immediately, move the
+destination before validation, leave no staged merge diff, and provide no merge
+state to abort. Use `--no-ff --no-commit` for both disposable verification and
+the actual permitted integration, including merge-record integration.
 
 The merge hash cannot truthfully appear in a checklist committed before the
 merge. Create a short-lived branch/worktree from the verified destination head,

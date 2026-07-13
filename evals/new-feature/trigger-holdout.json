@@ -1,0 +1,26 @@
+[
+  {
+    "query": "Take the approved webhook retry story through implementation, regression tests, documentation, and a merge-ready branch.",
+    "should_trigger": true
+  },
+  {
+    "query": "Pick up the partially completed CSV import work at its saved feature checklist and finish the remaining green steps.",
+    "should_trigger": true
+  },
+  {
+    "query": "Implement the specified cache-control response option in the server and prove it with tests before integrating it.",
+    "should_trigger": true
+  },
+  {
+    "query": "Users sometimes see duplicate webhook deliveries. Reproduce the defect, identify the cause, and patch it.",
+    "should_trigger": false
+  },
+  {
+    "query": "Assess the proposed CSV import implementation plan and point out missing edge cases; do not change code.",
+    "should_trigger": false
+  },
+  {
+    "query": "We might add team invitations someday, but roles, expiry, and acceptance behavior are all undecided. Help define it.",
+    "should_trigger": false
+  }
+]

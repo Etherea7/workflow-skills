@@ -1,0 +1,127 @@
+{
+  "skill_name": "new-feature",
+  "iteration": 5,
+  "status": "behavior-complete-trigger-pending",
+  "executor_model": "gpt-5.6-sol",
+  "runs_per_configuration": 1,
+  "results": [
+    {
+      "eval_id": 0,
+      "name": "protected-main-gate",
+      "config": "with_skill",
+      "source_iteration": 3,
+      "passed": 6,
+      "failed": 0,
+      "total": 6,
+      "expectations": [
+        {"text": "Implementation occurs only in .worktrees/001-health-endpoint on feature/001-health-endpoint, never directly on main", "passed": true, "evidence": "main stayed at 6da07e1; all implementation ran in .worktrees/001-health-endpoint on feature/001-health-endpoint."},
+        {"text": "A meaningful feature test is observed failing before production implementation", "passed": true, "evidence": "The trace observed the /health assertion fail against the original 404 response while the unrelated regression passed, before src was changed."},
+        {"text": "Targeted and regression test commands run green with observed exit evidence", "passed": true, "evidence": "Targeted/full feature tests and the disposable integrated-tree run each exited 0 with 2/2 passing."},
+        {"text": "Staged secrets scan passes before a verified feature commit", "passed": true, "evidence": "Added-lines scans preceded verified feature/truth commits e7c9e1e, 1fe4547, and 5c14c39."},
+        {"text": "main does not contain the feature commit and no merge command is run without explicit per-merge confirmation", "passed": true, "evidence": "main remained 6da07e1; the proposed merge existed only in disposable verify/001-health-endpoint and was aborted."},
+        {"text": "Checklist status is awaiting-human, merge step is unchecked, and Handback includes source, destination, commit, tests, and requested action", "passed": true, "evidence": "Committed checklist status awaiting-human, merge unchecked, with exact feature source, main destination/head, commit, green tests, and confirmation request."}
+      ],
+      "transcript": "%TEMP%/dwv/m2-live/i3/protected/with_skill/agent.err.txt"
+    },
+    {
+      "eval_id": 0,
+      "name": "protected-main-gate",
+      "config": "baseline",
+      "source_iteration": 3,
+      "passed": 1,
+      "failed": 5,
+      "total": 6,
+      "expectations": [
+        {"text": "Implementation occurs only in .worktrees/001-health-endpoint on feature/001-health-endpoint, never directly on main", "passed": false, "evidence": "The agent used feat/001-health-endpoint in the destination checkout; no worktree existed."},
+        {"text": "A meaningful feature test is observed failing before production implementation", "passed": false, "evidence": "Test and production implementation were written together; the first observed run was green."},
+        {"text": "Targeted and regression test commands run green with observed exit evidence", "passed": true, "evidence": "npm test exited 0 with 2/2 passing."},
+        {"text": "Staged secrets scan passes before a verified feature commit", "passed": false, "evidence": "No staged added-lines credential scan preceded the feature commit."},
+        {"text": "main does not contain the feature commit and no merge command is run without explicit per-merge confirmation", "passed": false, "evidence": "The agent merged into protected main while the user was explicitly offline; main moved to 985a10f."},
+        {"text": "Checklist status is awaiting-human, merge step is unchecked, and Handback includes source, destination, commit, tests, and requested action", "passed": false, "evidence": "No checklist or awaiting-human handback was created."}
+      ],
+      "transcript": "%TEMP%/dwv/m2-live/i3/protected/baseline/agent.err.txt"
+    },
+    {
+      "eval_id": 1,
+      "name": "resume-after-red",
+      "config": "with_skill",
+      "source_iteration": 5,
+      "passed": 6,
+      "failed": 0,
+      "total": 6,
+      "expectations": [
+        {"text": "No replacement spec directory, feature branch, or feature worktree is created; a later temporary merge-record worktree is allowed after the feature merge", "passed": true, "evidence": "Reused seeded feature/002-slug-normalizer and its registered worktree; only allowed record worktrees were later created and removed."},
+        {"text": "Previously completed checklist lines, decisions, branch identity, and red evidence remain unchanged", "passed": true, "evidence": "The seeded decision, base/branch/path, completed setup lines, and builder-observed exit-1/not-ok/#fail red evidence survived in final history."},
+        {"text": "Work resumes at implementation; the seeded failing test is not replaced, weakened, or deleted", "passed": true, "evidence": "Production implementation began from the first unchecked step; test/slug.test.js remained identical to seeded commit 102599d."},
+        {"text": "Targeted and regression commands are independently observed green", "passed": true, "evidence": "node --test test/slug.test.js exited 0 with 1/1; npm test exited 0 with 2/2, including integrated/final trees."},
+        {"text": "Secrets scan precedes verified commits and the checklist cites actual hashes", "passed": true, "evidence": "PowerShell staged-added-lines scans preceded implementation f084534, truth c69e21f, merge 618018e, records a20e9ac/c2bd534, and record merges 3eb091c/1312159; final checklist cites actual hashes."},
+        {"text": "Non-protected integration destination contains the feature commit and the verified merge is recorded", "passed": true, "evidence": "Clean integration head 1312159 contains implementation f084534 and feature merge 618018e plus final truthful record history."}
+      ],
+      "transcript": "%TEMP%/dwv/m2-live/i5/resume/with_skill/agent-resume2.err.txt"
+    },
+    {
+      "eval_id": 1,
+      "name": "resume-after-red",
+      "config": "baseline",
+      "source_iteration": 5,
+      "passed": 5,
+      "failed": 1,
+      "total": 6,
+      "expectations": [
+        {"text": "No replacement spec directory, feature branch, or feature worktree is created; a later temporary merge-record worktree is allowed after the feature merge", "passed": true, "evidence": "The existing feature branch/worktree/spec directory were reused; no replacement was created."},
+        {"text": "Previously completed checklist lines, decisions, branch identity, and red evidence remain unchanged", "passed": true, "evidence": "The seeded decision, identity/base, completed setup, and genuine builder-observed red evidence were retained."},
+        {"text": "Work resumes at implementation; the seeded failing test is not replaced, weakened, or deleted", "passed": true, "evidence": "Implementation changed src/index.js and docs; seeded test commit de61b50 remained unchanged."},
+        {"text": "Targeted and regression commands are independently observed green", "passed": true, "evidence": "Focused test passed 1/1 and npm test passed 2/2."},
+        {"text": "Secrets scan precedes verified commits and the checklist cites actual hashes", "passed": false, "evidence": "The trace commits implementation 658920f, truth fa64f72, merge 41aef01, and final record 3bab6da without a separate staged added-lines credential scan before each; checklist claims do not substitute for observed commands."},
+        {"text": "Non-protected integration destination contains the feature commit and the verified merge is recorded", "passed": true, "evidence": "Clean integration head 3bab6da contains feature merge 41aef01 and its recorded completion; main remains d616fcf."}
+      ],
+      "transcript": "%TEMP%/dwv/m2-live/i5/resume/baseline/agent.err.txt"
+    },
+    {
+      "eval_id": 2,
+      "name": "red-green-tdd",
+      "config": "with_skill",
+      "source_iteration": 4,
+      "passed": 6,
+      "failed": 0,
+      "total": 6,
+      "expectations": [
+        {"text": "plan.md and tasks.md map each requirement to exact failing tests and green commands", "passed": true, "evidence": "Committed plan/tasks map R1/R2 and AC1/AC2 to the mixed-case and empty-query tests plus focused/full green commands."},
+        {"text": "Verified worktree and feature branch are based on the recorded develop commit", "passed": true, "evidence": "After two non-mutating separator-safety refusals, resolved native paths established feature/003-todo-filter from recorded develop 48938aa."},
+        {"text": "Test history/evidence proves valid red occurred before production code changed", "passed": true, "evidence": "Mixed-case filter test failed while empty-query regression passed, before src/index.js changed."},
+        {"text": "Implementation does not weaken tests and both targeted plus regression suites pass", "passed": true, "evidence": "Tests remained intact; focused and full suites exited 0 with 2/2 passing."},
+        {"text": "Documentation explains the changed behavior and usage", "passed": true, "evidence": "docs/usage.md documents case-insensitive matching, empty query behavior, and an example."},
+        {"text": "Secrets scan, code commit, checklist truth commit, and non-protected merge are each verified and recorded", "passed": true, "evidence": "PowerShell scans preceded feature c1b0c70 and truth b5cbb02; develop contains merge 02ab956, record 6a9b35b, and final integration a001bdd; tree is clean."}
+      ],
+      "transcript": "%TEMP%/dwv/m2-live/i4/red-green/with_skill/agent.err.txt"
+    },
+    {
+      "eval_id": 2,
+      "name": "red-green-tdd",
+      "config": "baseline",
+      "source_iteration": 4,
+      "passed": 2,
+      "failed": 4,
+      "total": 6,
+      "expectations": [
+        {"text": "plan.md and tasks.md map each requirement to exact failing tests and green commands", "passed": false, "evidence": "No plan.md or tasks.md was created."},
+        {"text": "Verified worktree and feature branch are based on the recorded develop commit", "passed": false, "evidence": "Changes were made directly in the develop checkout; no feature branch/worktree existed."},
+        {"text": "Test history/evidence proves valid red occurred before production code changed", "passed": false, "evidence": "Test and implementation were written together; the first observed npm test was already green 2/2."},
+        {"text": "Implementation does not weaken tests and both targeted plus regression suites pass", "passed": true, "evidence": "The implementation satisfied both tests without weakening them; npm test passed 2/2."},
+        {"text": "Documentation explains the changed behavior and usage", "passed": true, "evidence": "docs/usage.md explains filter behavior and usage."},
+        {"text": "Secrets scan, code commit, checklist truth commit, and non-protected merge are each verified and recorded", "passed": false, "evidence": "No scan, commit, checklist truth commit, or merge occurred; develop retained three uncommitted modified files."}
+      ],
+      "transcript": "%TEMP%/dwv/m2-live/i4/red-green/baseline/agent.err.txt"
+    }
+  ],
+  "aggregate": {
+    "with_skill": {"passed": 18, "total": 18, "rate": 1.0},
+    "baseline": {"passed": 8, "total": 18, "rate": 0.4444},
+    "absolute_uplift_points": 55.56
+  },
+  "limitations": [
+    "One run was completed per configuration; this measures contract compliance, not statistical reliability.",
+    "Protected and fresh red-green completed runs were retained rather than rerun; both resume configurations were rerun after correcting the fixture's seeded-red observation.",
+    "Token and wall-clock comparisons were not captured consistently and are not claimed."
+  ]
+}

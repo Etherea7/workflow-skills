@@ -1,6 +1,8 @@
 #!/usr/bin/env node
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
+import { tmpdir } from "node:os";
+import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -26,6 +28,7 @@ check(skill.includes("secrets scan **again before its separate commit**"), "scan
 check(loop.includes("hand back immediately") && loop.includes("permission to loop"), "repeated failure termination missing");
 check(mergeFlat.includes("proposed merged tree") && mergeFlat.includes("run every required targeted/regression/build gate"), "integrated-tree test gate missing");
 check(mergeFlat.includes("disposable non-protected branch/worktree") && mergeFlat.includes("never run a merge command in the protected checkout before confirmation"), "protected pre-confirmation verification isolation missing");
+check(skill.includes("git merge --no-ff --no-commit <source>") && merge.includes("`--no-commit` alone is forbidden"), "non-fast-forward no-commit merge invariant missing");
 check(merge.includes("short-lived branch/worktree") && merge.includes("second explicit confirmation"), "post-merge truth persistence missing");
 check(merge.includes("If Bash is unavailable") && merge.includes("If no equivalent scan can execute"), "portable secrets-scan fallback missing");
 check(/Sonnet-class or stronger/.test(rules) && /Haiku-class/.test(rules), "empirical Claude model routing missing");
@@ -38,6 +41,37 @@ for (const file of [
   "skills/new-feature/assets/tasks-template.md",
   "skills/new-feature/assets/checklist-template.md"
 ]) check(existsSync(join(root, file)), `missing vendored runtime file: ${file}`);
+
+// Mechanical regression: a descendant feature would normally fast-forward.
+// The mandated command must leave HEAD unchanged with a staged diff and an
+// abortable merge state until validation finishes.
+let mergeInvariant = false;
+const mergeRepo = mkdtempSync(join(tmpdir(), "dwv-merge-contract-"));
+try {
+  const git = (args) => spawnSync("git", args, {
+    cwd: mergeRepo, encoding: "utf8",
+    env: { ...process.env, GIT_AUTHOR_NAME: "Contract Test", GIT_AUTHOR_EMAIL: "contract@example.invalid", GIT_COMMITTER_NAME: "Contract Test", GIT_COMMITTER_EMAIL: "contract@example.invalid" }
+  });
+  writeFileSync(join(mergeRepo, "base.txt"), "base\n", "utf8");
+  git(["init", "-q", "-b", "main"]);
+  git(["add", "base.txt"]); git(["commit", "-q", "-m", "base"]);
+  git(["checkout", "-q", "-b", "feature/test"]);
+  writeFileSync(join(mergeRepo, "feature.txt"), "feature\n", "utf8");
+  git(["add", "feature.txt"]); git(["commit", "-q", "-m", "feature"]);
+  git(["checkout", "-q", "main"]);
+  const before = git(["rev-parse", "HEAD"]).stdout.trim();
+  const proposed = git(["merge", "--no-ff", "--no-commit", "feature/test"]);
+  const during = git(["rev-parse", "HEAD"]).stdout.trim();
+  const staged = git(["diff", "--cached", "--name-only"]).stdout.trim();
+  const mergeHead = git(["rev-parse", "-q", "--verify", "MERGE_HEAD"]);
+  const aborted = git(["merge", "--abort"]);
+  const after = git(["rev-parse", "HEAD"]).stdout.trim();
+  mergeInvariant = proposed.status === 0 && before === during && before === after
+    && staged === "feature.txt" && mergeHead.status === 0 && aborted.status === 0;
+} finally {
+  rmSync(mergeRepo, { recursive: true, force: true });
+}
+check(mergeInvariant, "--no-ff --no-commit must hold HEAD, stage the merge, and remain abortable");
 
 if (errors.length) {
   for (const error of errors) console.error(`FAIL: ${error}`);

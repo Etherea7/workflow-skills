@@ -26,6 +26,9 @@ function run(args, cwd = dest) {
   }
   return result.stdout.trim();
 }
+function runNode(args, cwd = dest) {
+  return spawnSync(process.execPath, args, { cwd, encoding: "utf8" });
+}
 function put(path, text, root = dest) {
   const full = join(root, path);
   mkdirSync(dirname(full), { recursive: true });
@@ -155,7 +158,7 @@ status: in-progress
 - [x] Validate ready spec and gather context (evidence: spec R1/AC1 reviewed)
 - [x] Create/verify isolated worktree and feature branch (evidence: seeded by fixture)
 - [x] Write plan.md and test-mapped tasks.md inside the worktree (evidence: artifact paths)
-- [x] Observe valid failing tests before implementation (evidence: \`node --test test/slug.test.js\` → 1 assertion failed: expected hello-world)
+- [x] Observe valid failing tests before implementation (evidence: {{red-evidence}})
 - [ ] Implement through bounded red-green loop
 - [ ] Update docs and run final validation
 - [ ] Secrets-check, commit, verify hash, and persist checklist truth
@@ -168,14 +171,22 @@ status: in-progress
   const base = run(["rev-parse", "integration"]);
   const worktree = join(dest, ".worktrees", "002-slug-normalizer");
   run(["worktree", "add", "-b", "feature/002-slug-normalizer", worktree, "integration"]);
-  const checklist = join(worktree, "specs", "002-slug-normalizer", "checklist.md");
-  const seeded = (await import("node:fs")).readFileSync(checklist, "utf8").replace("{{filled-by-builder}}", base);
-  writeFileSync(checklist, seeded, "utf8");
   put("test/slug.test.js", `import test from "node:test";
 import assert from "node:assert/strict";
 import { normalizeSlug } from "../src/index.js";
 test("normalizes words into a slug", () => assert.equal(normalizeSlug("  Hello   World "), "hello-world"));
 `, worktree);
+  const red = runNode(["--test", "test/slug.test.js"], worktree);
+  const redOutput = `${red.stdout}${red.stderr}`;
+  if (red.status !== 1 || !/not ok 1 - normalizes words into a slug/.test(redOutput) || !/# fail 1/.test(redOutput)) {
+    console.error(`seeded red test did not produce the required failure\n${redOutput}`);
+    process.exit(1);
+  }
+  const checklist = join(worktree, "specs", "002-slug-normalizer", "checklist.md");
+  const seeded = (await import("node:fs")).readFileSync(checklist, "utf8")
+    .replace("{{filled-by-builder}}", base)
+    .replace("{{red-evidence}}", "`node --test test/slug.test.js` observed exit 1, `not ok 1 - normalizes words into a slug`, and `# fail 1`");
+  writeFileSync(checklist, seeded, "utf8");
   run(["add", "specs/002-slug-normalizer/checklist.md", "test/slug.test.js"], worktree);
   run(["commit", "-m", "test(slug): establish failing normalization case"], worktree);
   console.log(JSON.stringify({ case: caseName, config, workdir: worktree, repo: dest, destination: "integration", initialDestination: base, seededFeature: run(["rev-parse", "HEAD"], worktree) }));

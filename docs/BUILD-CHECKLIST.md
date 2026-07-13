@@ -150,11 +150,14 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       → Valid skill; `node evals/new-feature/contract-test.mjs` → 21/21;
       model routing encoded in `rules/AGENTS.md`; vendored scripts byte-identical)
 - [ ] Evals: triggers; refuses protected-branch merge without confirmation; resumes from checklist
-      (partial evidence 2026-07-12: `evals/new-feature/live-results-i3.{json,md}`;
-      protected with-skill 6/6 vs baseline 1/6; resume with-skill 6/6. Resume
-      baseline was rejected before execution by Codex CLI usage limit; fresh
-      red→green and live triggers not run. Retry after 2026-07-13 03:25 local;
-      do not aggregate or close this item until all missing configurations run.)
+      (behavior evidence complete 2026-07-13: `evals/new-feature/live-results-i4.{json,md}`
+      contains per-assertion evidence for all six configurations, 18/18 with skill
+      vs 8/18 baseline. Corrected resume fixture now executes and verifies its
+      seeded red; clean i5 resume reruns are 6/6 vs 5/6. Codex gate round 1 found
+      and regression-covered `--no-ff --no-commit`, fixture-history, trigger
+      attribution/invalid-run, threshold, holdout, and durability issues.
+      Trigger calibration+frozen holdout rerun remains blocked until Claude
+      session reset at 2026-07-13 15:00 Asia/Singapore. Keep unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M3 `debug`
