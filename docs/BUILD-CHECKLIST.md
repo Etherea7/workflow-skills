@@ -239,9 +239,28 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
 
 ## Phase 2 — M5 `project-setup`
 
-- [ ] Skeleton → body (requirements → constitution/spec/stack → scaffold → dev-loop verification → initial commit)
-- [ ] Generates project-scope AGENTS.md/CLAUDE.md from templates
+- [x] Skeleton → body (requirements → constitution/spec/stack → scaffold → dev-loop verification → initial commit)
+      (provisional isolated implementation on `codex/m5-project-setup`:
+      official skill validators PASS; deterministic contract 74/74; target
+      safety, `setup/000-bootstrap`, bounded dev-loop, scan-before-commit,
+      separate truth commit, and exact protected-default-branch gate encoded;
+      independent round-2 APPROVE; reviewed implementation commit `0131ee1`)
+- [x] Generates project-scope AGENTS.md/CLAUDE.md from templates
+      (plus constitution, complete `specs/000-bootstrap/` memory, and INDEX;
+      generated fixture structural check PASS with no unresolved markers;
+      CLAUDE first effective line is `@AGENTS.md`)
 - [ ] Evals: triggers; refuses to commit before dev loop verified
+      (partial deterministic evidence 2026-07-14 after review-driven rerun:
+      scaffold 10/10 valid red→green with distinct run/probe; commit gate 30/30
+      with forged Tests-N/A and existing-HEAD refusal plus real staged scan;
+      simulated drop/resume 33/33 preserves prior truth and executes only the
+      outstanding Readiness gate; completion-state consistency 5/5. Round 1
+      REQUEST CHANGES invalidated the earlier 65/7/12 evidence; all eight
+      findings plus three round-2 consistency findings were fixed and focused
+      round 2 returned APPROVE for deterministic M5. 15 calibration + 6 frozen
+      holdout queries and three behavior cases are definitions only. Live
+      trigger and paired behavior runs remain required; no uplift claim. Keep
+      unchecked.)
 - [ ] GATE: human validates
 
 ## Phase 2 — M6 Release
@@ -278,6 +297,11 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
   evidence is byte-exact everywhere) + CRLF normalization in the M4 read helper.
   Rule for future suites: contract tests must be line-ending-agnostic; hash-verified
   artifacts must carry `-text`.
+- 2026-07-14 M5 WINDOWS NPM SHIM FINDING: `spawnSync("npm", ..., shell:false)`
+  and `npm.cmd` were not executable directly in this Windows environment. The
+  deterministic harness now uses fixed argv through `cmd.exe` on Windows and
+  direct `npm` argv elsewhere; no user-controlled command string is composed.
+  Both scaffold and commit-gate suites pass after the repair.
 
 ## Handback
 
@@ -298,4 +322,9 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
   then likely a description iteration + rerun given the persistent
   under-recall pattern; (b) shared-harness trigger runs for debug and
   next-step-improve; (c) scan-sensitive live behavior reruns for M2/M3 after
-  the scanner repair; (d) human gates. Then M5 `project-setup`.
+  the scanner repair; (d) human gates. Human authorized starting isolated M5
+  despite those independent open gates. M5 implementation and deterministic
+  tests are committed on `codex/m5-project-setup` at `0131ee1` with independent
+  deterministic review APPROVE; see the collaboration ledger for exact
+  evidence. Do not merge or claim M5's gate before live evals and explicit
+  human approval.
