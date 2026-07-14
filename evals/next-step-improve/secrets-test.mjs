@@ -46,7 +46,12 @@ try {
   const syntheticCredential = "AKIA" + "A".repeat(16);
   writeFileSync(join(scratch, "unsafe.txt"), `${syntheticCredential}\n`, "utf8");
   git("add", "unsafe.txt");
-  const brokenFilter = scan({ GREP_OPTIONS: "--definitely-invalid" });
+  // Simulate a pattern-engine failure by shadowing grep with an exported bash
+  // function that always exits 2. GREP_OPTIONS is not portable (grep 3.0 on
+  // Git Bash honors it and errors; newer GNU grep ignores it), and a PATH
+  // shim is not portable either (MSYS bash prepends /usr/bin ahead of any
+  // inherited PATH). A function shadows the PATH lookup on both platforms.
+  const brokenFilter = scan({ "BASH_FUNC_grep%%": "() { return 2; }" });
   check(brokenFilter.status === 2 && brokenFilter.stderr.includes("pattern matching failed; refusing to pass"), "pattern-filter failure did not fail closed");
   const detected = scan();
   check(detected.status === 1 && detected.stderr.includes("POTENTIAL SECRETS"), "matching staged addition was not rejected");
