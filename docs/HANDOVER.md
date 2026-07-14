@@ -77,7 +77,9 @@ delegations and simple runs: haiku. **This finding must be encoded into
 - Bash-heredoc Python with `C:\Users\...` literals dies on `\U` escapes —
   write scripts with the Write tool or build paths without backslash literals.
 - `select.select()` on pipes is POSIX-only → skill-creator's `run_eval.py`
-  returns silent zeros. Use the vendored `evals/plan/trigger-harness.py`.
+  returns silent zeros. Use the shared `evals/lib/trigger_harness.py` engine
+  via each skill's `evals/<dir>/run-triggers.py` (the former per-skill
+  `trigger-harness.py` files are retired).
 - `tempfile.TemporaryDirectory` cleanup can RecursionError on Windows file
   locks — use manual scratch dirs, cleanup at the end with `ignore_errors`.
 - Python `open()` defaults to cp1252 → mojibake. Run pipeline scripts with
@@ -145,5 +147,6 @@ JSONs, static viewers (`plan-eval-review-i{1..4}.html`), Codex review round
 texts (`codex-m1-followup.txt`, `codex-m1-round{3,4,5}.txt`), archived haiku
 attempts. Everything gate-relevant is summarized with evidence in
 BUILD-CHECKLIST; committed keepers are `evals/plan/trigger-results.{json,md}`
-and `evals/plan/trigger-harness.py`. If dwv is gone, regenerate by rerunning
+and the shared `evals/lib/trigger_harness.py` engine (run via
+`evals/plan/run-triggers.py`). If dwv is gone, regenerate by rerunning
 evals — the process section above is the recipe.
