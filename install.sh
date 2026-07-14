@@ -1,19 +1,6 @@
 #!/usr/bin/env bash
-# Installs the dev-workflows suite at user scope for Claude Code and Codex.
-#
-#   ./install.sh              install or update (idempotent)
-#   ./install.sh --uninstall  remove everything this script installed
-#
-# What it does (copies only — never symlinks, for Windows compatibility):
-#   skills/*         -> ~/.claude/skills/  and  ~/.agents/skills/
-#   rules/AGENTS.md  -> managed block in ~/.codex/AGENTS.md (user content preserved)
-#   rules/*          -> ~/.claude/rules/dev-workflows.md (whole file is ours)
-#
-# Skills-only alternative: `npx skills add <this-repo> -a claude-code -a codex`
-# (the ecosystem installer does not handle the rules files — this script does).
-#
-# Target overrides, for testing: CLAUDE_SKILLS_DIR, AGENTS_SKILLS_DIR,
-# CLAUDE_RULES_DIR, CODEX_AGENTS_FILE.
+# Install or remove the dev-workflows suite for Claude Code and Codex.
+# Copies are staged and swapped atomically; ownership is proven from SKILL.md.
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -23,79 +10,210 @@ CLAUDE_RULES="${CLAUDE_RULES_DIR:-$HOME/.claude/rules}"
 CODEX_AGENTS="${CODEX_AGENTS_FILE:-$HOME/.codex/AGENTS.md}"
 MARK_BEGIN="<!-- dev-workflows:begin (managed by install.sh - do not edit inside) -->"
 MARK_END="<!-- dev-workflows:end -->"
+CLAUDE_OWNER="<!-- dev-workflows:rules-owned v1 -->"
 RULES_FILE_NAME="dev-workflows.md"
+CURRENT_SKILLS=(wf-debug wf-feature wf-improve wf-plan wf-setup)
+LEGACY_SKILLS=(debug new-feature next-step-improve plan project-setup)
+STAGE_DIRS=()
+SWAPPED_LIVE=()
+SWAPPED_BACKUP=()
 
-skill_names() {
-  [ -d "$REPO_DIR/skills" ] || return 0
-  local d
-  for d in "$REPO_DIR"/skills/*/; do
-    [ -f "${d}SKILL.md" ] && basename "$d"
+warn() { printf 'warning: %s\n' "$*" >&2; }
+
+is_managed_skill() {
+  local file="$1/SKILL.md"
+  [ -f "$file" ] || return 1
+  awk '
+    { sub(/\r$/, "", $0) }
+    NR == 1 { if ($0 != "---") exit 1; fm=1; next }
+    fm && $0 == "---" { closed=1; exit owned ? 0 : 1 }
+    fm {
+      if ($0 ~ /^metadata:[[:space:]]*$/) { metadata=1; next }
+      if ($0 ~ /^[^[:space:]][^:]*:/) metadata=0
+      if (metadata && $0 ~ /^  suite:[[:space:]]*dev-workflows[[:space:]]*$/) owned=1
+    }
+    END { if (!closed) exit 1 }
+  ' "$file"
+}
+
+is_owned_claude_rules() {
+  [ -f "$1" ] && IFS= read -r first < "$1" && [ "$first" = "$CLAUDE_OWNER" ]
+}
+
+strip_block_to() {
+  local source="$1" destination="$2"
+  if [ ! -f "$source" ]; then : > "$destination"; return; fi
+  awk -v b="$MARK_BEGIN" -v e="$MARK_END" '
+    $0 == b { skip=1; next }
+    $0 == e { skip=0; next }
+    !skip { print }
+  ' "$source" > "$destination"
+}
+
+claude_overrides() { grep -v '^@AGENTS\.md[[:space:]]*$' "$REPO_DIR/rules/CLAUDE.md"; }
+
+preflight_install() {
+  local root name path rules_file="$CLAUDE_RULES/$RULES_FILE_NAME"
+  for root in "$CLAUDE_SKILLS" "$AGENTS_SKILLS"; do
+    for name in "${CURRENT_SKILLS[@]}"; do
+      path="$root/$name"
+      if [ -e "$path" ] && ! is_managed_skill "$path"; then
+        echo "install: refusing to replace unowned skill: $path" >&2
+        return 1
+      fi
+    done
+  done
+  if [ -e "$rules_file" ] && ! is_owned_claude_rules "$rules_file"; then
+    echo "install: refusing to replace unowned rules file: $rules_file" >&2
+    return 1
+  fi
+}
+
+cleanup_staging() {
+  local path
+  for path in "${STAGE_DIRS[@]}"; do rm -rf -- "$path"; done
+  STAGE_DIRS=()
+}
+
+rollback() {
+  local i live backup
+  set +e
+  for ((i=${#SWAPPED_LIVE[@]}-1; i>=0; i--)); do
+    live="${SWAPPED_LIVE[$i]}"; backup="${SWAPPED_BACKUP[$i]}"
+    rm -rf -- "$live"
+    if [ -e "$backup" ]; then mv -- "$backup" "$live"; fi
+  done
+  cleanup_staging
+  set -e
+}
+
+fail_install() {
+  local message="$1"
+  rollback
+  echo "install: $message; rolled back all changes" >&2
+  exit 1
+}
+
+maybe_fail() {
+  local point="$1"
+  if [ "${DEV_WORKFLOWS_INSTALL_TESTING:-0}" = "1" ] &&
+     [ "${DEV_WORKFLOWS_INSTALL_FAIL_POINT:-}" = "$point" ]; then
+    return 1
+  fi
+}
+
+stage_skills() {
+  local root stage name source staged
+  for root in "$CLAUDE_SKILLS" "$AGENTS_SKILLS"; do
+    mkdir -p "$root"
+    stage="$root/.dev-workflows-stage-$$"
+    rm -rf -- "$stage"
+    mkdir -p "$stage"
+    STAGE_DIRS+=("$stage")
+    for name in "${CURRENT_SKILLS[@]}"; do
+      source="$REPO_DIR/skills/$name"; staged="$stage/$name"
+      cp -R -- "$source" "$staged" || return 1
+      is_managed_skill "$staged" || return 1
+      grep -q "^name: $name$" "$staged/SKILL.md" || return 1
+    done
   done
 }
 
-strip_block() { # remove the managed block from a file, if present
-  local file="$1"
-  [ -f "$file" ] || return 0
-  awk -v b="$MARK_BEGIN" -v e="$MARK_END" '
-    $0 == b {skip=1; next}
-    $0 == e {skip=0; next}
-    !skip {print}' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
-}
-
-claude_overrides() { # rules/CLAUDE.md minus its @AGENTS.md import line
-  grep -v '^@AGENTS\.md[[:space:]]*$' "$REPO_DIR/rules/CLAUDE.md"
-}
-
-do_install() {
-  local names name target installed=0
-  names="$(skill_names)"
-  mkdir -p "$CLAUDE_SKILLS" "$AGENTS_SKILLS" "$CLAUDE_RULES" "$(dirname "$CODEX_AGENTS")"
-
-  # Skills -> both hosts (replace same-name copies wholesale)
-  if [ -n "$names" ]; then
-    while IFS= read -r name; do
-      [ -z "$name" ] && continue
-      for target in "$CLAUDE_SKILLS" "$AGENTS_SKILLS"; do
-        rm -rf "${target:?}/$name"
-        cp -R "$REPO_DIR/skills/$name" "$target/$name"
-      done
-      installed=$((installed + 1))
-    done <<< "$names"
-  fi
-  echo "skills:  $installed installed -> $CLAUDE_SKILLS , $AGENTS_SKILLS"
-
-  # Rules -> Claude Code user-level rules (file is wholly managed by us)
+stage_rules() {
+  local claude_stage codex_stage
+  mkdir -p "$CLAUDE_RULES" "$(dirname "$CODEX_AGENTS")"
+  claude_stage="$CLAUDE_RULES/.dev-workflows-rules-stage-$$"
+  codex_stage="$(dirname "$CODEX_AGENTS")/.dev-workflows-agents-stage-$$"
+  STAGE_DIRS+=("$claude_stage" "$codex_stage")
   {
-    echo "<!-- Installed by dev-workflows install.sh. Do not edit here:"
-    echo "     edit the repo copy and re-run install.sh. -->"
+    echo "$CLAUDE_OWNER"
+    echo "<!-- Generated by install.sh; edit the repository copy and reinstall. -->"
     echo
     cat "$REPO_DIR/rules/AGENTS.md"
     echo
     claude_overrides
-  } > "$CLAUDE_RULES/$RULES_FILE_NAME"
-  echo "rules:   wrote $CLAUDE_RULES/$RULES_FILE_NAME"
-
-  # Rules -> Codex global AGENTS.md (managed block; user's own content preserved)
-  touch "$CODEX_AGENTS"
-  strip_block "$CODEX_AGENTS"
+  } > "$claude_stage"
+  strip_block_to "$CODEX_AGENTS" "$codex_stage"
   {
     echo "$MARK_BEGIN"
     cat "$REPO_DIR/rules/AGENTS.md"
     echo "$MARK_END"
-  } >> "$CODEX_AGENTS"
-  echo "rules:   refreshed managed block in $CODEX_AGENTS"
-  echo "install: done (re-run any time; it replaces what it previously installed)"
+  } >> "$codex_stage"
+}
+
+swap_path() {
+  local live="$1" staged="$2" backup="$3"
+  rm -rf -- "$backup"
+  if [ -e "$live" ]; then mv -- "$live" "$backup" || return 1; fi
+  SWAPPED_LIVE+=("$live"); SWAPPED_BACKUP+=("$backup")
+  mv -- "$staged" "$live" || return 1
+}
+
+remove_owned_legacy() {
+  local root name path
+  for root in "$CLAUDE_SKILLS" "$AGENTS_SKILLS"; do
+    for name in "${LEGACY_SKILLS[@]}"; do
+      path="$root/$name"
+      [ -e "$path" ] || continue
+      if is_managed_skill "$path"; then
+        rm -rf -- "$path"
+      else
+        warn "preserving unowned legacy skill: $path"
+      fi
+    done
+  done
+}
+
+do_install() {
+  local root stage name live backup swaps=0 rules_file="$CLAUDE_RULES/$RULES_FILE_NAME"
+  preflight_install
+  stage_skills || fail_install "skill staging or validation failed"
+  stage_rules || fail_install "rules staging failed"
+
+  for root in "$CLAUDE_SKILLS" "$AGENTS_SKILLS"; do
+    stage="$root/.dev-workflows-stage-$$"
+    for name in "${CURRENT_SKILLS[@]}"; do
+      live="$root/$name"; backup="$root/.dev-workflows-backup-$$-$name"
+      swap_path "$live" "$stage/$name" "$backup" || fail_install "skill swap failed at $live"
+      swaps=$((swaps + 1))
+      if [ "$swaps" -eq 1 ] && ! maybe_fail after-first-skill-swap; then
+        fail_install "injected failure after first skill swap"
+      fi
+    done
+  done
+
+  swap_path "$rules_file" "$CLAUDE_RULES/.dev-workflows-rules-stage-$$" "$CLAUDE_RULES/.dev-workflows-rules-backup-$$" ||
+    fail_install "Claude rules swap failed"
+  swap_path "$CODEX_AGENTS" "$(dirname "$CODEX_AGENTS")/.dev-workflows-agents-stage-$$" "$(dirname "$CODEX_AGENTS")/.dev-workflows-agents-backup-$$" ||
+    fail_install "Codex rules swap failed"
+
+  remove_owned_legacy
+  cleanup_staging
+  local path
+  for path in "${SWAPPED_BACKUP[@]}"; do rm -rf -- "$path"; done
+  echo "skills:  5 installed -> $CLAUDE_SKILLS , $AGENTS_SKILLS"
+  echo "rules:   refreshed $rules_file and managed block in $CODEX_AGENTS"
+  echo "install: done"
 }
 
 do_uninstall() {
-  local name
-  while IFS= read -r name; do
-    [ -z "$name" ] && continue
-    rm -rf "${CLAUDE_SKILLS:?}/$name" "${AGENTS_SKILLS:?}/$name"
-  done <<< "$(skill_names)"
-  rm -f "$CLAUDE_RULES/$RULES_FILE_NAME"
-  strip_block "$CODEX_AGENTS"
-  echo "uninstall: skills, rules file, and managed block removed"
+  local root name path rules_file="$CLAUDE_RULES/$RULES_FILE_NAME" tmp
+  for root in "$CLAUDE_SKILLS" "$AGENTS_SKILLS"; do
+    for name in "${CURRENT_SKILLS[@]}" "${LEGACY_SKILLS[@]}"; do
+      path="$root/$name"
+      [ -e "$path" ] || continue
+      if is_managed_skill "$path"; then rm -rf -- "$path"; else warn "preserving unowned skill: $path"; fi
+    done
+  done
+  if [ -e "$rules_file" ]; then
+    if is_owned_claude_rules "$rules_file"; then rm -f -- "$rules_file"; else warn "preserving unowned rules file: $rules_file"; fi
+  fi
+  if [ -f "$CODEX_AGENTS" ]; then
+    tmp="$CODEX_AGENTS.dev-workflows-uninstall-$$"
+    strip_block_to "$CODEX_AGENTS" "$tmp"
+    mv -- "$tmp" "$CODEX_AGENTS"
+  fi
+  echo "uninstall: removed owned skills and rules; preserved user content"
 }
 
 case "${1:-}" in

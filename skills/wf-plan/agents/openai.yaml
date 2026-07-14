@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plan"
+  short_description: "Clarify requirements into a testable spec"
+  default_prompt: "Use $wf-plan to clarify these software requirements into a testable specification."

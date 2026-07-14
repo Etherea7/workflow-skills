@@ -15,7 +15,7 @@ this repo (source of truth)
 │     rules/    ──►  ~/.claude/rules/dev-workflows.md        (whole file, ours)
 │                ──►  ~/.codex/AGENTS.md   managed block      (user text preserved)
 │
-└── project-setup skill ──► project scope (per target project, generated)
+└── wf-setup skill ──► project scope (per target project, generated)
       templates/project-AGENTS.md ──► <project>/AGENTS.md
       templates/project-CLAUDE.md ──► <project>/CLAUDE.md   (thin @AGENTS.md import)
       templates/constitution.md   ──► <project>/docs/CONSTITUTION.md
@@ -59,14 +59,14 @@ read checklist (resume) → gather/clarify → gain context → plan
 ## Composition
 
 ```
-next-step-improve ──chooses work──► new-feature ──ambiguity──► plan
-project-setup ────requirements────► plan                        │
-debug ─────────────ambiguity──────► plan ◄──────────────────────┘
+wf-improve ──chooses work──► wf-feature ──ambiguity──► wf-plan
+wf-setup ────requirements────► wf-plan                        │
+wf-debug ─────────────ambiguity──────► wf-plan ◄──────────────────────┘
 ```
 
-`plan` is the shared clarification subroutine; it emits `spec.md` (requirements
+`wf-plan` is the shared clarification subroutine; it emits `spec.md` (requirements
 as testable statements) + `checklist.md`, and runs a consistency pass before
-handing off. `next-step-improve` owns `specs/INDEX.md` (always regenerated from
+handing off. `wf-improve` owns `specs/INDEX.md` (always regenerated from
 directory truth, never hand-edited).
 
 ## Delegation
@@ -84,7 +84,7 @@ selection, merge decisions, user dialogue) is never delegated.
 `rules/AGENTS.md` is canonical: workflow map, guardrails, Delegation Protocol,
 per-host mechanics. `rules/CLAUDE.md` is `@AGENTS.md` + Claude-only overrides.
 At user scope the installer materializes both (see Layers); at project scope
-`project-setup` generates the project pair from templates. Single source, no
+`wf-setup` generates the project pair from templates. Single source, no
 drift: installed copies are regenerated, never hand-edited.
 
 ## Artifacts (in target projects)
@@ -92,7 +92,7 @@ drift: installed copies are regenerated, never hand-edited.
 ```
 specs/
 ├── INDEX.md          generated manifest (status, links, attention-needed)
-├── 000-bootstrap/    created by project-setup
+├── 000-bootstrap/    created by wf-setup
 └── NNN-slug/
     ├── spec.md       requirements as testable statements; frontmatter links
     │                 (parent/children/related) give graph navigation
@@ -115,7 +115,7 @@ evidence presented. Never force-push; never rewrite shared history.
 - **Format gate** (`scripts/validate.mjs`, CI on every push): Agent Skills spec
   compliance, name/dir match, line limits, rules-file invariants, template set.
 - **Trigger evals** (`evals/<skill>/`): prompts that must activate the skill,
-  and negatives that must not (e.g. `plan` must not fire on "make an
+  and negatives that must not (e.g. `wf-plan` must not fire on "make an
   implementation plan for this well-specified task").
 - **Behavior evals**: scripted scenarios asserting each skill's observable
   contract — run live at each milestone gate (they need an agent), not in CI.

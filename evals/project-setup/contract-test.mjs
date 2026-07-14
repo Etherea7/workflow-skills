@@ -5,14 +5,14 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const read = (path) => readFileSync(join(root, path), "utf8").replace(/\r\n/g, "\n");
-const skill = read("skills/project-setup/SKILL.md");
+const skill = read("skills/wf-setup/SKILL.md");
 const flat = skill.replace(/\s+/g, " ");
-const safety = read("skills/project-setup/references/target-safety.md").replace(/\s+/g, " ");
-const loop = read("skills/project-setup/references/dev-loop-verification.md").replace(/\s+/g, " ");
-const persist = read("skills/project-setup/references/persistence-and-default-branch.md").replace(/\s+/g, " ");
-const checklist = read("skills/project-setup/assets/bootstrap-checklist-template.md");
-const agents = read("skills/project-setup/assets/project-AGENTS-template.md");
-const claude = read("skills/project-setup/assets/project-CLAUDE-template.md");
+const safety = read("skills/wf-setup/references/target-safety.md").replace(/\s+/g, " ");
+const loop = read("skills/wf-setup/references/dev-loop-verification.md").replace(/\s+/g, " ");
+const persist = read("skills/wf-setup/references/persistence-and-default-branch.md").replace(/\s+/g, " ");
+const checklist = read("skills/wf-setup/assets/bootstrap-checklist-template.md");
+const agents = read("skills/wf-setup/assets/project-AGENTS-template.md");
+const claude = read("skills/wf-setup/assets/project-CLAUDE-template.md");
 const triggers = JSON.parse(read("evals/project-setup/trigger-evals.json"));
 const holdout = JSON.parse(read("evals/project-setup/trigger-holdout.json"));
 const evals = JSON.parse(read("evals/project-setup/evals.json"));
@@ -31,7 +31,7 @@ check(flat.includes("setup/000-bootstrap") && flat.includes("not on `main`, `mas
 check(flat.includes("Never orphan, rename, or rewrite an existing branch"), "existing branch history safety missing");
 check(flat.includes("Refuse destructive clearing") && flat.includes("blind generator overwrite"), "destructive target guard missing");
 check(safety.includes("reparse point") && safety.includes("unrelated parent repository"), "Windows/parent target safety missing");
-check(flat.includes("Invoke `plan`") && flat.includes("Do not scaffold through ambiguity"), "plan composition missing");
+check(flat.includes("Invoke `wf-plan`") && flat.includes("Do not scaffold through ambiguity"), "plan composition missing");
 check(flat.includes("first effective line is `@AGENTS.md`") && flat.includes("shared rules belong only in `AGENTS.md`"), "thin CLAUDE contract missing");
 check(flat.includes("Never use a force/overwrite flag"), "generator collision guard missing");
 check(flat.includes("Subagent or generator claims are not verification"), "independent scaffold inspection missing");
@@ -68,22 +68,22 @@ check(checklist.includes("First-outcome red"), "checklist red evidence gate miss
 check(checklist.includes("protected-branch state") && checklist.includes("no commit permitted"), "checklist no-commit handback missing");
 
 for (const file of [
-  "skills/project-setup/agents/openai.yaml",
-  "skills/project-setup/scripts/check-bootstrap.mjs",
-  "skills/project-setup/scripts/check-commit-readiness.mjs",
-  "skills/project-setup/scripts/secrets-check.sh",
-  "skills/project-setup/references/target-safety.md",
-  "skills/project-setup/references/requirements-and-stack.md",
-  "skills/project-setup/references/dev-loop-verification.md",
-  "skills/project-setup/references/persistence-and-default-branch.md",
-  "skills/project-setup/assets/project-AGENTS-template.md",
-  "skills/project-setup/assets/project-CLAUDE-template.md",
-  "skills/project-setup/assets/constitution-template.md",
-  "skills/project-setup/assets/bootstrap-spec-template.md",
-  "skills/project-setup/assets/bootstrap-plan-template.md",
-  "skills/project-setup/assets/bootstrap-tasks-template.md",
-  "skills/project-setup/assets/bootstrap-checklist-template.md",
-  "skills/project-setup/assets/INDEX-template.md",
+  "skills/wf-setup/agents/openai.yaml",
+  "skills/wf-setup/scripts/check-bootstrap.mjs",
+  "skills/wf-setup/scripts/check-commit-readiness.mjs",
+  "skills/wf-setup/scripts/secrets-check.sh",
+  "skills/wf-setup/references/target-safety.md",
+  "skills/wf-setup/references/requirements-and-stack.md",
+  "skills/wf-setup/references/dev-loop-verification.md",
+  "skills/wf-setup/references/persistence-and-default-branch.md",
+  "skills/wf-setup/assets/project-AGENTS-template.md",
+  "skills/wf-setup/assets/project-CLAUDE-template.md",
+  "skills/wf-setup/assets/constitution-template.md",
+  "skills/wf-setup/assets/bootstrap-spec-template.md",
+  "skills/wf-setup/assets/bootstrap-plan-template.md",
+  "skills/wf-setup/assets/bootstrap-tasks-template.md",
+  "skills/wf-setup/assets/bootstrap-checklist-template.md",
+  "skills/wf-setup/assets/INDEX-template.md",
   "evals/project-setup/scaffold-test.mjs",
   "evals/project-setup/commit-gate-test.mjs",
   "evals/project-setup/resume-test.mjs",
@@ -93,11 +93,11 @@ for (const file of [
   "evals/project-setup/evals.json"
 ]) check(existsSync(join(root, file)), `missing project-setup file: ${file}`);
 
-check(read("scripts/secrets-check.sh") === read("skills/project-setup/scripts/secrets-check.sh"), "vendored secrets scanner drift");
-const readiness = read("skills/project-setup/scripts/check-commit-readiness.mjs");
+check(read("scripts/secrets-check.sh") === read("skills/wf-setup/scripts/secrets-check.sh"), "vendored secrets scanner drift");
+const readiness = read("skills/wf-setup/scripts/check-commit-readiness.mjs");
 check(readiness.includes("Tests gate can never be N/A") && readiness.includes("HEAD already exists"),
   "readiness regression guards missing");
-const structural = read("skills/project-setup/scripts/check-bootstrap.mjs");
+const structural = read("skills/wf-setup/scripts/check-bootstrap.mjs");
 check(structural.includes("bootstrap status must agree") && structural.includes("done bootstrap cannot contain unchecked items"),
   "completion status/unchecked-item consistency guards missing");
 check(persist.includes("Git-for-Windows Bash") && persist.includes("fail closed"), "Bash fallback/fail-closed scan missing");

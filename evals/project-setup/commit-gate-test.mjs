@@ -47,7 +47,7 @@ try {
   expect(red.status !== 0 && `${red.stdout}\n${red.stderr}`.includes("CLI reports readiness"), "meaningful first-outcome red missing");
   updateLine("First-outcome red", `- [x] First-outcome red: \`npm test\` — evidence: exit ${red.status}; observed ${stamp()}; output: CLI readiness test rejected missing behavior`);
 
-  const preflightPath = join(root, "skills/project-setup/scripts/check-commit-readiness.mjs");
+  const preflightPath = join(root, "skills/wf-setup/scripts/check-commit-readiness.mjs");
   const refused = run(process.execPath, [preflightPath, target]);
   expect(refused.status !== 0 && refused.stderr.includes("Tests gate is not checked"),
     "preflight did not refuse an unverified test command");
@@ -88,7 +88,7 @@ try {
   expect(staged.status === 0 && staged.stdout.includes("signal-lamp-ready"), "complete staged diff was not inspected");
   const bash = scannerShell();
   expect(Boolean(bash), "no usable Bash found for vendored scanner");
-  const scan = run(bash, [join(root, "skills/project-setup/scripts/secrets-check.sh")]);
+  const scan = run(bash, [join(root, "skills/wf-setup/scripts/secrets-check.sh")]);
   expect(scan.status === 0 && scan.stdout.includes("secrets-check: clean"), `staged secrets scan failed\n${scan.stderr}`);
 
   expect(run("git", ["commit", "-m", "chore: bootstrap verified project"]).status === 0, "verified commit failed");

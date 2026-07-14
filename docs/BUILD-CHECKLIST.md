@@ -270,9 +270,18 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
 
 ## Phase 2 — M6 Release
 
-- [ ] README complete (npx skills + install.sh + per-project story)
-- [ ] install.sh verified: both hosts list the skills on this machine
-- [ ] CI green; `skills-ref validate` passes for all five
+- [x] Public skills namespaced as `wf-plan`, `wf-feature`, `wf-debug`,
+      `wf-improve`, and `wf-setup`; legacy persisted workflow values and branch
+      prefixes remain compatible
+- [x] README reconciled with the five implemented workflows, migration table,
+      local native-package status, and rules-aware installation
+- [x] `install.sh` deterministic safety gate passes for both hosts, including
+      exact ownership, unowned collision refusal, legacy migration, and rollback
+- [x] Claude and Codex native manifests added at version `0.1.0`; both external
+      manifest validators pass
+- [x] CI definitions run structural validation, catalog routing preflight,
+      shell syntax, installer safety, and all deterministic JS/Python tests
+- [ ] Live trigger/behavior feedback and final CI run on the release candidate
 - [ ] Tag v1.0
 - [ ] GATE: final sign-off
 

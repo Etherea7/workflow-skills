@@ -6,7 +6,7 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const repo = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const script = join(repo, "skills", "next-step-improve", "scripts", "regenerate-index.mjs");
+const script = join(repo, "skills", "wf-improve", "scripts", "regenerate-index.mjs");
 const scratch = mkdtempSync(join(tmpdir(), "dwv-index-test-"));
 let checks = 0;
 const check = (condition, message) => { checks += 1; if (!condition) throw new Error(message); };

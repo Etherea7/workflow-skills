@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const target = resolve(process.argv[2] ?? join(repo, ".tmp-project-setup-fixture"));
-const assets = join(repo, "skills/project-setup/assets");
+const assets = join(repo, "skills/wf-setup/assets");
 const date = "2026-07-14";
 const replacements = {
   PROJECT_NAME: "Signal Lamp",

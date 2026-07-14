@@ -43,7 +43,7 @@ function baseProject(specDir, spec, source, regressionTest, docs) {
   put("test/regression.test.js", regressionTest);
   put("docs/usage.md", docs);
   if (config === "with-skill") {
-    cpSync(join(repoRoot, "skills", "new-feature"), join(dest, ".agents", "skills", "new-feature"), { recursive: true });
+    cpSync(join(repoRoot, "skills", "wf-feature"), join(dest, ".agents", "skills", "wf-feature"), { recursive: true });
   }
 }
 function init(branch = "main") {

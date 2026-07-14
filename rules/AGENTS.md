@@ -9,15 +9,15 @@ of the suite as a *system*; each skill carries its own full procedure.
 
 | Skill | Reach for it when | Produces |
 |---|---|---|
-| `plan` | Requirements are ambiguous or under-specified | `specs/NNN-slug/spec.md` + checklist, via interactive clarification |
-| `new-feature` | Building a described feature or change | Tested, committed code on an isolated branch; gated merge |
-| `debug` | Something is broken; a bug needs fixing | Reproduced → diagnosed → fixed → verified, committed |
-| `next-step-improve` | "What next?" / standing improvement loop | Prioritized proposals; chosen work decomposed into `new-feature` runs |
-| `project-setup` | Bootstrapping a greenfield project | Scaffolded repo with verified dev loop and initial commit |
+| `wf-plan` | Requirements are ambiguous or under-specified | `specs/NNN-slug/spec.md` + checklist, via interactive clarification |
+| `wf-feature` | Building a described feature or change | Tested, committed code on an isolated branch; gated merge |
+| `wf-debug` | Something is broken; a bug needs fixing | Reproduced → diagnosed → fixed → verified, committed |
+| `wf-improve` | "What next?" / standing improvement loop | Prioritized proposals; chosen work decomposed into `wf-feature` runs |
+| `wf-setup` | Bootstrapping a greenfield project | Scaffolded repo with verified dev loop and initial commit |
 
-They compose: `project-setup`, `new-feature`, `debug`, and `next-step-improve`
-all call `plan` when requirements are unclear. `next-step-improve` routes chosen
-work into `new-feature`. Only apply this suite to software-engineering tasks.
+They compose: `wf-setup`, `wf-feature`, `wf-debug`, and `wf-improve`
+all call `wf-plan` when requirements are unclear. `wf-improve` routes chosen
+work into `wf-feature`. Only apply this suite to software-engineering tasks.
 
 ## Core guardrails (binding for every workflow)
 
@@ -90,6 +90,6 @@ re-derive what a subagent already established.
 Per-work artifacts live in the target project at
 `specs/NNN-slug/{spec.md, plan.md, tasks.md, checklist.md}` (zero-padded NNN,
 next free number). `specs/INDEX.md` is a generated manifest maintained by
-`next-step-improve` — regenerate it from the directory contents; never
+`wf-improve` — regenerate it from the directory contents; never
 hand-edit it. Checklists are the memory layer: ticks carry evidence, decisions
 are appended (never rewritten), and `status: awaiting-human` marks a handback.

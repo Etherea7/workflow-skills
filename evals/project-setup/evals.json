@@ -1,5 +1,5 @@
 {
-  "skill": "project-setup",
+  "skill": "wf-setup",
   "methodology": "Behavior cases for future paired live runs. Deterministic contract, scaffold, and commit-gate tests are the current evidence; no model uplift claim is made.",
   "evals": [
     {

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Windows-safe live trigger eval for the new-feature skill via Claude CLI.
+"""Windows-safe live trigger eval for the wf-feature skill via Claude CLI.
 
 Installs a reversible user-scope stub carrying the real name/description. If
 Claude selects it, the body emits a unique token. Runs sequentially to avoid
@@ -13,12 +13,12 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-REPO_SKILL = REPO_ROOT / "skills" / "new-feature" / "SKILL.md"
+REPO_SKILL = REPO_ROOT / "skills" / "wf-feature" / "SKILL.md"
 EVAL_SET = REPO_ROOT / "evals" / "new-feature" / "trigger-evals.json"
 HOLDOUT_SET = REPO_ROOT / "evals" / "new-feature" / "trigger-holdout.json"
 OUT = REPO_ROOT / "evals" / "new-feature" / "trigger-results.json"
-STUB_DIR = Path.home() / ".claude" / "skills" / "new-feature"
-BACKUP_DIR = STUB_DIR.with_name("new-feature.trigger-eval-backup")
+STUB_DIR = Path.home() / ".claude" / "skills" / "wf-feature"
+BACKUP_DIR = STUB_DIR.with_name("wf-feature.trigger-eval-backup")
 SCRATCH = Path(os.environ.get("TEMP", "/tmp")) / "dwv" / "m2-triggers"
 RUNS = 2
 MODEL = os.environ.get("TRIGGER_MODEL", "sonnet")
@@ -48,7 +48,7 @@ def install_stub() -> None:
     STUB_DIR.mkdir(parents=True, exist_ok=True)
     (STUB_DIR / "SKILL.md").write_text(
         "---\n"
-        "name: new-feature\n"
+        "name: wf-feature\n"
         f"description: {real_description()}\n"
         "---\n\n"
         "# Trigger-measurement stub\n\n"
@@ -73,7 +73,7 @@ def exact_skill_call(events: list[dict]) -> bool:
                         stack.extend(item)
                     elif isinstance(item, str):
                         values.append(item.strip())
-                if any(item in {"new-feature", "/new-feature"} for item in values):
+                if any(item in {"wf-feature", "/wf-feature"} for item in values):
                     return True
             return any(walk(item) for item in value.values())
         if isinstance(value, list):

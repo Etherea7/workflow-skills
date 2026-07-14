@@ -11,7 +11,7 @@ if (!destArg || !["with-skill", "baseline"].includes(config)) {
 }
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 const baseBuilder = join(repoRoot, "evals", "next-step-improve", "fixtures", "build-fixture.mjs");
-const generator = join(repoRoot, "skills", "next-step-improve", "scripts", "regenerate-index.mjs");
+const generator = join(repoRoot, "skills", "wf-improve", "scripts", "regenerate-index.mjs");
 const scanner = join(repoRoot, "scripts", "secrets-check.sh");
 const bash = ["C:\\Program Files\\Git\\bin\\bash.exe", "/bin/bash"].find(existsSync);
 if (!bash) throw new Error("Bash is required to seed scanned resume history");

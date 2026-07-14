@@ -10,6 +10,8 @@ import { fileURLToPath } from "node:url";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const errors = [];
 const notes = [];
+const expectedSkills = ["wf-debug", "wf-feature", "wf-improve", "wf-plan", "wf-setup"];
+const legacySkills = ["debug", "new-feature", "next-step-improve", "plan", "project-setup"];
 
 function parseFrontmatter(text) {
   const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
@@ -35,7 +37,12 @@ if (!existsSync(skillsDir)) {
 } else {
   const dirs = readdirSync(skillsDir).filter((d) =>
     statSync(join(skillsDir, d)).isDirectory()
-  );
+  ).sort();
+  if (JSON.stringify(dirs) !== JSON.stringify(expectedSkills))
+    errors.push(`skills/: expected exactly ${expectedSkills.join(", ")}; found ${dirs.join(", ") || "none"}`);
+  for (const legacy of legacySkills) {
+    if (existsSync(join(skillsDir, legacy))) errors.push(`skills/: legacy public directory still exists: ${legacy}`);
+  }
   if (dirs.length === 0) notes.push("skills/ is empty — skipping skill checks");
   for (const dir of dirs) {
     const where = `skills/${dir}`;
@@ -69,6 +76,13 @@ if (!existsSync(skillsDir)) {
     if (lines > 500)
       errors.push(`${where}: SKILL.md is ${lines} lines (limit 500 — move depth to references/)`);
 
+    const agentConfig = join(skillsDir, dir, "agents", "openai.yaml");
+    if (!existsSync(agentConfig)) {
+      errors.push(`${where}: missing agents/openai.yaml`);
+    } else if (!readFileSync(agentConfig, "utf8").includes(`$${dir}`)) {
+      errors.push(`${where}: agents/openai.yaml default prompt must name $${dir}`);
+    }
+
     // Installed skills are self-contained. Vendored helpers with canonical
     // repo-level counterparts must remain byte-identical so fixes cannot drift.
     const vendoredScripts = join(skillsDir, dir, "scripts");
@@ -82,6 +96,34 @@ if (!existsSync(skillsDir)) {
       }
     }
   }
+}
+
+// --- native plugin manifests ---
+function loadManifest(path, label) {
+  if (!existsSync(path)) { errors.push(`${label} missing`); return null; }
+  try {
+    const raw = readFileSync(path, "utf8");
+    if (/\[TODO:|<owner>|<this-repo>/i.test(raw)) errors.push(`${label}: contains a placeholder`);
+    return JSON.parse(raw);
+  } catch (error) {
+    errors.push(`${label}: invalid JSON (${error.message})`);
+    return null;
+  }
+}
+
+const claudeManifest = loadManifest(join(root, ".claude-plugin", "plugin.json"), ".claude-plugin/plugin.json");
+const codexManifest = loadManifest(join(root, ".codex-plugin", "plugin.json"), ".codex-plugin/plugin.json");
+if (claudeManifest && codexManifest) {
+  for (const [label, manifest] of [["Claude", claudeManifest], ["Codex", codexManifest]]) {
+    if (manifest.name !== "dev-workflows") errors.push(`${label} manifest: name must be dev-workflows`);
+    if (manifest.version !== "0.1.0") errors.push(`${label} manifest: version must be 0.1.0 before v1 sign-off`);
+    if (String(manifest.skills ?? "").replace(/\/$/, "") !== "./skills")
+      errors.push(`${label} manifest: skills must reference ./skills`);
+  }
+  if (claudeManifest.name !== codexManifest.name || claudeManifest.version !== codexManifest.version)
+    errors.push("plugin manifests disagree on name/version");
+  for (const unsupported of ["hooks", "apps", "mcpServers"])
+    if (unsupported in codexManifest) errors.push(`Codex manifest: unsupported/unbacked field '${unsupported}'`);
 }
 
 // --- rules/ ---

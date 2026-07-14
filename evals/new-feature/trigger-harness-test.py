@@ -10,23 +10,23 @@ spec.loader.exec_module(module)
 
 assert module.exact_skill_call([
     {"type": "assistant", "message": {"content": [
-        {"type": "tool_use", "name": "Skill", "input": {"skill": "new-feature"}}
+        {"type": "tool_use", "name": "Skill", "input": {"skill": "wf-feature"}}
     ]}}
 ])
 assert module.exact_skill_call([
     {"type": "assistant", "message": {"content": [
-        {"type": "tool_use", "name": "SlashCommand", "input": {"command": "/new-feature"}}
+        {"type": "tool_use", "name": "SlashCommand", "input": {"command": "/wf-feature"}}
     ]}}
 ])
 assert not module.exact_skill_call([
     {"type": "assistant", "message": {"content": [
-        {"type": "tool_use", "name": "Skill", "input": {"skill": "plan"}},
-        {"type": "text", "text": "new-feature was not selected"}
+        {"type": "tool_use", "name": "Skill", "input": {"skill": "wf-plan"}},
+        {"type": "text", "text": "wf-feature was not selected"}
     ]}}
 ])
 assert not module.exact_skill_call([
     {"type": "assistant", "message": {"content": [
-        {"type": "tool_use", "name": "Skill", "input": {"skill": "new-feature-review"}}
+        {"type": "tool_use", "name": "Skill", "input": {"skill": "wf-feature-review"}}
     ]}}
 ])
 print("trigger harness attribution: PASS (4 exact-match checks)")

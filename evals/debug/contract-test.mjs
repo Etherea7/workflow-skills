@@ -5,10 +5,10 @@ import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const read = (path) => readFileSync(join(root, path), "utf8");
-const skill = read("skills/debug/SKILL.md");
-const loop = read("skills/debug/references/investigation-loop.md");
-const persist = read("skills/debug/references/persistence-and-merge.md");
-const checklist = read("skills/debug/assets/checklist-template.md");
+const skill = read("skills/wf-debug/SKILL.md");
+const loop = read("skills/wf-debug/references/investigation-loop.md");
+const persist = read("skills/wf-debug/references/persistence-and-merge.md");
+const checklist = read("skills/wf-debug/assets/checklist-template.md");
 const evalSpec = JSON.parse(read("evals/debug/evals.json"));
 const liveResults = JSON.parse(read("evals/debug/live-results-i4.json"));
 const skillFlat = skill.replace(/\s+/g, " ");
@@ -41,10 +41,10 @@ check(checklist.includes("supported facts vs inference") && checklist.includes("
 check(checklist.includes("branch: debug/{{NNN-slug}}") && checklist.includes("base commit: {{hash}}"), "debug isolation identity missing");
 
 for (const file of [
-  "skills/debug/scripts/next-spec-number.sh",
-  "skills/debug/scripts/secrets-check.sh",
-  "skills/debug/assets/checklist-template.md",
-  "skills/debug/agents/openai.yaml",
+  "skills/wf-debug/scripts/next-spec-number.sh",
+  "skills/wf-debug/scripts/secrets-check.sh",
+  "skills/wf-debug/assets/checklist-template.md",
+  "skills/wf-debug/agents/openai.yaml",
   "evals/debug/evals.json",
   "evals/debug/infrastructure-event-test.mjs",
   "evals/debug/evidence-test.mjs",
@@ -66,8 +66,8 @@ for (const file of [
 ]) check(existsSync(join(root, file)), `missing debug runtime/eval file: ${file}`);
 
 for (const [canonical, vendored] of [
-  ["scripts/next-spec-number.sh", "skills/debug/scripts/next-spec-number.sh"],
-  ["scripts/secrets-check.sh", "skills/debug/scripts/secrets-check.sh"]
+  ["scripts/next-spec-number.sh", "skills/wf-debug/scripts/next-spec-number.sh"],
+  ["scripts/secrets-check.sh", "skills/wf-debug/scripts/secrets-check.sh"]
 ]) check(read(canonical) === read(vendored), `vendored script drift: ${vendored}`);
 
 check(liveResults.results.every((result) => {

@@ -1,58 +1,108 @@
 # dev-workflows
 
-Portable workflow skills that turn AI coding agents — Claude Code, Codex, and
-any [Agent Skills](https://agentskills.io)-compatible agent — into disciplined,
-self-driving, self-validating software engineers.
+Portable workflow skills that turn AI coding agents—Claude Code, Codex, and
+other [Agent Skills](https://agentskills.io)-compatible hosts—into disciplined,
+resumable, self-validating software engineers.
 
-> **Status: in development.** M0 scaffold complete; workflow skills land one at
-> a time. See [docs/BUILD-CHECKLIST.md](docs/BUILD-CHECKLIST.md) for live progress.
+> **Status: pre-v1.** All five workflow bodies are implemented and deterministic
+> validation runs in CI. Live trigger/behavior feedback and final v1 sign-off
+> remain release gates; see [docs/BUILD-CHECKLIST.md](docs/BUILD-CHECKLIST.md).
 
 ## The five workflows
 
 | Skill | What it does |
 |---|---|
-| `plan` | Turns ambiguous requirements into a spec via interactive clarification — "unit tests for English" |
-| `new-feature` | Spec → isolated worktree → tests-first → implement → green → human-gated merge |
-| `debug` | Reproduce first → investigate → ranked hypotheses → fix → verify → commit |
-| `next-step-improve` | Surveys project state, proposes prioritized next actions, decomposes your pick into features |
-| `project-setup` | Bootstraps a greenfield project: constitution, stack, scaffold, *verified* dev loop, initial commit |
+| `wf-plan` | Turns ambiguous requirements into a testable spec through interactive clarification |
+| `wf-feature` | Takes a ready spec through an isolated worktree, tests-first implementation, verification, and a gated merge |
+| `wf-debug` | Reproduces a defect, investigates bounded hypotheses, and applies a verified fix only when requested |
+| `wf-improve` | Surveys repository truth, ranks next actions, and decomposes the selected work |
+| `wf-setup` | Bootstraps a greenfield repository with project rules, a scaffold, a verified development loop, and a safe initial commit |
 
-Every workflow shares one spine — gather → context → plan → act in a feedback
-loop → validate → persist — and three hard rules: never fabricate a passing
-result, every loop bails out (default: 3 failed cycles) with state written to a
-durable checklist, and every workflow resumes cleanly from that checklist after
-a dropped session. Full principles: [docs/PROJECT-CONSTITUTION.md](docs/PROJECT-CONSTITUTION.md).
+Every workflow shares one spine—resume, gather, plan, act in a bounded feedback
+loop, validate, and persist. A passing result must be observed, failed loops
+bail out with durable state, and interrupted work resumes from its checklist.
 
-## Install
+### Name migration
 
-**Skills only** (any supported agent, via the ecosystem installer):
+| Before | Now |
+|---|---|
+| `plan` | `wf-plan` |
+| `new-feature` | `wf-feature` |
+| `debug` | `wf-debug` |
+| `next-step-improve` | `wf-improve` |
+| `project-setup` | `wf-setup` |
+
+This changes callable skill identities only. Existing checklist `workflow:`
+values, `spec.md`/`plan.md` artifacts, eval-directory names, and branch prefixes
+such as `feature/`, `debug/`, `improve/`, and `setup/` remain compatible.
+
+## Install and use locally
+
+Clone or otherwise obtain this checkout first. No public repository coordinate
+or registry package is claimed yet.
+
+### Claude Code native local plugin
+
+Validate the manifest, then load the checkout for a session:
 
 ```bash
-npx skills add <owner>/dev-workflows -a claude-code -a codex
+claude plugin validate .
+claude --plugin-dir .
 ```
 
-**Skills + rules files** (recommended — the rules carry the Delegation Protocol
-and guardrails that make the skills work as a system):
+### Codex native package
+
+The Codex manifest is present as v1 packaging groundwork and can be validated
+locally:
 
 ```bash
-git clone <this-repo> && cd dev-workflows
-./install.sh            # idempotent; re-run to update
+python /path/to/plugin-creator/scripts/validate_plugin.py .
+```
+
+The current Codex CLI installs plugins from configured marketplaces. This repo
+deliberately has no marketplace entry or invented public coordinate before v1;
+use the rules-aware installer below for a working local Codex installation.
+
+### Rules-aware installer
+
+From Git Bash on Windows, or Bash on macOS/Linux:
+
+```bash
+./install.sh
 ./install.sh --uninstall
 ```
 
-`install.sh` copies skills into `~/.claude/skills/` and `~/.agents/skills/`,
-writes `~/.claude/rules/dev-workflows.md`, and maintains a clearly-marked
-managed block in `~/.codex/AGENTS.md` (your own content there is untouched).
-Copies, never symlinks — works on Windows (run from Git Bash).
+The installer copies the five skills to `~/.claude/skills/` and
+`~/.agents/skills/`, installs suite-level Claude rules, and maintains a bounded
+block in `~/.codex/AGENTS.md` while preserving user content. It proves ownership
+before replacing or deleting skills, stages all copies before swapping them,
+and rolls back a failed update. This path remains useful because skills-only
+and native plugin loading do not necessarily install the suite-level rules and
+Delegation Protocol into global user guidance.
+
+After a real repository coordinate and stable v1 are published, the ecosystem
+installer will be another skills-only option. Placeholder, not a command to run
+yet: `npx skills add <published-repository> -a claude-code -a codex`.
+
+## Validate
+
+```bash
+node scripts/validate.mjs
+node scripts/run-routing-evals.mjs
+node scripts/run-deterministic-tests.mjs
+```
+
+The lexical catalog check is a deterministic collision preflight, not a
+replacement for live host trigger and behavior evaluation.
 
 ## Layout
 
-- `skills/` — the five workflow skills (Agent Skills standard)
-- `rules/` — canonical `AGENTS.md` (+ thin `CLAUDE.md`) with the Delegation Protocol
-- `templates/` — spec / plan / tasks / checklist / constitution / INDEX / project rules
-- `scripts/` — repo tooling: format validator, secrets check, spec numbering
-- `evals/` — per-skill trigger + behavior tests
-- `docs/` — constitution, implementation plan, architecture, future work
+- `skills/` — five namespaced workflow skills
+- `rules/` — canonical suite rules and Delegation Protocol
+- `templates/` — spec, plan, task, checklist, constitution, index, and project-rule templates
+- `scripts/` — validation, routing, deterministic-test, credential, and numbering tools
+- `evals/` — trigger definitions, deterministic contracts, fixtures, and historical evidence
+- `docs/` — constitution, architecture, build state, and future work
 
 ## License
 

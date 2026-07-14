@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Setup"
+  short_description: "Bootstrap a verified greenfield repository"
+  default_prompt: "Use $wf-setup to scaffold a new software project with a verified development loop."

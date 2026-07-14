@@ -14,28 +14,17 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - name: Format gate (Agent Skills spec + suite conventions)
         run: bash scripts/validate.sh
+      - name: Catalog routing preflight
+        run: node scripts/run-routing-evals.mjs
+      - name: Deterministic workflow tests
+        run: node scripts/run-deterministic-tests.mjs
       - name: Shell syntax
         run: |
           for f in install.sh scripts/*.sh skills/*/scripts/*.sh; do
             bash -n "$f"
           done
-      - name: Installer round-trip (isolated targets)
-        run: |
-          t=$(mktemp -d)
-          export CLAUDE_SKILLS_DIR="$t/claude-skills" AGENTS_SKILLS_DIR="$t/agents-skills"
-          export CLAUDE_RULES_DIR="$t/claude-rules" CODEX_AGENTS_FILE="$t/codex/AGENTS.md"
-          printf '# my own codex rules\n' > /dev/null   # user-content preservation is asserted below
-          mkdir -p "$t/codex" && printf '# user content\n' > "$CODEX_AGENTS_FILE"
-          ./install.sh
-          ./install.sh   # idempotent re-run
-          grep -q 'dev-workflows:begin' "$CODEX_AGENTS_FILE"
-          grep -q '# user content' "$CODEX_AGENTS_FILE"
-          test -f "$CLAUDE_RULES_DIR/dev-workflows.md"
-          ./install.sh --uninstall
-          ! grep -q 'dev-workflows:begin' "$CODEX_AGENTS_FILE"
-          grep -q '# user content' "$CODEX_AGENTS_FILE"
-          test ! -f "$CLAUDE_RULES_DIR/dev-workflows.md"
-          echo "round-trip OK"
+      - name: Installer ownership and rollback safety
+        run: node evals/install/installer-safety-test.mjs
 
   # Behavior evals per skill are run locally during milestone gates (they need
-  # a live agent); CI covers format + installer integrity.
+  # a live agent); CI covers structure, lexical routing, and deterministic contracts.
