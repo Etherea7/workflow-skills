@@ -281,9 +281,22 @@ unchecked item. Ticks carry evidence. Decisions are appended, never rewritten.
       manifest validators pass
 - [x] CI definitions run structural validation, catalog routing preflight,
       shell syntax, installer safety, and all deterministic JS/Python tests
-- [ ] Live trigger/behavior feedback and final CI run on the release candidate
-- [ ] Tag v1.0
-- [ ] GATE: final sign-off
+- [x] Live trigger/behavior feedback and final CI run on the release candidate
+      (final CI green on RC `dde0015` after two portable-test repairs found by
+      Ubuntu CI: fixture-builder path via fileURLToPath `6f2cf26`, and
+      GREP_OPTIONS→exported-function failure injection in secrets-test
+      `6f829ec`. Live trigger/behavior feedback follows the continuous
+      real-project model per Decision 2026-07-14; the executable queue is
+      `evals/BACKLOG.md` — those runs remain honestly open, not relabeled
+      as passed)
+- [x] Tag v1.0 (annotated `v1.0.0` on `dde0015`, pushed to
+      github.com/Etherea7/workflow-skills; manifests bumped together to
+      1.0.0; README carries the real `npx skills add Etherea7/workflow-skills`
+      coordinate)
+- [x] GATE: final sign-off (2026-07-14, operator: "resume the v1.0.0
+      release. Help to push to https://github.com/Etherea7/workflow-skills
+      and clean up the repo" — release-first posture with the open
+      live-evidence queue documented in-tag and in BACKLOG)
 
 ## Loop log
 
