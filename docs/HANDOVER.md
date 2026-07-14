@@ -1,152 +1,104 @@
 # HANDOVER — resume here
 
-For any future session (Claude Code, ChatGPT/Codex, or human) picking up this
-project cold. Updated: 2026-07-12, immediately after the M1 gate closed.
+This is the cold-start guide for the next Claude, Codex, or human session.
+Updated: 2026-07-14, after the release-hardening merge (`5d7d2fe`).
 
-## What this project is
+Dev Workflows is a public-ready suite of five portable Agent Skills for
+disciplined, resumable software work: `wf-plan`, `wf-feature`, `wf-debug`,
+`wf-improve`, and `wf-setup`. The repository supports Claude Code and Codex,
+with host-specific rules and native plugin manifests.
 
-A public repo of five portable workflow skills (Agent Skills open standard,
-agentskills.io) that turn coding agents into disciplined, self-validating
-engineers: `plan`, `new-feature`, `debug`, `next-step-improve`,
-`project-setup`. Dual-installed at user scope for Claude Code
-(`~/.claude/skills/`) and Codex (`~/.agents/skills/`), with rules files
-carrying host-specific mechanics.
+## Read order
 
-**Read in this order before doing anything:**
-1. [PROJECT-CONSTITUTION.md](PROJECT-CONSTITUTION.md) — 13 non-negotiables. They bind every artifact.
-2. [IMPLEMENTATION-PLAN.md](IMPLEMENTATION-PLAN.md) — architecture (§4), decisions D1–D8 (§3), milestones (§6).
-3. [BUILD-CHECKLIST.md](BUILD-CHECKLIST.md) — the durable state. **Resume from the first unchecked item**; currently that is M2.
-4. [ARCHITECTURE.md](ARCHITECTURE.md) — how the pieces fit (skill anatomy, vendoring rule, delegation, artifacts).
-5. [FUTURE-WORK.md](FUTURE-WORK.md) — deliberately deferred scope (productionization, CodeGraph-style graph skills, deeper OpenWiki).
+1. [PROJECT-CONSTITUTION.md](PROJECT-CONSTITUTION.md) — the non-negotiable
+   principles that bind every artifact.
+2. [IMPLEMENTATION-PLAN.md](IMPLEMENTATION-PLAN.md) — architecture, decisions,
+   skill contracts, and milestones.
+3. [BUILD-CHECKLIST.md](BUILD-CHECKLIST.md) — resume from the first unchecked
+   item; this is the durable source of truth.
+4. [AGENT-COLLABORATION.md](AGENT-COLLABORATION.md) — cross-agent ledger,
+   handbacks, and review records.
+5. [ARCHITECTURE.md](ARCHITECTURE.md) — skill anatomy, vendoring, delegation,
+   and artifact conventions.
+6. [FUTURE-WORK.md](FUTURE-WORK.md) — deliberately deferred scope.
+7. [`plans/README.md`](../plans/README.md) — advisor implementation-plan index.
 
 ## Current state
 
-- **M0 (scaffold) and M1 (`plan` skill): DONE.** M1 closed after 5 Codex review
-  rounds and 4 eval iterations; final verdict APPROVE (uplift benchmark 13/13
-  assertions vs baseline 1/13; trigger evals 7/8 recall, 0/10 false positives).
-- Repo is clean on `main` (last M1 commit: `122b3ad`). `node scripts/validate.mjs`
-  is the format gate and is green.
-- **Next milestone: M2 — the `new-feature` skill** (spec → worktree isolation →
-  tests-first → delegated implementation → green → human-gated merge). Its
-  step list is in BUILD-CHECKLIST under "Phase 2 — M2"; its behavioral contract
-  is IMPLEMENTATION-PLAN §4.2 and §4.9, plus the original brief's workflow #2.
+- M0–M5 are implemented, reviewed, accepted, and merged. Release hardening at
+  `5d7d2fe` namespaced the public suite to the five `wf-*` names above. Later
+  approved work unified the live trigger harness, pinned the CI validator, and
+  extracted shared deterministic-test utilities.
+- Historical evidence remains under `evals/<legacy-name>/` intentionally. Those
+  directory names are records, not public skill identifiers. Live trigger runs
+  now use `evals/lib/trigger_harness.py` through each directory's
+  `run-triggers.py`; the executable queue is [`evals/BACKLOG.md`](../evals/BACKLOG.md).
+- Claude and Codex plugin manifests exist at version `0.1.0`. Version `1.0.0`,
+  a real publication coordinate, and tag `v1.0.0` belong to the M6 release.
+- CI runs `scripts/run-deterministic-tests.mjs` in addition to structural,
+  catalog, shell, installer, and manifest validation. The official
+  `skills-ref` fallback is pinned to `0.1.1`.
+- Open feedback work remains open even though M2–M5 human gates were accepted:
+  unified-harness trigger calibration/holdout runs, M2/M3 scan-sensitive live
+  behavior reruns, and M5 paired live behavior runs. Do not relabel aborted or
+  unexecuted runs as passed.
+- M6 still requires release-candidate live trigger/behavior feedback plus final
+  CI, the `v1.0.0` tag, and explicit final sign-off. BUILD-CHECKLIST owns the
+  authoritative ticks; BACKLOG owns the detailed live-run queue.
 
-## The process every milestone follows (do not shortcut it)
+## Operational knowledge
 
-1. Draft the skill: lean `SKILL.md` (<500 lines, standard frontmatter only) +
-   `references/` depth + vendored `scripts/`/`assets/` (installed skills must
-   be self-contained — see ARCHITECTURE.md "Vendoring rule").
-2. Write behavior evals (3-ish realistic cases) AND trigger evals
-   (positive + near-miss negative queries). Canonical home: `evals/<skill>/`.
-3. Run with-skill vs without-skill subagent runs against fixture projects;
-   grade with per-assertion evidence; build a benchmark; generate the
-   skill-creator eval viewer for human review.
-4. Send the package to **Codex for gate review** (user's standing instruction):
-   `CLAUDECODE= codex exec --model gpt-5.6-sol --sandbox read-only "<review brief>" > out.txt 2>&1`
-   run from the repo root, in the background. ("sol 5.6-sol" = model id
-   `gpt-5.6-sol`; the user's `~/.codex/config.toml` already defaults to it with
-   high reasoning effort.) The codex *plugin* route (codex-companion.mjs) is
-   blocked until the Codex desktop app runtime updates — use the direct CLI.
-5. Apply findings as **skill changes + reruns, never regrades alone**. Grade
-   strictly: a criterion that fails, fails — declare residuals honestly and
-   let the reviewer adjudicate. Codex verifies artifacts itself and catches
-   inflated grading, wrong arithmetic, and internal contradictions.
-6. Tick BUILD-CHECKLIST with evidence, conventional commit (run
-   `bash scripts/secrets-check.sh` on the staged diff first), repeat until
-   APPROVE, then close the gate in BUILD-CHECKLIST.
+### Model routing
 
-## Hard-won operational knowledge (cost real time — don't relearn)
+M1 showed that workflow execution needs a Sonnet-class or stronger model for
+strict compliance, while cheaper/faster models are appropriate for bounded
+explorer and implementer delegations. This is already encoded in
+`rules/AGENTS.md`: keep planning, user dialogue, hypothesis ranking, fix
+selection, and merge decisions with the strongest orchestrator.
 
-**Model routing (empirical, M1):** three haiku runs of the plan workflow each
-failed a *different* strict compliance point (skipped security sweep; untagged
-parked-question dependencies; unscoped universal claim); sonnet passed 8/8
-first try; haiku passed the simpler eval case strictly twice. → Workflow
-*execution* in evals/dogfooding: sonnet-class. Explorer/implementer
-delegations and simple runs: haiku. **This finding must be encoded into
-`rules/AGENTS.md` model-routing guidance during M2** (not yet done).
+### Windows landmines
 
-**User's standing instructions:**
-- Gate feedback via Codex (`gpt-5.6-sol`, high effort), not manual user review.
-- Cheaper models for subagents; sequence heavy batches — session limits killed
-  two eval batches mid-run (background agents die with partial artifacts;
-  reset fixtures before rerunning).
+- Keep eval fixtures at a short root such as
+  `C:\Users\65876\AppData\Local\Temp\dwv\`; long repo paths can exceed MAX_PATH
+  and corrupt loose-object operations.
+- Python embedded in Bash heredocs misreads `C:\Users\...` because of `\U`.
+  Write a script file or construct paths without backslash literals.
+- `select.select()` on pipes is POSIX-only. Use the shared trigger engine and
+  per-skill runners, not skill-creator's incompatible `run_eval.py` path.
+- `tempfile.TemporaryDirectory` cleanup can recurse on Windows file locks. Use
+  explicit scratch directories and final cleanup with `ignore_errors`.
+- Python text I/O defaults to cp1252 here. Set `PYTHONUTF8=1` and run
+  `bash scripts/check-encoding.sh <paths>` before accepting generated text.
+- Symlinks require administrator access or Developer Mode, so installation uses
+  copies. `.gitattributes` pins LF for `*.sh` and `*.mjs`; do not normalize those
+  fixtures or scripts to CRLF.
 
-**Windows landmines (this machine):**
-- MAX_PATH: git repos under long paths corrupt (`Filename too long` on loose
-  objects). Eval fixtures live at a SHORT root: `C:\Users\65876\AppData\Local\Temp\dwv\`.
-- Bash-heredoc Python with `C:\Users\...` literals dies on `\U` escapes —
-  write scripts with the Write tool or build paths without backslash literals.
-- `select.select()` on pipes is POSIX-only → skill-creator's `run_eval.py`
-  returns silent zeros. Use the shared `evals/lib/trigger_harness.py` engine
-  via each skill's `evals/<dir>/run-triggers.py` (the former per-skill
-  `trigger-harness.py` files are retired).
-- `tempfile.TemporaryDirectory` cleanup can RecursionError on Windows file
-  locks — use manual scratch dirs, cleanup at the end with `ignore_errors`.
-- Python `open()` defaults to cp1252 → mojibake. Run pipeline scripts with
-  `PYTHONUTF8=1`; verify with `bash scripts/check-encoding.sh <paths>`.
-- Symlinks need admin/Dev Mode → installer copies only. `.gitattributes` pins
-  LF for `*.sh`/`*.mjs`.
-- Codex env repairs already made: `service_tier = "default"` line in
-  `~/.codex/config.toml` commented out (CLI rejected it); CLI upgraded
-  0.128.0 → 0.144.1 (required by gpt-5.6-sol).
+### Eval and review discipline
 
-**Eval infrastructure (reuse for M2, it all exists):**
-- Fixture pattern: minimal fake project per case, copied per config
-  (`dwv/i<N>/eval-*/with_skill/outputs/project`, git-initialized).
-- `grading.json`: `expectations: [{text, passed, evidence}]` + `summary`
-  (pass_rate/passed/failed/total). Timing in a SIBLING `timing.json`
-  (`total_tokens`, `duration_ms`, `total_duration_seconds`) — embedding
-  timing in grading.json breaks the aggregator's token extraction.
-- Aggregator/viewer expect `eval-*/config/run-1/grading.json` + a config-level
-  copy + flattened readable files in `outputs/`. See `dwv/build_i4.py` for a
-  working manual benchmark builder (correct schema incl. per-run
-  `executor_model`, both aggregate framings, contract tests separate).
-- Capture subagent token/duration from the completion notification
-  immediately — it is not persisted anywhere else.
-- Benchmarks must label models per run, state "N eval cases, 1 run per
-  configuration" honestly, exclude contract tests from uplift aggregates,
-  and never claim cost/speed wins the raw numbers don't support.
+- A `grading.json` contains
+  `expectations: [{text, passed, evidence}]` plus a `summary` with pass counts.
+  Timing belongs in a sibling `timing.json`; embedding it in grading breaks
+  token extraction.
+- Aggregation expects `eval-*/<config>/run-1/grading.json`, a config-level copy,
+  and readable flattened output artifacts. Capture subagent token and duration
+  data from the completion notification because it is not persisted elsewhere.
+- Benchmarks identify the executor model per run, state the case/run counts,
+  exclude contract tests from uplift, cite per-assertion evidence, and make no
+  cost, speed, or statistical claim unsupported by the raw data. Never repair a
+  failed result by regrading alone; change the skill and rerun.
+- For an independent gate review, run from the repository root:
 
-**Skill-authoring lessons baked into `skills/plan/` (mirror them in M2):**
-- Instructions that MUST fire reliably belong in SKILL.md body, not only in
-  references (haiku skims references).
-- "Parked means parked everywhere": text depending on an open question carries
-  inline `(assumes Qn)` tags — requirements, ACs, examples.
-- Persist honesty: tick persist only after a verified commit hash, then commit
-  the evidence tick itself (clean tree; the committed checklist must be the
-  truthful one).
-- Decision rubric: security/privacy, data loss (incl. sync conflict
-  resolution/LWW), external contracts (incl. export/output formats), and
-  migration-requiring choices are consequential; every adopted default names
-  its rubric class.
+  `CLAUDECODE= codex exec --model gpt-5.6-sol --sandbox read-only "<review brief>" > out.txt 2>&1`
 
-## M2 kickoff notes (`new-feature`)
+  Treat silence, truncation, or a session-limit exit as no verdict. Apply review
+  findings, rerun the affected evidence, and record the exact reviewed commit.
 
-Contract (IMPLEMENTATION-PLAN §4.2/§4.9 + brief workflow #2): read spec (call
-`plan` if ambiguous) → context via explorer delegation → plan.md/tasks.md →
-worktree `.worktrees/NNN-slug/` + branch `feature/NNN-slug` → failing tests
-first → implementer delegation → red/green loop with BAILOUT_N=3 → secrets
-check + commit on green → docs/ update per D3 → merge: auto only to
-non-protected; `main`/`master`/`release/*` require explicit human confirmation.
-Resume-on-entry from `specs/NNN-slug/checklist.md` like `plan`.
+## Verify the repository
 
-Eval cases already envisioned (BUILD-CHECKLIST M2): trigger evals;
-"refuses protected-branch merge without confirmation"; "resumes from checklist
-without redoing/clobbering"; a real red→green TDD run on a fixture project.
-Reuse the M1 fixture+grading+benchmark machinery. Vendor what the skill needs
-(`next-spec-number.sh`, secrets-check, checklist/plan/tasks templates) into
-`skills/new-feature/scripts|assets/`.
+Run the complete local gate from a shell with Bash and Node available:
 
-Also due in M2: encode model routing + the Delegation Protocol refinements
-into `rules/AGENTS.md` (per-host sections), informed by the M1 finding.
+`bash scripts/validate.sh && node scripts/run-deterministic-tests.mjs`
 
-## Where transient artifacts live (not committed, may be cleaned)
-
-`C:\Users\65876\AppData\Local\Temp\dwv\` — eval workspaces i1–i4, benchmark
-JSONs, static viewers (`plan-eval-review-i{1..4}.html`), Codex review round
-texts (`codex-m1-followup.txt`, `codex-m1-round{3,4,5}.txt`), archived haiku
-attempts. Everything gate-relevant is summarized with evidence in
-BUILD-CHECKLIST; committed keepers are `evals/plan/trigger-results.{json,md}`
-and the shared `evals/lib/trigger_harness.py` engine (run via
-`evals/plan/run-triggers.py`). If dwv is gone, regenerate by rerunning
-evals — the process section above is the recipe.
+Before any commit, stage only the intended files and run
+`bash scripts/secrets-check.sh`. Record durable evidence in BUILD-CHECKLIST and
+the collaboration ledger; the committed checklist must remain truthful.
