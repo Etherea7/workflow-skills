@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 import { mkdtempSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve, dirname } from "node:path";
+import { join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { makeSuite } from "../lib/test-kit.mjs";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const { root, checkThrow } = makeSuite(import.meta.url);
 const target = mkdtempSync(join(tmpdir(), "project-setup-resume-"));
 const preflight = join(root, "skills/wf-setup/scripts/check-commit-readiness.mjs");
 let checks = 0;
-const expect = (condition, message) => { checks += 1; if (!condition) throw new Error(message); };
+const expect = (condition, message) => { checks += 1; checkThrow(condition, message); };
 const run = (command, args, cwd = target) => spawnSync(command, args, { cwd, encoding: "utf8", shell: false });
 const runNpm = (args) => process.platform === "win32"
   ? run(process.env.ComSpec ?? "cmd.exe", ["/d", "/s", "/c", "npm", ...args])

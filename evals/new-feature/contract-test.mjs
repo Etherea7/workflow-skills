@@ -1,20 +1,16 @@
 #!/usr/bin/env node
-import { readFileSync, existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { makeSuite } from "../lib/test-kit.mjs";
 
-const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const read = (path) => readFileSync(join(root, path), "utf8").replace(/\r\n/g, "\n");
+const { root, read, check, report } = makeSuite(import.meta.url);
 const skill = read("skills/wf-feature/SKILL.md");
 const merge = read("skills/wf-feature/references/persistence-and-merge.md");
 const loop = read("skills/wf-feature/references/tdd-loop.md");
 const rules = read("rules/AGENTS.md");
 const mergeFlat = merge.replace(/\s+/g, " ");
-const errors = [];
-let checks = 0;
-const check = (condition, message) => { checks += 1; if (!condition) errors.push(message); };
 
 check(skill.indexOf("## Step 0 — Resume") < skill.indexOf("## Step 1"), "resume must be first procedural step");
 check(skill.indexOf("## Step 2 — Create or verify isolation") < skill.indexOf("## Step 3 — Plan"), "isolation must precede mutable planning artifacts");
@@ -73,8 +69,4 @@ try {
 }
 check(mergeInvariant, "--no-ff --no-commit must hold HEAD, stage the merge, and remain abortable");
 
-if (errors.length) {
-  for (const error of errors) console.error(`FAIL: ${error}`);
-  process.exit(1);
-}
-console.log(`new-feature contract: PASS (${checks} safety/packaging checks)`);
+report("new-feature contract", "safety/packaging checks");

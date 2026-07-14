@@ -3,9 +3,9 @@ import { mkdtempSync, readFileSync, writeFileSync, rmSync, existsSync } from "no
 import { tmpdir } from "node:os";
 import { join, resolve, dirname } from "node:path";
 import { spawnSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { makeSuite } from "../lib/test-kit.mjs";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const { root, checkThrow } = makeSuite(import.meta.url);
 const target = mkdtempSync(join(tmpdir(), "project-setup-commit-gate-"));
 let checks = 0;
 const run = (command, args, options = {}) => spawnSync(command, args, {
@@ -13,7 +13,7 @@ const run = (command, args, options = {}) => spawnSync(command, args, {
   encoding: "utf8",
   shell: false,
 });
-const expect = (condition, message) => { checks += 1; if (!condition) throw new Error(message); };
+const expect = (condition, message) => { checks += 1; checkThrow(condition, message); };
 const runNpm = (args) => process.platform === "win32"
   ? run(process.env.ComSpec ?? "cmd.exe", ["/d", "/s", "/c", "npm", ...args])
   : run("npm", args);

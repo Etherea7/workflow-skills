@@ -1,10 +1,9 @@
 #!/usr/bin/env node
-import { existsSync, readFileSync } from "node:fs";
-import { join, resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+import { makeSuite } from "../lib/test-kit.mjs";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const read = (path) => readFileSync(join(root, path), "utf8").replace(/\r\n/g, "\n");
+const { root, read, check, report } = makeSuite(import.meta.url);
 const skill = read("skills/wf-setup/SKILL.md");
 const flat = skill.replace(/\s+/g, " ");
 const safety = read("skills/wf-setup/references/target-safety.md").replace(/\s+/g, " ");
@@ -17,9 +16,6 @@ const triggers = JSON.parse(read("evals/project-setup/trigger-evals.json"));
 const holdout = JSON.parse(read("evals/project-setup/trigger-holdout.json"));
 const evals = JSON.parse(read("evals/project-setup/evals.json"));
 const fixtureBuilder = read("evals/project-setup/build-fixture.mjs");
-const errors = [];
-let checks = 0;
-const check = (condition, message) => { checks += 1; if (!condition) errors.push(message); };
 
 check(skill.indexOf("## Step 0 — Resume") < skill.indexOf("## Step 1 — Establish target safety"), "resume must be first");
 check(skill.indexOf("## Step 1 — Establish target safety") < skill.indexOf("## Step 2 — Resolve requirements"), "target safety must precede requirements writes");
@@ -107,8 +103,4 @@ check(evals.evals.length === 3 && evals.evals.every(({ assertions }) => assertio
 check(evals.methodology.includes("no model uplift claim"), "honest eval limitation missing");
 check(fixtureBuilder.includes('.replace(/\\r\\n/g, "\\n")'), "fixture templates must normalize checkout CRLF");
 
-if (errors.length) {
-  for (const error of errors) console.error(`FAIL: ${error}`);
-  process.exit(1);
-}
-console.log(`project-setup contract: PASS (${checks} workflow/packaging checks)`);
+report("project-setup contract", "workflow/packaging checks");
