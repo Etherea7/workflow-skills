@@ -3,9 +3,9 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, 
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { makeSuite } from "../lib/test-kit.mjs";
 
-const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const { root, checkThrow } = makeSuite(import.meta.url);
 const installer = join(root, "install.sh");
 const bash = process.env.BASH_PATH || [
   "C:\\Program Files\\Git\\bin\\bash.exe", "/bin/bash"
@@ -14,7 +14,7 @@ if (!bash) throw new Error("Bash is required for installer safety tests");
 const names = ["wf-debug", "wf-feature", "wf-improve", "wf-plan", "wf-setup"];
 const scratch = mkdtempSync(join(tmpdir(), "dwv-install-test-"));
 let checks = 0;
-const check = (value, message) => { checks += 1; if (!value) throw new Error(message); };
+const check = (value, message) => { checks += 1; checkThrow(value, message); };
 
 function fixture(label) {
   const base = join(scratch, label);

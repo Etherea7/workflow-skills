@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 import { mkdtempSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve, dirname } from "node:path";
+import { join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { makeSuite } from "../lib/test-kit.mjs";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const { root, checkThrow } = makeSuite(import.meta.url);
 const target = mkdtempSync(join(tmpdir(), "project-setup-completion-"));
 const checker = join(root, "skills/wf-setup/scripts/check-bootstrap.mjs");
 let checks = 0;
-const expect = (condition, message) => { checks += 1; if (!condition) throw new Error(message); };
+const expect = (condition, message) => { checks += 1; checkThrow(condition, message); };
 const run = () => spawnSync(process.execPath, [checker, target], { cwd: root, encoding: "utf8" });
 const replace = (relative, pattern, replacement) => {
   const path = join(target, relative);

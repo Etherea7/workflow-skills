@@ -2,15 +2,15 @@
 import { createHash } from "node:crypto";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { makeSuite } from "../lib/test-kit.mjs";
 
-const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const { root, checkThrow } = makeSuite(import.meta.url);
 const artifacts = join(root, "evals", "next-step-improve", "evidence", "artifacts");
 const scratch = mkdtempSync(join(tmpdir(), "dwv-m4-evidence-"));
 let checks = 0;
-const check = (condition, message) => { checks += 1; if (!condition) throw new Error(message); };
+const check = (condition, message) => { checks += 1; checkThrow(condition, message); };
 const git = (args, cwd = root) => {
   const result = spawnSync("git", args, { cwd, encoding: "utf8" });
   if (result.status !== 0) throw new Error(`git ${args.join(" ")} failed: ${result.stderr}`);

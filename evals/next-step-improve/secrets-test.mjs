@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { makeSuite } from "../lib/test-kit.mjs";
 
-const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const { root, checkThrow } = makeSuite(import.meta.url);
 const script = join(root, "scripts", "secrets-check.sh");
 const bash = process.env.BASH_PATH || [
   "C:\\Program Files\\Git\\bin\\bash.exe",
@@ -16,7 +16,7 @@ if (!bash) throw new Error("Bash is required for the credential-scanner contract
 
 const scratch = mkdtempSync(join(tmpdir(), "dwv-secrets-test-"));
 let checks = 0;
-const check = (condition, message) => { checks += 1; if (!condition) throw new Error(message); };
+const check = (condition, message) => { checks += 1; checkThrow(condition, message); };
 const git = (...args) => {
   const result = spawnSync("git", args, { cwd: scratch, encoding: "utf8" });
   if (result.status !== 0) throw new Error(`git ${args.join(" ")} failed: ${result.stderr}`);

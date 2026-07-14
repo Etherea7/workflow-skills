@@ -1,10 +1,9 @@
 #!/usr/bin/env node
-import { existsSync, readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+import { makeSuite } from "../lib/test-kit.mjs";
 
-const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const read = (path) => readFileSync(join(root, path), "utf8").replace(/\r\n/g, "\n");
+const { root, read, check, report } = makeSuite(import.meta.url);
 const skill = read("skills/wf-improve/SKILL.md");
 const indexRef = read("skills/wf-improve/references/index-contract.md");
 const priority = read("skills/wf-improve/references/survey-and-prioritization.md");
@@ -14,9 +13,6 @@ const checklist = read("skills/wf-improve/assets/checklist-template.md");
 const generator = read("skills/wf-improve/scripts/regenerate-index.mjs");
 const secrets = read("scripts/secrets-check.sh");
 const description = skill.split("---", 3)[1];
-const errors = [];
-let checks = 0;
-const check = (condition, message) => { checks += 1; if (!condition) errors.push(message); };
 
 check(skill.split("\n").length < 500, "SKILL.md must stay below 500 lines");
 check(skill.indexOf("## Step 0") < skill.indexOf("## Step 1"), "resume must be first");
@@ -96,8 +92,4 @@ for (const [canonical, vendored] of [
 
 check(read("skills/wf-improve/agents/openai.yaml").includes("$wf-improve"), "UI prompt lost explicit skill token");
 
-if (errors.length) {
-  errors.forEach((error) => console.error(`FAIL: ${error}`));
-  process.exit(1);
-}
-console.log(`next-step-improve contract: PASS (${checks} workflow/packaging checks)`);
+report("next-step-improve contract", "workflow/packaging checks");

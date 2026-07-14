@@ -3,13 +3,13 @@ import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "nod
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { makeSuite } from "../lib/test-kit.mjs";
 
-const suite = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const { root: suite, checkThrow } = makeSuite(import.meta.url);
 const generator = join(suite, "skills", "wf-improve", "scripts", "regenerate-index.mjs");
 const root = mkdtempSync(join(tmpdir(), "dwv-reconcile-test-"));
 let checks = 0;
-const check = (condition, message) => { checks += 1; if (!condition) throw new Error(message); };
+const check = (condition, message) => { checks += 1; checkThrow(condition, message); };
 const put = (path, content) => {
   const target = join(root, path);
   mkdirSync(dirname(target), { recursive: true });

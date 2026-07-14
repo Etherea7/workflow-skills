@@ -1,10 +1,9 @@
 #!/usr/bin/env node
-import { readFileSync, existsSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+import { makeSuite } from "../lib/test-kit.mjs";
 
-const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const read = (path) => readFileSync(join(root, path), "utf8");
+const { root, read, check, report } = makeSuite(import.meta.url);
 const skill = read("skills/wf-debug/SKILL.md");
 const loop = read("skills/wf-debug/references/investigation-loop.md");
 const persist = read("skills/wf-debug/references/persistence-and-merge.md");
@@ -13,9 +12,6 @@ const evalSpec = JSON.parse(read("evals/debug/evals.json"));
 const liveResults = JSON.parse(read("evals/debug/live-results-i4.json"));
 const skillFlat = skill.replace(/\s+/g, " ");
 const persistFlat = persist.replace(/\s+/g, " ");
-const errors = [];
-let checks = 0;
-const check = (condition, message) => { checks += 1; if (!condition) errors.push(message); };
 
 check(skill.indexOf("## Step 0 — Resume") < skill.indexOf("## Step 1"), "resume must be first procedural step");
 check(skill.indexOf("## Step 2 — Create or verify isolation") < skill.indexOf("## Step 3 — Reproduce"), "isolation must precede mutable reproduction artifacts");
@@ -80,8 +76,4 @@ for (const config of ["with_skill", "baseline"]) {
   check(passed === liveResults.aggregate[config].passed, `aggregate passed count drift: ${config}`);
 }
 
-if (errors.length) {
-  errors.forEach((error) => console.error(`FAIL: ${error}`));
-  process.exit(1);
-}
-console.log(`debug contract: PASS (${checks} workflow/packaging checks)`);
+report("debug contract", "workflow/packaging checks");
