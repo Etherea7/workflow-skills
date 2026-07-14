@@ -3,13 +3,14 @@ import { mkdtempSync, rmSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
 const scratch = mkdtempSync(join(tmpdir(), "dwv-m3-live-"));
 // Builder intentionally accepts only a path containing /dwv/m3-live/.
 const dest = join(scratch, "dwv", "m3-live", "fixture", "project");
 try {
   const built = spawnSync(process.execPath, [
-    new URL("./fixtures/build-fixture.mjs", import.meta.url).pathname.slice(1),
+    fileURLToPath(new URL("./fixtures/build-fixture.mjs", import.meta.url)),
     dest, "with-skill"
   ], { encoding: "utf8" });
   if (built.status !== 0) throw new Error(`${built.stdout}${built.stderr}`);
