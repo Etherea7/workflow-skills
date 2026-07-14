@@ -116,7 +116,8 @@ const codexManifest = loadManifest(join(root, ".codex-plugin", "plugin.json"), "
 if (claudeManifest && codexManifest) {
   for (const [label, manifest] of [["Claude", claudeManifest], ["Codex", codexManifest]]) {
     if (manifest.name !== "dev-workflows") errors.push(`${label} manifest: name must be dev-workflows`);
-    if (manifest.version !== "0.1.0") errors.push(`${label} manifest: version must be 0.1.0 before v1 sign-off`);
+    if (!/^\d+\.\d+\.\d+$/.test(String(manifest.version ?? "")))
+      errors.push(`${label} manifest: version must be semver MAJOR.MINOR.PATCH`);
     if (String(manifest.skills ?? "").replace(/\/$/, "") !== "./skills")
       errors.push(`${label} manifest: skills must reference ./skills`);
   }

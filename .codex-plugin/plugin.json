@@ -1,6 +1,6 @@
 {
   "name": "dev-workflows",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Five resumable workflows for disciplined software engineering with AI agents.",
   "author": {
     "name": "Dev Workflows Contributors"

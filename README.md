@@ -80,9 +80,11 @@ and rolls back a failed update. This path remains useful because skills-only
 and native plugin loading do not necessarily install the suite-level rules and
 Delegation Protocol into global user guidance.
 
-After a real repository coordinate and stable v1 are published, the ecosystem
-installer will be another skills-only option. Placeholder, not a command to run
-yet: `npx skills add <published-repository> -a claude-code -a codex`.
+Skills-only install via the ecosystem installer:
+
+```bash
+npx skills add Etherea7/workflow-skills -a claude-code -a codex
+```
 
 ## Validate
 
