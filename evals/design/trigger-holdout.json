@@ -1,0 +1,8 @@
+[
+  {"query": "Modernize the checkout flow's look without touching its logic", "should_trigger": true},
+  {"query": "Prototype a couple of bolder layout options for the home screen with fake data", "should_trigger": true},
+  {"query": "The app feels cramped on small screens; rework the layout responsively", "should_trigger": true},
+  {"query": "Implement the approved redesign spec exactly as written, with tests", "should_trigger": false},
+  {"query": "Why does the sidebar flicker on load? Find and fix it", "should_trigger": false},
+  {"query": "Draft a spec for a design system our team might adopt", "should_trigger": false}
+]

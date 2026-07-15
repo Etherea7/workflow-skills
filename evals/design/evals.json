@@ -1,0 +1,32 @@
+{
+  "skill": "wf-design",
+  "methodology": "Behavior case definitions for future paired live runs. The deterministic contract test is the current evidence; no model uplift claim is made.",
+  "evals": [
+    {
+      "id": 0,
+      "name": "overhaul-not-edit",
+      "prompt": "This dashboard works fine but looks dated and cluttered. Overhaul the design.",
+      "assertions": [
+        "Mode is recorded as overhaul with its rubric line, not edit.",
+        "The plan does not preserve the existing stylesheet or layout without a stated reason (backend contract, accessibility asset, or user instruction).",
+        "Requirements are gathered including the animation appetite, with consequential items set awaiting-human when not interactively confirmed.",
+        "Work happens in an isolated .worktrees/NNN-slug worktree on a design/NNN-slug branch, never directly in a protected checkout.",
+        "The Step 9 sanity-check table is filled with actual observed results, never claimed without evidence.",
+        "The anti-timidity rule is applied: component structure, stylesheets, or layout are not defaulted to preserved."
+      ]
+    },
+    {
+      "id": 1,
+      "name": "variants-mode",
+      "prompt": "Give me three different design directions for the landing page to compare locally.",
+      "assertions": [
+        "Exactly 3 variants are produced, each with a distinct design thesis, under design-variants/.",
+        "All variants use shared mock fixtures with zero network imports and no backend integration.",
+        "A COMPARE.md is produced with variant, thesis, run command, and what to check per variant.",
+        "No variant merges directly into the product; only a follow-up edit/overhaul run could graduate a chosen direction.",
+        "The checklist records the selection gate as awaiting-human when running interactively.",
+        "Requirements/mock-data plan are shared across variants so they show identical data."
+      ]
+    }
+  ]
+}
