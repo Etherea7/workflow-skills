@@ -1,0 +1,278 @@
+{
+  "schema_version": 1,
+  "benchmark_sha": "2616753",
+  "environment": {
+    "os": "Windows 10 Home 10.0.19045 (win32), Git Bash + PowerShell 5.1, Node 22, Python 3.11",
+    "sandbox": "NONE AVAILABLE. wsl.exe fails with Wsl/Service/CreateInstance/CreateVm/HCS/HCS_E_HYPERV_NOT_INSTALLED (\"Virtual Machine Platform\" optional component not enabled; Home edition has no Hyper-V). docker CLI 27.3.1 is present but `docker info`/`docker ps` fail with 'open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified' (the Linux engine cannot start without WSL2/Hyper-V). No podman binary on PATH. Per plan Step 1: 'If this boundary is unavailable, mark third-party trials NOT EVALUATED and select native-only; redirected environment variables alone are not a sandbox.' No third-party candidate code was installed or executed anywhere in this run.",
+    "network_policy": "Outbound network used only for read-only registry/API metadata lookups (npm view, PyPI JSON API, GitHub REST API) and one accidental `pip download` (see NOTES/deviation) that was deleted unopened and unexecuted. No provider install, no provider execution, no code upload."
+  },
+  "gold_answers": [
+    {
+      "id": "R1",
+      "repository": "dev-workflows",
+      "question": "Definition and importers of makeSuite",
+      "required_facts": [
+        "makeSuite is defined at evals/lib/test-kit.mjs:10 as `export function makeSuite(importMetaUrl, { depth = 2 } = {})`",
+        "Exactly 12 files call makeSuite(...): evals/debug/contract-test.mjs, evals/new-feature/contract-test.mjs, evals/install/installer-safety-test.mjs, evals/project-setup/completion-state-test.mjs, evals/project-setup/contract-test.mjs, evals/project-setup/resume-test.mjs, evals/project-setup/commit-gate-test.mjs, evals/next-step-improve/contract-test.mjs, evals/next-step-improve/secrets-test.mjs, evals/next-step-improve/reconciliation-test.mjs, evals/next-step-improve/index-test.mjs, evals/next-step-improve/evidence-test.mjs"
+      ],
+      "citations": ["evals/lib/test-kit.mjs:10"]
+    },
+    {
+      "id": "R2",
+      "repository": "dev-workflows",
+      "question": "Call path runTests -> discoverTests -> nested walk -> readdirSync",
+      "required_facts": [
+        "runTests is defined at scripts/run-deterministic-tests.mjs:37 and defaults its `tests` parameter to discoverTests()",
+        "discoverTests is defined at scripts/run-deterministic-tests.mjs:11 and declares a nested function walk at line 13",
+        "walk calls readdirSync(directory, { withFileTypes: true }).sort(...) at scripts/run-deterministic-tests.mjs:14"
+      ],
+      "citations": ["scripts/run-deterministic-tests.mjs:37", "scripts/run-deterministic-tests.mjs:11", "scripts/run-deterministic-tests.mjs:13", "scripts/run-deterministic-tests.mjs:14"]
+    },
+    {
+      "id": "R3",
+      "repository": "dev-workflows",
+      "question": "Tests/suites affected by changing CRLF normalization in makeSuite.read",
+      "required_facts": [
+        "The CRLF normalization lives in the `read` accessor makeSuite returns: `readFileSync(join(root, path), \"utf8\").replace(/\\r\\n/g, \"\\n\")` at evals/lib/test-kit.mjs:15",
+        "Every one of the 12 makeSuite(import.meta.url) consumers is a candidate for impact: evals/debug/contract-test.mjs, evals/new-feature/contract-test.mjs, evals/install/installer-safety-test.mjs, evals/project-setup/{completion-state-test.mjs,contract-test.mjs,resume-test.mjs,commit-gate-test.mjs}, evals/next-step-improve/{contract-test.mjs,secrets-test.mjs,reconciliation-test.mjs,index-test.mjs,evidence-test.mjs}"
+      ],
+      "citations": ["evals/lib/test-kit.mjs:15"]
+    },
+    {
+      "id": "R4",
+      "repository": "dev-workflows",
+      "question": "Validation entry points and their distinct responsibilities",
+      "required_facts": [
+        "scripts/validate.sh: orchestrator gate — runs `node scripts/validate.mjs`, then the official Agent Skills spec validator (agentskills/skills-ref) against each skills/*/",
+        "scripts/validate.mjs: repo format gate — Agent Skills spec compliance + suite conventions (no external deps)",
+        "scripts/check-encoding.sh: UTF-8 integrity gate — round-trip self-test plus cp1252-mojibake signature scan",
+        "scripts/secrets-check.sh: scans the staged git diff (added lines only) for credential patterns before commit",
+        "scripts/run-deterministic-tests.mjs: discovers and runs every evals/**/*-test.{mjs,py} suite",
+        "scripts/run-routing-evals.mjs: trigger-routing evals mapping skill-name keywords/aliases to catalogMap entries"
+      ],
+      "citations": ["scripts/validate.sh:1", "scripts/validate.mjs:2", "scripts/check-encoding.sh:1", "scripts/secrets-check.sh:1", "scripts/run-deterministic-tests.mjs:1", "scripts/run-routing-evals.mjs:1"]
+    },
+    {
+      "id": "R5",
+      "repository": "dev-workflows",
+      "question": "The skill vendoring rule and why a root-only adapter is invalid",
+      "required_facts": [
+        "installed skills must be self-contained: install.sh copies skills/* alone to user scope (~/.claude/skills/*, ~/.agents/skills/*)",
+        "anything a skill executes at runtime must live inside its own scripts/ directory",
+        "repo-root scripts/ holds only the canonical copies (plus this repo's own dev tooling) and is never copied to user scope",
+        "therefore a shared executable adapter living only at the repository root would not exist once a skill is installed standalone; canonical-script changes must be re-vendored into each skill, checked by the format gate"
+      ],
+      "citations": ["docs/ARCHITECTURE.md:38-42", "docs/ARCHITECTURE.md:12-14"]
+    },
+    {
+      "id": "R6",
+      "repository": "dev-workflows",
+      "question": "Where is Postgres transaction handling? (unsupported)",
+      "required_facts": [
+        "The repository contains no Postgres or transaction-handling content; the correct answer is an explicit abstain/not-found response, never a fabricated citation"
+      ],
+      "citations": []
+    },
+    {
+      "id": "F1",
+      "repository": "roadmap-fixture",
+      "question": "Definition and direct test reference for enqueue",
+      "required_facts": [
+        "enqueue is defined at src/queue.js:1 as `export function enqueue(queue, item) { queue.push(item); return queue.length; }`",
+        "test/queue.test.js imports enqueue at line 3 and exercises it in a test at line 4"
+      ],
+      "citations": ["src/queue.js:1", "test/queue.test.js:3", "test/queue.test.js:4"]
+    },
+    {
+      "id": "F2",
+      "repository": "roadmap-fixture",
+      "question": "Find queueSize after it is added and committed to src/queue.js, without a clean rebuild",
+      "required_facts": [
+        "After committing `export function queueSize(queue) { return queue.length; }` as line 2 of src/queue.js (commit 25a57f9344669080fbb2b5e532e6e250f2cb096b), queueSize must be discoverable citing src/queue.js:2 without any index reset/rebuild step"
+      ],
+      "citations": ["src/queue.js:2"]
+    },
+    {
+      "id": "D1",
+      "repository": "roadmap-fixture",
+      "question": "Initial generated docs contain the enqueue signature and return behavior with a source citation",
+      "required_facts": [
+        "A generated/maintained page states the enqueue(queue, item) signature",
+        "The page states enqueue appends one item and returns the queue length",
+        "The page cites src/queue.js:1"
+      ],
+      "citations": ["src/queue.js:1"],
+      "generated_page": "docs/queue.md"
+    },
+    {
+      "id": "D2",
+      "repository": "roadmap-fixture",
+      "question": "After F2, the same generated page also documents queueSize with a citation and retains the correct enqueue fact",
+      "required_facts": [
+        "docs/queue.md documents the exact queueSize(queue) signature",
+        "docs/queue.md states queueSize returns the current queue length",
+        "docs/queue.md cites src/queue.js:2",
+        "docs/queue.md still correctly documents enqueue (no regression)"
+      ],
+      "citations": ["src/queue.js:2"],
+      "generated_page": "docs/queue.md"
+    }
+  ],
+  "trials": [
+    {
+      "provider": "native",
+      "role": "code",
+      "version": "n/a (ripgrep 15.1.0 + git + Node fs, already present on PATH)",
+      "source": "repository-native tooling",
+      "license": "n/a",
+      "status": "PASS",
+      "hard_gates": {
+        "license": true,
+        "local_boundary": true,
+        "citations": true,
+        "freshness": true,
+        "no_host_mutation": true,
+        "fallback": true,
+        "read_only": true
+      },
+      "runs": [
+        { "query_id": "R1", "attempt": 1, "calls": ["rg -n \"export function makeSuite\" evals/lib/test-kit.mjs", "rg -l \"makeSuite\\(\" evals -g *.mjs"], "elapsed_ms": 27.88, "output_bytes": 568, "correct": true, "fully_cited": true, "citations": ["evals/lib/test-kit.mjs:10"], "notes": "12 importer files listed, matches gold set" },
+        { "query_id": "R1", "attempt": 2, "calls": ["rg -n \"export function makeSuite\" evals/lib/test-kit.mjs", "rg -l \"makeSuite\\(\" evals -g *.mjs"], "elapsed_ms": 30.82, "output_bytes": 568, "correct": true, "fully_cited": true, "citations": ["evals/lib/test-kit.mjs:10"], "notes": "order of rg -l output is non-deterministic (filesystem enumeration order) but set membership is identical" },
+        { "query_id": "R1", "attempt": 3, "calls": ["rg -n \"export function makeSuite\" evals/lib/test-kit.mjs", "rg -l \"makeSuite\\(\" evals -g *.mjs"], "elapsed_ms": 27.17, "output_bytes": 568, "correct": true, "fully_cited": true, "citations": ["evals/lib/test-kit.mjs:10"], "notes": "" },
+        { "query_id": "R2", "attempt": 1, "calls": ["rg -n \"export function runTests\" scripts/run-deterministic-tests.mjs", "rg -n \"function discoverTests|function walk\\(|readdirSync\" scripts/run-deterministic-tests.mjs"], "elapsed_ms": 19.68, "output_bytes": 313, "correct": true, "fully_cited": true, "citations": ["scripts/run-deterministic-tests.mjs:37", "scripts/run-deterministic-tests.mjs:11", "scripts/run-deterministic-tests.mjs:13", "scripts/run-deterministic-tests.mjs:14"], "notes": "" },
+        { "query_id": "R2", "attempt": 2, "calls": ["rg -n \"export function runTests\" scripts/run-deterministic-tests.mjs", "rg -n \"function discoverTests|function walk\\(|readdirSync\" scripts/run-deterministic-tests.mjs"], "elapsed_ms": 21.07, "output_bytes": 313, "correct": true, "fully_cited": true, "citations": ["scripts/run-deterministic-tests.mjs:37", "scripts/run-deterministic-tests.mjs:11", "scripts/run-deterministic-tests.mjs:13", "scripts/run-deterministic-tests.mjs:14"], "notes": "" },
+        { "query_id": "R2", "attempt": 3, "calls": ["rg -n \"export function runTests\" scripts/run-deterministic-tests.mjs", "rg -n \"function discoverTests|function walk\\(|readdirSync\" scripts/run-deterministic-tests.mjs"], "elapsed_ms": 21.45, "output_bytes": 313, "correct": true, "fully_cited": true, "citations": ["scripts/run-deterministic-tests.mjs:37", "scripts/run-deterministic-tests.mjs:11", "scripts/run-deterministic-tests.mjs:13", "scripts/run-deterministic-tests.mjs:14"], "notes": "" },
+        { "query_id": "R3", "attempt": 1, "calls": ["rg -n \"replace\\(/\\\\r\\\\n/g\" evals/lib/test-kit.mjs", "rg -l \"makeSuite\\(import.meta.url\" evals -g *.mjs"], "elapsed_ms": 31.42, "output_bytes": 570, "correct": true, "fully_cited": true, "citations": ["evals/lib/test-kit.mjs:15"], "notes": "12 consumer files listed, matches gold set" },
+        { "query_id": "R3", "attempt": 2, "calls": ["rg -n \"replace\\(/\\\\r\\\\n/g\" evals/lib/test-kit.mjs", "rg -l \"makeSuite\\(import.meta.url\" evals -g *.mjs"], "elapsed_ms": 27.81, "output_bytes": 570, "correct": true, "fully_cited": true, "citations": ["evals/lib/test-kit.mjs:15"], "notes": "" },
+        { "query_id": "R3", "attempt": 3, "calls": ["rg -n \"replace\\(/\\\\r\\\\n/g\" evals/lib/test-kit.mjs", "rg -l \"makeSuite\\(import.meta.url\" evals -g *.mjs"], "elapsed_ms": 27.22, "output_bytes": 570, "correct": true, "fully_cited": true, "citations": ["evals/lib/test-kit.mjs:15"], "notes": "" },
+        { "query_id": "R4", "attempt": 1, "calls": ["rg -n \"^#!/usr/bin/env|^# \" scripts/validate.sh scripts/validate.mjs scripts/check-encoding.sh scripts/secrets-check.sh scripts/run-deterministic-tests.mjs scripts/run-routing-evals.mjs -m 3"], "elapsed_ms": 14.39, "output_bytes": 767, "correct": true, "fully_cited": true, "citations": ["scripts/validate.sh:1", "scripts/validate.mjs:1", "scripts/check-encoding.sh:1", "scripts/secrets-check.sh:1", "scripts/run-deterministic-tests.mjs:1", "scripts/run-routing-evals.mjs:1"], "notes": "header comments give distinct one-line responsibilities for each gate" },
+        { "query_id": "R4", "attempt": 2, "calls": ["rg -n \"^#!/usr/bin/env|^# \" scripts/validate.sh scripts/validate.mjs scripts/check-encoding.sh scripts/secrets-check.sh scripts/run-deterministic-tests.mjs scripts/run-routing-evals.mjs -m 3"], "elapsed_ms": 16.68, "output_bytes": 767, "correct": true, "fully_cited": true, "citations": ["scripts/validate.sh:1", "scripts/validate.mjs:1", "scripts/check-encoding.sh:1", "scripts/secrets-check.sh:1", "scripts/run-deterministic-tests.mjs:1", "scripts/run-routing-evals.mjs:1"], "notes": "" },
+        { "query_id": "R4", "attempt": 3, "calls": ["rg -n \"^#!/usr/bin/env|^# \" scripts/validate.sh scripts/validate.mjs scripts/check-encoding.sh scripts/secrets-check.sh scripts/run-deterministic-tests.mjs scripts/run-routing-evals.mjs -m 3"], "elapsed_ms": 15.1, "output_bytes": 767, "correct": true, "fully_cited": true, "citations": ["scripts/validate.sh:1", "scripts/validate.mjs:1", "scripts/check-encoding.sh:1", "scripts/secrets-check.sh:1", "scripts/run-deterministic-tests.mjs:1", "scripts/run-routing-evals.mjs:1"], "notes": "" },
+        { "query_id": "R5", "attempt": 1, "calls": ["rg -n -A 5 \"Vendoring rule\" docs/ARCHITECTURE.md"], "elapsed_ms": 10.25, "output_bytes": 422, "correct": true, "fully_cited": true, "citations": ["docs/ARCHITECTURE.md:38"], "notes": "" },
+        { "query_id": "R5", "attempt": 2, "calls": ["rg -n -A 5 \"Vendoring rule\" docs/ARCHITECTURE.md"], "elapsed_ms": 10.31, "output_bytes": 422, "correct": true, "fully_cited": true, "citations": ["docs/ARCHITECTURE.md:38"], "notes": "" },
+        { "query_id": "R5", "attempt": 3, "calls": ["rg -n -A 5 \"Vendoring rule\" docs/ARCHITECTURE.md"], "elapsed_ms": 10.26, "output_bytes": 422, "correct": true, "fully_cited": true, "citations": ["docs/ARCHITECTURE.md:38"], "notes": "" },
+        { "query_id": "R6", "attempt": 1, "calls": ["rg -i postgres -g !.git"], "elapsed_ms": 10.67, "output_bytes": 0, "correct": true, "fully_cited": true, "citations": [], "notes": "rg exits 1 (no match); correct behavior is explicit abstain, not fabrication" },
+        { "query_id": "R6", "attempt": 2, "calls": ["rg -i postgres -g !.git"], "elapsed_ms": 10.38, "output_bytes": 0, "correct": true, "fully_cited": true, "citations": [], "notes": "" },
+        { "query_id": "R6", "attempt": 3, "calls": ["rg -i postgres -g !.git"], "elapsed_ms": 10.56, "output_bytes": 0, "correct": true, "fully_cited": true, "citations": [], "notes": "" },
+        { "query_id": "F1", "attempt": 1, "calls": ["rg -n \"function enqueue\" src/queue.js", "rg -n enqueue test/queue.test.js"], "elapsed_ms": 20.84, "output_bytes": 213, "correct": true, "fully_cited": true, "citations": ["src/queue.js:1", "test/queue.test.js:3", "test/queue.test.js:4"], "notes": "" },
+        { "query_id": "F1", "attempt": 2, "calls": ["rg -n \"function enqueue\" src/queue.js", "rg -n enqueue test/queue.test.js"], "elapsed_ms": 20.34, "output_bytes": 213, "correct": true, "fully_cited": true, "citations": ["src/queue.js:1", "test/queue.test.js:3", "test/queue.test.js:4"], "notes": "" },
+        { "query_id": "F1", "attempt": 3, "calls": ["rg -n \"function enqueue\" src/queue.js", "rg -n enqueue test/queue.test.js"], "elapsed_ms": 20.38, "output_bytes": 213, "correct": true, "fully_cited": true, "citations": ["src/queue.js:1", "test/queue.test.js:3", "test/queue.test.js:4"], "notes": "" },
+        { "query_id": "F2", "attempt": 1, "calls": ["rg -n \"function queueSize\" src/queue.js", "git log -1 --format=%H %ci -- src/queue.js"], "elapsed_ms": 27.3, "output_bytes": 127, "correct": true, "fully_cited": true, "citations": ["src/queue.js:2"], "notes": "found with zero rebuild/index step; git log confirms head is the F2 commit 25a57f9" },
+        { "query_id": "F2", "attempt": 2, "calls": ["rg -n \"function queueSize\" src/queue.js", "git log -1 --format=%H %ci -- src/queue.js"], "elapsed_ms": 28.04, "output_bytes": 127, "correct": true, "fully_cited": true, "citations": ["src/queue.js:2"], "notes": "" },
+        { "query_id": "F2", "attempt": 3, "calls": ["rg -n \"function queueSize\" src/queue.js", "git log -1 --format=%H %ci -- src/queue.js"], "elapsed_ms": 27.11, "output_bytes": 127, "correct": true, "fully_cited": true, "citations": ["src/queue.js:2"], "notes": "" }
+      ],
+      "scores": { "correctness": 100, "provenance": 100, "safety_privacy": 100, "portable_integration": 100, "freshness": 100, "setup_latency": 100, "weighted_total": 100 },
+      "files_written": [],
+      "network_observation": "none; rg/git operate entirely on local disk"
+    },
+    {
+      "provider": "native-maintained-docs",
+      "role": "documentation",
+      "version": "n/a (hand-maintained Markdown, committed as repository content)",
+      "source": "repository-native, docs/queue.md in roadmap-fixture",
+      "license": "n/a",
+      "status": "PASS",
+      "hard_gates": {
+        "license": true,
+        "local_boundary": true,
+        "citations": true,
+        "freshness": false,
+        "no_host_mutation": true,
+        "fallback": true,
+        "read_only": true
+      },
+      "runs": [
+        { "query_id": "D1", "attempt": 1, "calls": ["git show 221b9aa:docs/queue.md"], "elapsed_ms": 0, "output_bytes": 116, "correct": true, "fully_cited": true, "citations": ["src/queue.js:1"], "notes": "generated_page = docs/queue.md; enqueue signature, return-behavior, and citation all present at commit 221b9aa (docs: add queue API baseline)" },
+        { "query_id": "D2", "attempt": 1, "calls": ["cat docs/queue.md (post-F2, no refresh run)", "rg -n queueSize docs/queue.md"], "elapsed_ms": 0, "output_bytes": 0, "correct": false, "fully_cited": false, "citations": [], "notes": "FAIL as expected: docs/queue.md was never told to regenerate after F2, so it retains the correct enqueue fact but has zero mention of queueSize/src/queue.js:2. This is not a bug in the native path -- it demonstrates the exact gap a maintained-docs *provider* would need to close, and is why the documentation role stays native-only pending an evaluated provider." }
+      ],
+      "scores": { "correctness": 57, "provenance": 100, "safety_privacy": 100, "portable_integration": 100, "freshness": 0, "setup_latency": 100, "weighted_total": 68 },
+      "files_written": ["docs/queue.md (committed once, manually, before any provider run; never regenerated)"],
+      "network_observation": "none"
+    },
+    {
+      "provider": "CodeGraph",
+      "role": "code",
+      "version": "1.4.1 (npm dist-tag latest, checked 2026-07-14)",
+      "source": "npm @colbymchenry/codegraph; maintainer colbymchenry <me@colbymchenry.com> matches claimed repo owner; github.com/colbymchenry/codegraph confirmed to exist (GitHub API 200)",
+      "license": "MIT",
+      "status": "NOT EVALUATED",
+      "hard_gates": { "license": true, "local_boundary": null, "citations": null, "freshness": null, "no_host_mutation": null, "fallback": true, "read_only": null },
+      "runs": [],
+      "scores": { "correctness": null, "provenance": null, "safety_privacy": null, "portable_integration": null, "freshness": null, "setup_latency": null, "weighted_total": null },
+      "files_written": [],
+      "network_observation": "not run",
+      "not_evaluated_reason": "No functional container/VM boundary exists on this machine: wsl.exe fails with HCS_E_HYPERV_NOT_INSTALLED (Virtual Machine Platform not enabled; Windows 10 Home has no Hyper-V), and `docker info`/`docker ps` fail with 'open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified' (Linux engine cannot start without WSL2/Hyper-V). Per the plan's own Step 1 fallback, this candidate is recorded via package metadata only (version/license/repository tie verified) and never installed or executed."
+    },
+    {
+      "provider": "Graphify",
+      "role": "code",
+      "version": "0.9.15 latest on PyPI (checked 2026-07-14); 0.3.20 already present in this host's C:\\Python311 site-packages from before this session (see NOTES)",
+      "source": "PyPI graphifyy; PyPI project_urls.Repository = https://github.com/safishamsi/graphify, which GitHub's API confirms was renamed/transferred to https://github.com/Graphify-Labs/graphify (same repository ID 1200597263, 301 redirect) -- the plan's claimed repo is the correct current location of the same project",
+      "license": "MIT",
+      "status": "NOT EVALUATED",
+      "hard_gates": { "license": true, "local_boundary": null, "citations": null, "freshness": null, "no_host_mutation": null, "fallback": true, "read_only": null },
+      "runs": [],
+      "scores": { "correctness": null, "provenance": null, "safety_privacy": null, "portable_integration": null, "freshness": null, "setup_latency": null, "weighted_total": null },
+      "files_written": [],
+      "network_observation": "not run",
+      "not_evaluated_reason": "Same sandbox-unavailability reason as CodeGraph. Additionally, a version of this exact package (graphifyy 0.3.20) was already installed in this host machine's global Python 3.11 site-packages before this session began -- not installed by this run, not invoked by this run, and not removed by this run (uninstalling a pre-existing host package is outside this spike's scope; see NOTES)."
+    },
+    {
+      "provider": "Serena",
+      "role": "code",
+      "version": "1.5.3 latest on PyPI (checked 2026-07-14)",
+      "source": "PyPI serena-agent; PyPI project_urls.Homepage = https://github.com/oraios/serena, matching the plan's claimed repo exactly; not installed (verified via `pip show serena-agent` -> not found) after an accidental download was deleted, see NOTES",
+      "license": "MIT",
+      "status": "NOT EVALUATED",
+      "hard_gates": { "license": true, "local_boundary": null, "citations": null, "freshness": null, "no_host_mutation": null, "fallback": true, "read_only": null },
+      "runs": [],
+      "scores": { "correctness": null, "provenance": null, "safety_privacy": null, "portable_integration": null, "freshness": null, "setup_latency": null, "weighted_total": null },
+      "files_written": [],
+      "network_observation": "not run",
+      "not_evaluated_reason": "Same sandbox-unavailability reason as CodeGraph. Serena additionally requires a provably read-only tool subset (edit/shell tools disabled) for the explorer role per the plan; that restricted-mode configuration was never attempted since no isolated boundary exists to run it in."
+    },
+    {
+      "provider": "OpenWiki",
+      "role": "documentation",
+      "version": "0.1.2 latest on npm (checked 2026-07-14)",
+      "source": "npm openwiki; maintainer basproul <braceasproul@gmail.com> confirmed as GitHub contributor 'bracesproul' to github.com/langchain-ai/openwiki (verified via GitHub API contributors list), matching the plan's claimed repo",
+      "license": "MIT",
+      "status": "NOT EVALUATED",
+      "hard_gates": { "license": true, "local_boundary": null, "citations": null, "freshness": null, "no_host_mutation": null, "fallback": true, "read_only": null },
+      "runs": [],
+      "scores": { "correctness": null, "provenance": null, "safety_privacy": null, "portable_integration": null, "freshness": null, "setup_latency": null, "weighted_total": null },
+      "files_written": [],
+      "network_observation": "not run",
+      "not_evaluated_reason": "Model-backed doc generation is an explicitly separate, operator-approved exception per the plan (own provider destination + a temporary scoped credential) on top of requiring the sandbox boundary; neither the container/VM boundary nor an operator cost/credential approval exists in this session, so OpenWiki was never invoked. Per the plan's own rule ('OpenWiki must complete both docs runs or the documentation decision is native-only'), a single missing run alone already forces documentation = native-only."
+    },
+    {
+      "provider": "code-graph-mcp",
+      "role": "code",
+      "version": "0.2.7 latest on npm (checked 2026-07-14)",
+      "source": "npm code-graph-mcp; reserve challenger only, per plan used only if a required trial cannot start for platform reasons (not applicable here -- all four required trials are NOT EVALUATED for the sandbox reason, none failed to start on this platform, so promoting the reserve is not authorized)",
+      "license": "MIT",
+      "status": "NOT EVALUATED",
+      "hard_gates": { "license": null, "local_boundary": null, "citations": null, "freshness": null, "no_host_mutation": null, "fallback": true, "read_only": null },
+      "runs": [],
+      "scores": { "correctness": null, "provenance": null, "safety_privacy": null, "portable_integration": null, "freshness": null, "setup_latency": null, "weighted_total": null },
+      "files_written": [],
+      "network_observation": "not run",
+      "not_evaluated_reason": "Reserve challenger, not required, and not promoted (see source note). Also flagged for an unresolved provenance gap: the npm package's own author field is 'Kynlo Akari (https://github.com/Kynlos)', but https://github.com/Kynlos/code-graph-mcp returns HTTP 404 -- it does not match the plan's claimed repository owner github.com/sdsrss/code-graph-mcp (which does exist, HTTP 200, with a thematically consistent description). This identity could not be independently reconciled from public metadata alone and would need direct maintainer confirmation before any future trial."
+    },
+    {
+      "provider": "jCodeMunch",
+      "role": "code",
+      "version": "not queried (commercial/non-commercial-only license per plan)",
+      "source": "recorded by name only per plan instruction; not trialed",
+      "license": "commercial / non-commercial-only (per plan's own characterization, not independently re-verified)",
+      "status": "NOT EVALUATED",
+      "hard_gates": { "license": false, "local_boundary": null, "citations": null, "freshness": null, "no_host_mutation": null, "fallback": true, "read_only": null },
+      "runs": [],
+      "scores": { "correctness": null, "provenance": null, "safety_privacy": null, "portable_integration": null, "freshness": null, "setup_latency": null, "weighted_total": null },
+      "files_written": [],
+      "network_observation": "not run",
+      "not_evaluated_reason": "Plan explicitly says: 'Record, but do not trial, commercial/non-commercial-only tools such as jCodeMunch.' Would fail hard gate 1 (OSI-approved license permitting commercial redistribution/use) on its face even if trialed."
+    }
+  ],
+  "decision": { "code": "native-only", "documentation": "native-only" }
+}
