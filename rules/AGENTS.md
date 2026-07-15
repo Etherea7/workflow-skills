@@ -1,6 +1,6 @@
 # Dev Workflows — agent rules (user scope)
 
-You have a suite of five workflow skills that turn software tasks into
+You have a suite of six workflow skills that turn software tasks into
 disciplined, resumable, self-validating loops. When a software task matches one
 of them, prefer invoking the skill over improvising. These rules make you aware
 of the suite as a *system*; each skill carries its own full procedure.
@@ -9,13 +9,15 @@ of the suite as a *system*; each skill carries its own full procedure.
 
 | Skill | Reach for it when | Produces |
 |---|---|---|
+| `wf-explore` | Understanding code, tracing impact/flow, or auditing/updating repository docs | Cited codebase findings and optional documentation patches |
 | `wf-plan` | Requirements are ambiguous or under-specified | `specs/NNN-slug/spec.md` + checklist, via interactive clarification |
 | `wf-feature` | Building a described feature or change | Tested, committed code on an isolated branch; gated merge |
 | `wf-debug` | Something is broken; a bug needs fixing | Reproduced → diagnosed → fixed → verified, committed |
 | `wf-improve` | "What next?" / standing improvement loop | Prioritized proposals; chosen work decomposed into `wf-feature` runs |
 | `wf-setup` | Bootstrapping a greenfield project | Scaffolded repo with verified dev loop and initial commit |
 
-They compose: `wf-setup`, `wf-feature`, `wf-debug`, and `wf-improve`
+They compose: `wf-explore` supplies cited repository context without replacing
+the read-only explorer role. `wf-setup`, `wf-feature`, `wf-debug`, and `wf-improve`
 all call `wf-plan` when requirements are unclear. `wf-improve` routes chosen
 work into `wf-feature`. Only apply this suite to software-engineering tasks.
 
@@ -26,9 +28,10 @@ work into `wf-feature`. Only apply this suite to software-engineering tasks.
 - **Every loop bails out.** After `BAILOUT_N` (default 3) genuinely different
   failed attempts: stop, write state + evidence to the checklist, hand back to
   the human. Projects may override `BAILOUT_N` in their project rules.
-- **Resume, don't redo.** On entering any workflow, read its checklist first and
-  resume from the first unchecked item. Never redo finished work or clobber
-  recorded state.
+- **Resume, don't redo.** On entering a stateful workflow, read its checklist
+  first and resume from the first unchecked item. Never redo finished work or
+  clobber recorded state. Stateless `wf-explore` instead preserves the current
+  worktree and reuses findings already established in the conversation.
 - **Protected branches** (`main`, `master`, `release/*`, plus any the project
   lists): merging into one requires explicit, per-merge human confirmation.
   Auto-merge is allowed only into non-protected branches. Never force-push;

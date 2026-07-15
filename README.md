@@ -4,23 +4,25 @@ Portable workflow skills that turn AI coding agents—Claude Code, Codex, and
 other [Agent Skills](https://agentskills.io)-compatible hosts—into disciplined,
 resumable, self-validating software engineers.
 
-> **Status: pre-v1.** All five workflow bodies are implemented and deterministic
-> validation runs in CI. Live trigger/behavior feedback and final v1 sign-off
-> remain release gates; see [docs/BUILD-CHECKLIST.md](docs/BUILD-CHECKLIST.md).
+> **Status: v1.1 development.** The original five workflows shipped in v1.0.0;
+> `wf-explore` is implemented with deterministic validation, while its live
+> trigger/behavior feedback remains a follow-up gate.
 
-## The five workflows
+## The six skills
 
 | Skill | What it does |
 |---|---|
+| `wf-explore` | Prompts for a codebase exploration/documentation outcome, then returns or writes cited repository context |
 | `wf-plan` | Turns ambiguous requirements into a testable spec through interactive clarification |
 | `wf-feature` | Takes a ready spec through an isolated worktree, tests-first implementation, verification, and a gated merge |
 | `wf-debug` | Reproduces a defect, investigates bounded hypotheses, and applies a verified fix only when requested |
 | `wf-improve` | Surveys repository truth, ranks next actions, and decomposes the selected work |
 | `wf-setup` | Bootstraps a greenfield repository with project rules, a scaffold, a verified development loop, and a safe initial commit |
 
-Every workflow shares one spine—resume, gather, plan, act in a bounded feedback
-loop, validate, and persist. A passing result must be observed, failed loops
-bail out with durable state, and interrupted work resumes from its checklist.
+The five stateful delivery workflows share one spine—resume, gather, plan, act
+in a bounded feedback loop, validate, and persist. `wf-explore` is a bounded,
+native-first evidence workflow: it stays read-only unless documentation changes
+are selected and never makes optional graph/wiki tooling mandatory.
 
 ### Name migration
 
@@ -72,7 +74,7 @@ From Git Bash on Windows, or Bash on macOS/Linux:
 ./install.sh --uninstall
 ```
 
-The installer copies the five skills to `~/.claude/skills/` and
+The installer copies the six skills to `~/.claude/skills/` and
 `~/.agents/skills/`, installs suite-level Claude rules, and maintains a bounded
 block in `~/.codex/AGENTS.md` while preserving user content. It proves ownership
 before replacing or deleting skills, stages all copies before swapping them,
@@ -99,7 +101,7 @@ replacement for live host trigger and behavior evaluation.
 
 ## Layout
 
-- `skills/` — five namespaced workflow skills
+- `skills/` — six namespaced software workflow skills
 - `rules/` — canonical suite rules and Delegation Protocol
 - `templates/` — spec, plan, task, checklist, constitution, index, and project-rule templates
 - `scripts/` — validation, routing, deterministic-test, credential, and numbering tools

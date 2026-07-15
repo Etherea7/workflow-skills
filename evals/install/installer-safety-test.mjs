@@ -11,7 +11,7 @@ const bash = process.env.BASH_PATH || [
   "C:\\Program Files\\Git\\bin\\bash.exe", "/bin/bash"
 ].find(existsSync);
 if (!bash) throw new Error("Bash is required for installer safety tests");
-const names = ["wf-debug", "wf-feature", "wf-improve", "wf-plan", "wf-setup"];
+const names = ["wf-debug", "wf-explore", "wf-feature", "wf-improve", "wf-plan", "wf-setup"];
 const scratch = mkdtempSync(join(tmpdir(), "dwv-install-test-"));
 let checks = 0;
 const check = (value, message) => { checks += 1; checkThrow(value, message); };
@@ -65,8 +65,8 @@ try {
   const normal = fixture("normal");
   let result = run(normal);
   check(result.status === 0, `first install failed: ${result.stderr}`);
-  check(JSON.stringify(dirs(normal.claude)) === JSON.stringify(names), "Claude did not receive exactly five namespaced skills");
-  check(JSON.stringify(dirs(normal.agents)) === JSON.stringify(names), "Codex did not receive exactly five namespaced skills");
+  check(JSON.stringify(dirs(normal.claude)) === JSON.stringify(names), "Claude did not receive exactly six namespaced skills");
+  check(JSON.stringify(dirs(normal.agents)) === JSON.stringify(names), "Codex did not receive exactly six namespaced skills");
   writeFileSync(join(normal.claude, "wf-debug", "local-only.txt"), "stale", "utf8");
   result = run(normal);
   check(result.status === 0 && !existsSync(join(normal.claude, "wf-debug", "local-only.txt")), "reinstall did not replace an owned copy");

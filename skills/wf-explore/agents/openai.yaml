@@ -1,0 +1,4 @@
+interface:
+  display_name: "Explore Codebase"
+  short_description: "Explore code and maintain cited documentation"
+  default_prompt: "Use $wf-explore to help me choose and perform a codebase exploration or documentation task."

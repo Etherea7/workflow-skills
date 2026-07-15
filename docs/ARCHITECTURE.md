@@ -43,7 +43,7 @@ canonical script changes, re-vendor (checked by the format gate as skills land).
 
 ## The shared spine
 
-Every workflow implements:
+The five stateful delivery workflows implement:
 
 ```
 read checklist (resume) → gather/clarify → gain context → plan
@@ -59,6 +59,7 @@ read checklist (resume) → gather/clarify → gain context → plan
 ## Composition
 
 ```
+wf-explore ──cited code/docs context──► user or owning workflow
 wf-improve ──chooses work──► wf-feature ──ambiguity──► wf-plan
 wf-setup ────requirements────► wf-plan                        │
 wf-debug ─────────────ambiguity──────► wf-plan ◄──────────────────────┘
@@ -67,7 +68,10 @@ wf-debug ─────────────ambiguity──────► w
 `wf-plan` is the shared clarification subroutine; it emits `spec.md` (requirements
 as testable statements) + `checklist.md`, and runs a consistency pass before
 handing off. `wf-improve` owns `specs/INDEX.md` (always regenerated from
-directory truth, never hand-edited).
+directory truth, never hand-edited). `wf-explore` is the stateless supplemental
+workflow: it chooses among code mapping, flow/impact tracing, documentation
+audit, and documentation updates, then returns verified evidence to the user or
+owning workflow. It does not replace delegated read-only exploration.
 
 ## Delegation
 

@@ -15,8 +15,8 @@ spec.loader.exec_module(module)
 
 checks = 0
 
-# --- exact attribution across all five public skill names ---
-PUBLIC_NAMES = ["wf-plan", "wf-feature", "wf-debug", "wf-improve", "wf-setup"]
+# --- exact attribution across all six public skill names ---
+PUBLIC_NAMES = ["wf-plan", "wf-explore", "wf-feature", "wf-debug", "wf-improve", "wf-setup"]
 
 for name in PUBLIC_NAMES:
     assert module.exact_skill_call([
@@ -33,7 +33,7 @@ for name in PUBLIC_NAMES:
     ], name), f"expected exact match for SlashCommand input /{name!r}"
     checks += 1
 
-    # rejects each of the other four public names
+    # rejects each of the other public names
     for other in PUBLIC_NAMES:
         if other == name:
             continue

@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 export const catalogMap = Object.freeze({
+  "wf-explore": "evals/explore",
   "wf-plan": "evals/plan",
   "wf-feature": "evals/new-feature",
   "wf-debug": "evals/debug",

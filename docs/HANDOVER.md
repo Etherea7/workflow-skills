@@ -1,12 +1,12 @@
 # HANDOVER — resume here
 
 This is the cold-start guide for the next Claude, Codex, or human session.
-Updated: 2026-07-14, after the release-hardening merge (`5d7d2fe`).
+Updated: 2026-07-15, after adding the native `wf-explore` workflow.
 
-Dev Workflows is a public-ready suite of five portable Agent Skills for
-disciplined, resumable software work: `wf-plan`, `wf-feature`, `wf-debug`,
-`wf-improve`, and `wf-setup`. The repository supports Claude Code and Codex,
-with host-specific rules and native plugin manifests.
+Dev Workflows is a suite of six portable Agent Skills for disciplined software
+work: `wf-explore`, `wf-plan`, `wf-feature`, `wf-debug`, `wf-improve`, and
+`wf-setup`. The repository supports Claude Code and Codex, with host-specific
+rules and native plugin manifests.
 
 ## Read order
 
@@ -25,26 +25,24 @@ with host-specific rules and native plugin manifests.
 
 ## Current state
 
-- M0–M5 are implemented, reviewed, accepted, and merged. Release hardening at
-  `5d7d2fe` namespaced the public suite to the five `wf-*` names above. Later
-  approved work unified the live trigger harness, pinned the CI validator, and
-  extracted shared deterministic-test utilities.
+- M0–M6 and the original five workflows are implemented, reviewed, released as
+  `v1.0.0`, and merged. Release hardening at `5d7d2fe` introduced their public
+  `wf-*` names. `wf-explore` is the sixth, post-v1 skill: a native-first
+  codebase exploration and documentation workflow based on plan 007's
+  `native-only` decision.
 - Historical evidence remains under `evals/<legacy-name>/` intentionally. Those
   directory names are records, not public skill identifiers. Live trigger runs
   now use `evals/lib/trigger_harness.py` through each directory's
   `run-triggers.py`; the executable queue is [`evals/BACKLOG.md`](../evals/BACKLOG.md).
-- Claude and Codex plugin manifests exist at version `0.1.0`. Version `1.0.0`,
-  a real publication coordinate, and tag `v1.0.0` belong to the M6 release.
+- Claude and Codex plugin manifests advance together to `1.1.0` for the sixth
+  skill. The published/tagged baseline remains `v1.0.0` until a separate
+  release action is approved.
 - CI runs `scripts/run-deterministic-tests.mjs` in addition to structural,
   catalog, shell, installer, and manifest validation. The official
   `skills-ref` fallback is pinned to `0.1.1`.
-- Open feedback work remains open even though M2–M5 human gates were accepted:
-  unified-harness trigger calibration/holdout runs, M2/M3 scan-sensitive live
-  behavior reruns, and M5 paired live behavior runs. Do not relabel aborted or
-  unexecuted runs as passed.
-- M6 still requires release-candidate live trigger/behavior feedback plus final
-  CI, the `v1.0.0` tag, and explicit final sign-off. BUILD-CHECKLIST owns the
-  authoritative ticks; BACKLOG owns the detailed live-run queue.
+- Open live feedback remains follow-up work, now including `wf-explore` trigger
+  and behavior runs. Do not relabel aborted or unexecuted runs as passed;
+  BACKLOG owns the detailed live-run queue.
 
 ## Operational knowledge
 

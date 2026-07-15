@@ -3,33 +3,34 @@
 Sequenced follow-on work for the workflow suite. None of the deferred items is
 required to complete the present release-hardening change.
 
-## 1. Native package groundwork (delivered for v1)
+## 1. Native package groundwork (delivered)
 
 The repository now carries matching Claude and Codex plugin manifests for the
-five `wf-*` skills. They remain at version `0.1.0` while live behavior feedback
-and final v1 sign-off are open. At release, bump both manifests together to
-`1.0.0` and add only real publication coordinates.
+six `wf-*` skills. The original suite shipped at `1.0.0`; adding `wf-explore`
+advances both manifests together to `1.1.0`.
 
 The rules-aware `install.sh` remains supported because plugin/skills loading
 does not necessarily place the suite-level Delegation Protocol and guardrails
 in each host's global guidance.
 
-## 2. Next likely update: code graphs plus documentation context
+## 2. Exploration layer: native workflow delivered, providers deferred
 
-Develop graph-based code exploration and deeper documentation/OpenWiki context
-as one coherent exploration layer. These are supplemental capabilities used by
-the five workflows' context-gathering steps, not replacement macro workflows.
+`wf-explore` now provides the user-facing exploration/documentation chooser and
+the generic `definition`, `references`, `flow`, `impact`, `architecture`, and
+`documentation` capability contract. It is native-first and supplemental: it
+does not replace the five stateful macro workflows or their explorer delegation.
 
-- **CodeGraph** (verified July 2026): `npm i -g @colbymchenry/codegraph`, then
-  `codegraph install` and `codegraph init`. Its symbol, call-path, and blast-
-  radius context can augment the read-only explorer role when available.
-- Evaluate Graphify and similar alternatives before choosing a stable adapter.
-- Let `wf-setup` optionally initialize OpenWiki and its refresh automation.
-- Let `wf-feature`, `wf-debug`, and `wf-improve` read or refresh the wiki as a
-  context source alongside code, specs, and `specs/INDEX.md`.
+The provider decision remains `native-only`, driven by NOT EVALUATED results,
+not evidence that any candidate is poor. Do not install or integrate CodeGraph,
+Graphify, Serena, OpenWiki, or a reserve challenger from metadata alone. The
+next provider experiment is to re-score one candidate inside a functional
+container/VM boundary using the existing fixture and gold answers in
+`docs/exploration-layer-results.json`.
 
-Keep workflows tool-agnostic: detect optional tools, use them when useful, and
-fall back to repository-native exploration without failing the workflow.
+Only a candidate that clears the hard gates and beats the native thresholds may
+trigger provider integration. Until then, detect already-adopted optional tools
+without installing them and fall back to repository-native exploration without
+failing the workflow.
 
 ## 3. Later specialist capabilities: review, security, and tests
 

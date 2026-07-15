@@ -1,7 +1,7 @@
 {
   "name": "dev-workflows",
-  "version": "1.0.0",
-  "description": "Five resumable workflows for disciplined software engineering with AI agents.",
+  "version": "1.1.0",
+  "description": "Six verified workflows for disciplined software engineering with AI agents.",
   "author": {
     "name": "Dev Workflows Contributors"
   },
@@ -10,12 +10,13 @@
   "interface": {
     "displayName": "Dev Workflows",
     "shortDescription": "Resumable, verified software workflows",
-    "longDescription": "Plan, implement, debug, improve, and bootstrap software through resumable workflows with explicit validation and safety gates.",
+    "longDescription": "Explore, document, plan, implement, debug, improve, and bootstrap software through verified workflows with explicit validation and safety gates.",
     "developerName": "Dev Workflows Contributors",
     "category": "Productivity",
     "capabilities": ["Write"],
     "defaultPrompt": [
       "Clarify an ambiguous software requirement.",
+      "Explore a codebase or update its documentation from cited evidence.",
       "Implement a ready feature with verification.",
       "Diagnose a reproducible software defect."
     ]

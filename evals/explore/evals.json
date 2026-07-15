@@ -1,0 +1,48 @@
+{
+  "skill_name": "wf-explore",
+  "evals": [
+    {
+      "id": 0,
+      "name": "ambiguous-exploration-choice",
+      "prompt": "Can you explore this repo and help with the docs? I'm not sure what I need yet.",
+      "expected_output": "Asks one compact outcome question offering codebase map, trace/impact, docs audit, docs update, and combined work; recommends one option and does not begin broad exploration or write files before the choice.",
+      "files": ["fixture: small service with src/, tests/, README.md, and ARCHITECTURE.md"],
+      "assertions": [
+        "Presents concrete bounded outcomes instead of asking an open-ended what-do-you-want question",
+        "Recommends one outcome from request context",
+        "Performs no repository write before the user selects a write outcome",
+        "Asks at most one additional scope/deliverable question"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "explicit-native-impact-trace",
+      "prompt": "Trace enqueue from the API route through the queue, list callers and impacted tests, and cite the source. Do not change files.",
+      "expected_output": "Skips redundant outcome clarification, probes required native commands, returns a verified definition/reference/flow/impact trace with path:line citations and limitations, and changes no files.",
+      "files": ["fixture: queue service with direct and dynamic callers; no optional provider configured"],
+      "assertions": [
+        "Does not force the generic chooser because target and output are explicit",
+        "Checks required command availability before use and does not install optional providers",
+        "Separates observed relationships from inferred/dynamic edges",
+        "Reopens and verifies consequential citations against repository files",
+        "Reports affected tests and explicit limitations",
+        "Leaves the worktree unchanged"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "docs-refresh-missing-gate-dependency",
+      "prompt": "Refresh the contributor setup guide from the actual manifests and verify the docs build. Assume this machine has none of the dependencies installed.",
+      "expected_output": "Inventories and probes only required dependencies, proposes the repository-declared locked install for a missing essential and waits for explicit approval, then updates docs and verifies only after a successful install/probe; no silent provider or global install.",
+      "files": ["fixture: package manifest + lockfile + stale setup guide + docs build script; runtime/package manager unavailable"],
+      "assertions": [
+        "Derives runtime, package manager, and docs command from repository files",
+        "Probes each essential dependency and treats absence as unprepared state",
+        "Explains exact command, scope, writes, and network use before requesting install approval",
+        "Does not install, download, edit manifests, or claim verification before approval",
+        "Uses no optional provider and does not treat its absence as degraded completion",
+        "If approval is withheld, reports the blocked gate honestly without fabricating green"
+      ]
+    }
+  ]
+}

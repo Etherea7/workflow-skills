@@ -1,0 +1,21 @@
+[
+  {"query":"help me explore this repository — I'm not sure whether I need an architecture map or docs yet, walk me through the options","should_trigger":true},
+  {"query":"map this codebase for a new maintainer: entry points, major components, and how requests move through it","should_trigger":true},
+  {"query":"trace the submitOrder flow from the HTTP handler through persistence and cite every file you rely on","should_trigger":true},
+  {"query":"where is refreshToken defined, who calls it, and what tests would be affected if its return type changed?","should_trigger":true},
+  {"query":"give me the blast radius of changing the queue retry policy in this repo; don't edit code","should_trigger":true},
+  {"query":"audit our developer docs against the current code and tell me which claims are stale or unsupported","should_trigger":true},
+  {"query":"update ARCHITECTURE.md so it accurately explains the current worker and queue boundaries, based on cited source","should_trigger":true},
+  {"query":"understand the auth subsystem first, then refresh the contributor documentation for it","should_trigger":true},
+  {"query":"document this repository, but ask me what kind of codebase documentation would actually be useful before writing","should_trigger":true},
+  {"query":"compare README setup commands with the manifests and lockfiles, then fix only the inaccurate documentation","should_trigger":true},
+  {"query":"what should we improve next in this repo? audit bugs, security, performance, and tech debt and rank the work","should_trigger":false},
+  {"query":"the login handler throws a 500 for unicode passwords; reproduce, diagnose, and fix it","should_trigger":false},
+  {"query":"implement the fully specified /healthz endpoint and add tests","should_trigger":false},
+  {"query":"I want some kind of sharing feature but don't know the requirements; help me decide what to build","should_trigger":false},
+  {"query":"bootstrap a new TypeScript service with lint, tests, and project rules","should_trigger":false},
+  {"query":"review PR 81 for correctness and leave inline comments","should_trigger":false},
+  {"query":"write API documentation for my consulting company website; there is no software repository","should_trigger":false},
+  {"query":"install CodeGraph globally and configure its MCP server","should_trigger":false},
+  {"query":"make an implementation plan from specs/014-healthz/spec.md; the requirements are ready","should_trigger":false}
+]

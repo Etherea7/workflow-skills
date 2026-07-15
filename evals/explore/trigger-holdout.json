@@ -1,0 +1,14 @@
+[
+  {"query":"I just inherited this service. Explain its architecture and point me to the code that proves each part","should_trigger":true},
+  {"query":"follow an uploaded file from the route to storage and list every validation boundary","should_trigger":true},
+  {"query":"which modules and tests depend on parseConfig? I need a cited impact analysis, not a patch","should_trigger":true},
+  {"query":"check whether the operations runbook still matches the scripts and configuration in the repo","should_trigger":true},
+  {"query":"create a contributor guide for the build and test loop, verifying all prerequisites first","should_trigger":true},
+  {"query":"explore the payments code and then update only the stale architecture section","should_trigger":true},
+  {"query":"find the highest-priority feature opportunity and turn it into implementation tasks","should_trigger":false},
+  {"query":"add pagination to this endpoint exactly as described in the ready spec","should_trigger":false},
+  {"query":"why is the queue test flaky? investigate the failure and patch the cause","should_trigger":false},
+  {"query":"help me choose between password auth and magic links before we write a spec","should_trigger":false},
+  {"query":"set up an empty Python repository with a green development loop","should_trigger":false},
+  {"query":"summarize this attached policy PDF for an executive audience","should_trigger":false}
+]

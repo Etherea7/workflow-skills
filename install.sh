@@ -12,7 +12,7 @@ MARK_BEGIN="<!-- dev-workflows:begin (managed by install.sh - do not edit inside
 MARK_END="<!-- dev-workflows:end -->"
 CLAUDE_OWNER="<!-- dev-workflows:rules-owned v1 -->"
 RULES_FILE_NAME="dev-workflows.md"
-CURRENT_SKILLS=(wf-debug wf-feature wf-improve wf-plan wf-setup)
+CURRENT_SKILLS=(wf-debug wf-explore wf-feature wf-improve wf-plan wf-setup)
 LEGACY_SKILLS=(debug new-feature next-step-improve plan project-setup)
 STAGE_DIRS=()
 SWAPPED_LIVE=()
@@ -191,7 +191,7 @@ do_install() {
   cleanup_staging
   local path
   for path in "${SWAPPED_BACKUP[@]}"; do rm -rf -- "$path"; done
-  echo "skills:  5 installed -> $CLAUDE_SKILLS , $AGENTS_SKILLS"
+  echo "skills:  ${#CURRENT_SKILLS[@]} installed -> $CLAUDE_SKILLS , $AGENTS_SKILLS"
   echo "rules:   refreshed $rules_file and managed block in $CODEX_AGENTS"
   echo "install: done"
 }

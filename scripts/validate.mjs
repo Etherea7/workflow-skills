@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const errors = [];
 const notes = [];
-const expectedSkills = ["wf-debug", "wf-feature", "wf-improve", "wf-plan", "wf-setup"];
+const expectedSkills = ["wf-debug", "wf-explore", "wf-feature", "wf-improve", "wf-plan", "wf-setup"];
 const legacySkills = ["debug", "new-feature", "next-step-improve", "plan", "project-setup"];
 
 function parseFrontmatter(text) {
