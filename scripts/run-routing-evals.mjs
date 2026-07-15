@@ -10,7 +10,8 @@ export const catalogMap = Object.freeze({
   "wf-feature": "evals/new-feature",
   "wf-debug": "evals/debug",
   "wf-improve": "evals/next-step-improve",
-  "wf-setup": "evals/project-setup"
+  "wf-setup": "evals/project-setup",
+  "wf-design": "evals/design"
 });
 const stop = new Set("a an and are as at be before by can do does for from how i if in into is it me my of on or our the their them they this to use when with you your".split(" "));
 const aliases = new Map(Object.entries({

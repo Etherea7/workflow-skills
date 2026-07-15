@@ -15,8 +15,8 @@ spec.loader.exec_module(module)
 
 checks = 0
 
-# --- exact attribution across all six public skill names ---
-PUBLIC_NAMES = ["wf-plan", "wf-explore", "wf-feature", "wf-debug", "wf-improve", "wf-setup"]
+# --- exact attribution across all seven public skill names ---
+PUBLIC_NAMES = ["wf-plan", "wf-explore", "wf-feature", "wf-debug", "wf-improve", "wf-setup", "wf-design"]
 
 for name in PUBLIC_NAMES:
     assert module.exact_skill_call([
