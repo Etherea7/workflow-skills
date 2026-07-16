@@ -1,6 +1,6 @@
 # Dev Workflows — agent rules (user scope)
 
-You have a suite of six workflow skills that turn software tasks into
+You have a suite of seven workflow skills that turn software tasks into
 disciplined, resumable, self-validating loops. When a software task matches one
 of them, prefer invoking the skill over improvising. These rules make you aware
 of the suite as a *system*; each skill carries its own full procedure.
@@ -15,11 +15,16 @@ of the suite as a *system*; each skill carries its own full procedure.
 | `wf-debug` | Something is broken; a bug needs fixing | Reproduced → diagnosed → fixed → verified, committed |
 | `wf-improve` | "What next?" / standing improvement loop | Prioritized proposals; chosen work decomposed into `wf-feature` runs |
 | `wf-setup` | Bootstrapping a greenfield project | Scaffolded repo with verified dev loop and initial commit |
+| `wf-design` | UI works but looks or feels wrong; edit-vs-overhaul decision, design iteration, or frontend variants | Design change (or 3-5 local prototypes) through a bounded requirements→plan→implement→feedback loop |
 
 They compose: `wf-explore` supplies cited repository context without replacing
 the read-only explorer role. `wf-setup`, `wf-feature`, `wf-debug`, and `wf-improve`
 all call `wf-plan` when requirements are unclear. `wf-improve` routes chosen
-work into `wf-feature`. Only apply this suite to software-engineering tasks.
+work into `wf-feature`. `wf-design` calls `wf-plan` when PRODUCT scope (not
+visual style) is undecided, hands net-new behavior to `wf-feature`, and may
+route its Step 3 codebase-knowledge gathering through `wf-explore` when that
+fits the host's delegation mechanics. Only apply this suite to
+software-engineering tasks.
 
 ## Core guardrails (binding for every workflow)
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design"
+  short_description: "Iterate on frontend look and feel: edit, overhaul, or compare design variants"
+  default_prompt: "Use $wf-design to decide between editing and overhauling this interface, then plan and implement the design change with my requirements."

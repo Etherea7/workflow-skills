@@ -5,10 +5,10 @@ other [Agent Skills](https://agentskills.io)-compatible hosts—into disciplined
 resumable, self-validating software engineers.
 
 > **Status: v1.1 development.** The original five workflows shipped in v1.0.0;
-> `wf-explore` is implemented with deterministic validation, while its live
-> trigger/behavior feedback remains a follow-up gate.
+> `wf-explore` and `wf-design` are implemented with deterministic validation,
+> while their live trigger/behavior feedback remains a follow-up gate.
 
-## The six skills
+## The seven skills
 
 | Skill | What it does |
 |---|---|
@@ -18,8 +18,9 @@ resumable, self-validating software engineers.
 | `wf-debug` | Reproduces a defect, investigates bounded hypotheses, and applies a verified fix only when requested |
 | `wf-improve` | Surveys repository truth, ranks next actions, and decomposes the selected work |
 | `wf-setup` | Bootstraps a greenfield repository with project rules, a scaffold, a verified development loop, and a safe initial commit |
+| `wf-design` | Decides edit vs. overhaul vs. variants for an existing frontend, then plans, implements, and verifies the change through a bounded user-feedback loop |
 
-The five stateful delivery workflows share one spine—resume, gather, plan, act
+The six stateful delivery workflows share one spine—resume, gather, plan, act
 in a bounded feedback loop, validate, and persist. `wf-explore` is a bounded,
 native-first evidence workflow: it stays read-only unless documentation changes
 are selected and never makes optional graph/wiki tooling mandatory.
@@ -37,6 +38,8 @@ are selected and never makes optional graph/wiki tooling mandatory.
 This changes callable skill identities only. Existing checklist `workflow:`
 values, `spec.md`/`plan.md` artifacts, eval-directory names, and branch prefixes
 such as `feature/`, `debug/`, `improve/`, and `setup/` remain compatible.
+`wf-design` is a new, post-v1.0.0 skill with no legacy name — it does not
+appear in the migration table above.
 
 ## Install and use locally
 
@@ -74,7 +77,7 @@ From Git Bash on Windows, or Bash on macOS/Linux:
 ./install.sh --uninstall
 ```
 
-The installer copies the six skills to `~/.claude/skills/` and
+The installer copies the seven skills to `~/.claude/skills/` and
 `~/.agents/skills/`, installs suite-level Claude rules, and maintains a bounded
 block in `~/.codex/AGENTS.md` while preserving user content. It proves ownership
 before replacing or deleting skills, stages all copies before swapping them,
@@ -101,7 +104,7 @@ replacement for live host trigger and behavior evaluation.
 
 ## Layout
 
-- `skills/` — six namespaced software workflow skills
+- `skills/` — seven namespaced software workflow skills
 - `rules/` — canonical suite rules and Delegation Protocol
 - `templates/` — spec, plan, task, checklist, constitution, index, and project-rule templates
 - `scripts/` — validation, routing, deterministic-test, credential, and numbering tools

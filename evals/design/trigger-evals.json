@@ -1,0 +1,17 @@
+[
+  {"query": "This dashboard works fine but looks dated and cluttered. Overhaul the design.", "should_trigger": true},
+  {"query": "Improve the spacing and typography on the settings page", "should_trigger": true},
+  {"query": "Give me four different design directions for the landing page to compare locally", "should_trigger": true},
+  {"query": "Make the admin panel usable on mobile without changing what it does", "should_trigger": true},
+  {"query": "Add subtle hover and transition polish to the cards", "should_trigger": true},
+  {"query": "Continue the saved design checklist; cycle two feedback is recorded", "should_trigger": true},
+  {"query": "The UI isn't nice - should we tweak it or redo it? Help me decide and do it", "should_trigger": true},
+  {"query": "Restyle the app to match our new brand colors and type", "should_trigger": true},
+  {"query": "Add a dark-mode toggle persisted to user preferences, with tests", "should_trigger": false},
+  {"query": "The dropdown renders behind the modal and can't be clicked", "should_trigger": false},
+  {"query": "I want some kind of onboarding flow but haven't decided what it should do", "should_trigger": false},
+  {"query": "What should we improve next in this repo?", "should_trigger": false},
+  {"query": "Set up a new Next.js marketing site", "should_trigger": false},
+  {"query": "Review this component's accessibility and report issues; change nothing", "should_trigger": false},
+  {"query": "Optimize the API response time for the dashboard endpoints", "should_trigger": false}
+]

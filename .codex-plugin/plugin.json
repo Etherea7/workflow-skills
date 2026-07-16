@@ -1,7 +1,7 @@
 {
   "name": "dev-workflows",
   "version": "1.1.0",
-  "description": "Six verified workflows for disciplined software engineering with AI agents.",
+  "description": "Verified workflows for disciplined software engineering with AI agents.",
   "author": {
     "name": "Dev Workflows Contributors"
   },
@@ -10,7 +10,7 @@
   "interface": {
     "displayName": "Dev Workflows",
     "shortDescription": "Resumable, verified software workflows",
-    "longDescription": "Explore, document, plan, implement, debug, improve, and bootstrap software through verified workflows with explicit validation and safety gates.",
+    "longDescription": "Explore, document, plan, implement, debug, improve, redesign interfaces, and bootstrap software through verified workflows with explicit validation and safety gates.",
     "developerName": "Dev Workflows Contributors",
     "category": "Productivity",
     "capabilities": ["Write"],

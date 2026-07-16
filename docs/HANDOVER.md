@@ -1,12 +1,12 @@
 # HANDOVER — resume here
 
 This is the cold-start guide for the next Claude, Codex, or human session.
-Updated: 2026-07-15, after adding the native `wf-explore` workflow.
+Updated: 2026-07-15, after adding the `wf-design` frontend iteration workflow.
 
-Dev Workflows is a suite of six portable Agent Skills for disciplined software
-work: `wf-explore`, `wf-plan`, `wf-feature`, `wf-debug`, `wf-improve`, and
-`wf-setup`. The repository supports Claude Code and Codex, with host-specific
-rules and native plugin manifests.
+Dev Workflows is a suite of seven portable Agent Skills for disciplined
+software work: `wf-explore`, `wf-plan`, `wf-feature`, `wf-debug`, `wf-improve`,
+`wf-setup`, and `wf-design`. The repository supports Claude Code and Codex,
+with host-specific rules and native plugin manifests.
 
 ## Read order
 
@@ -29,20 +29,21 @@ rules and native plugin manifests.
   `v1.0.0`, and merged. Release hardening at `5d7d2fe` introduced their public
   `wf-*` names. `wf-explore` is the sixth, post-v1 skill: a native-first
   codebase exploration and documentation workflow based on plan 007's
-  `native-only` decision.
+  `native-only` decision. `wf-design` is the seventh, post-v1 skill: an
+  edit-vs-overhaul-vs-variants frontend iteration workflow based on plan 008.
 - Historical evidence remains under `evals/<legacy-name>/` intentionally. Those
   directory names are records, not public skill identifiers. Live trigger runs
   now use `evals/lib/trigger_harness.py` through each directory's
   `run-triggers.py`; the executable queue is [`evals/BACKLOG.md`](../evals/BACKLOG.md).
-- Claude and Codex plugin manifests advance together to `1.1.0` for the sixth
-  skill. The published/tagged baseline remains `v1.0.0` until a separate
-  release action is approved.
+- Claude and Codex plugin manifests advance together to `1.1.0` for the
+  sixth and seventh skills. The published/tagged baseline remains `v1.0.0`
+  until a separate release action is approved.
 - CI runs `scripts/run-deterministic-tests.mjs` in addition to structural,
   catalog, shell, installer, and manifest validation. The official
   `skills-ref` fallback is pinned to `0.1.1`.
-- Open live feedback remains follow-up work, now including `wf-explore` trigger
-  and behavior runs. Do not relabel aborted or unexecuted runs as passed;
-  BACKLOG owns the detailed live-run queue.
+- Open live feedback remains follow-up work, now including `wf-explore` and
+  `wf-design` trigger and behavior runs. Do not relabel aborted or unexecuted
+  runs as passed; BACKLOG owns the detailed live-run queue.
 
 ## Operational knowledge
 
